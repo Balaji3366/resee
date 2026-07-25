@@ -38,9 +38,7 @@ export default function AIWorkspace({
   loadingInterview) && (
   <div className="mb-8 animate-pulse rounded-[30px] border border-[#D4AF37]/20 bg-[#EEF7F2] p-10 text-center shadow-[0_15px_50px_rgba(10,59,46,.08)]">
 
-    <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#0A3B2E] to-[#14532D] shadow-lg">
-      <span className="text-4xl">🤖</span>
-    </div>
+    <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-4 border-[#D4AF37]/30 border-t-[#14532D]" />
 
     <h3 className="text-3xl font-bold text-[#06281F]">
       Mentora AI is working...

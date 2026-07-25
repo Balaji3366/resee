@@ -8,25 +8,64 @@ export default function Footer() {
   return (
     <footer
       id="about"
-      className="bg-[#041E18] text-white"
+      className="relative overflow-hidden bg-[#041E18] text-white"
     >
-      <div className="mx-auto max-w-7xl px-6 py-20">
 
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+      {/* Background Glow */}
+
+      <div className="absolute -left-24 top-0 h-80 w-80 rounded-full bg-[#D4AF37]/10 blur-[120px]" />
+
+      <div className="absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-emerald-500/10 blur-[120px]" />
+
+      <div className="relative mx-auto max-w-7xl px-6 py-24">
+
+        <div className="grid gap-14 md:grid-cols-2 lg:grid-cols-4">
 
           {/* Brand */}
 
           <div>
 
-            <h2 className="text-3xl font-extrabold text-[#D4AF37]">
-              ✦ Mentora
-            </h2>
+            <div className="inline-flex items-center rounded-2xl bg-white/5 px-5 py-3 backdrop-blur-md">
 
-            <p className="mt-5 leading-8 text-gray-300">
+              <h2 className="text-3xl font-extrabold text-[#D4AF37]">
+                ✦ Mentora
+              </h2>
+
+            </div>
+
+            <p className="mt-6 leading-8 text-gray-300">
               Your AI Career Mentor helping students and professionals
-              build stronger resumes, prepare for interviews and grow
-              their careers with confidence.
+              build stronger resumes, prepare for interviews,
+              improve skills and confidently land their dream careers.
             </p>
+
+            <div className="mt-8 flex gap-4">
+
+              <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center backdrop-blur-md">
+
+                <h3 className="text-2xl font-bold text-[#D4AF37]">
+                  10K+
+                </h3>
+
+                <p className="mt-1 text-xs text-gray-400">
+                  Users
+                </p>
+
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center backdrop-blur-md">
+
+                <h3 className="text-2xl font-bold text-[#D4AF37]">
+                  ★4.9
+                </h3>
+
+                <p className="mt-1 text-xs text-gray-400">
+                  Rating
+                </p>
+
+              </div>
+
+            </div>
 
           </div>
 
@@ -34,29 +73,29 @@ export default function Footer() {
 
           <div>
 
-            <h3 className="text-xl font-bold">
+            <h3 className="text-xl font-bold text-white">
               Quick Links
             </h3>
 
-            <div className="mt-5 flex flex-col gap-3">
+            <div className="mt-6 flex flex-col gap-4">
 
               <button
                 onClick={() => router.push("/")}
-                className="text-left text-gray-300 hover:text-[#D4AF37]"
+                className="text-left text-gray-300 transition hover:translate-x-2 hover:text-[#D4AF37]"
               >
                 Home
               </button>
 
               <button
                 onClick={() => router.push("/login")}
-                className="text-left text-gray-300 hover:text-[#D4AF37]"
+                className="text-left text-gray-300 transition hover:translate-x-2 hover:text-[#D4AF37]"
               >
                 Login
               </button>
 
               <button
                 onClick={() => router.push("/signup")}
-                className="text-left text-gray-300 hover:text-[#D4AF37]"
+                className="text-left text-gray-300 transition hover:translate-x-2 hover:text-[#D4AF37]"
               >
                 Sign Up
               </button>
@@ -69,11 +108,11 @@ export default function Footer() {
 
           <div>
 
-            <h3 className="text-xl font-bold">
-              Features
+            <h3 className="text-xl font-bold text-white">
+              AI Features
             </h3>
 
-            <div className="mt-5 flex flex-col gap-3 text-gray-300">
+            <div className="mt-6 flex flex-col gap-4 text-gray-300">
 
               <span>📄 Resume Analyzer</span>
 
@@ -85,6 +124,8 @@ export default function Footer() {
 
               <span>📈 Skill Gap Analysis</span>
 
+              <span>💼 Job Match</span>
+
             </div>
 
           </div>
@@ -93,17 +134,38 @@ export default function Footer() {
 
           <div>
 
-            <h3 className="text-xl font-bold">
+            <h3 className="text-xl font-bold text-white">
               Contact
             </h3>
 
-            <div className="mt-5 space-y-3 text-gray-300">
+            <div className="mt-6 space-y-4 text-gray-300">
 
               <p>📧 support@mentora.ai</p>
 
-              <p>🌐 www.mentora.ai</p>
+              <p>🌍 www.mentora.ai</p>
 
               <p>🇮🇳 Built with ❤️ in India</p>
+
+              <p>⚡ Powered by AI</p>
+
+            </div>
+
+            <div className="mt-8 flex gap-3">
+                            <button className="rounded-xl border border-white/10 bg-white/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-[#D4AF37] hover:text-[#041E18]">
+                🌐
+              </button>
+
+              <button className="rounded-xl border border-white/10 bg-white/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-[#D4AF37] hover:text-[#041E18]">
+                💼
+              </button>
+
+              <button className="rounded-xl border border-white/10 bg-white/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-[#D4AF37] hover:text-[#041E18]">
+                🐦
+              </button>
+
+              <button className="rounded-xl border border-white/10 bg-white/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-[#D4AF37] hover:text-[#041E18]">
+                📷
+              </button>
 
             </div>
 
@@ -111,30 +173,34 @@ export default function Footer() {
 
         </div>
 
-        <div className="my-10 h-px bg-white/10"></div>
+        <div className="my-14 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
-        <div className="flex flex-col items-center justify-between gap-5 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
 
-          <p className="text-sm text-gray-400">
-            © 2026 Mentora. All Rights Reserved.
-          </p>
+          <div>
 
-          <div className="flex gap-4">
+            <p className="text-sm text-gray-400">
+              © 2026 <span className="font-semibold text-[#D4AF37]">Mentora</span>. All Rights Reserved.
+            </p>
 
-            <button className="rounded-full bg-white/10 p-3 transition hover:bg-[#D4AF37] hover:text-[#041E18]">
-              🌐
+            <p className="mt-2 text-xs text-gray-500">
+              Built with ❤️ to help students and professionals grow their careers.
+            </p>
+
+          </div>
+
+          <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400">
+
+            <button className="transition hover:text-[#D4AF37]">
+              Privacy Policy
             </button>
 
-            <button className="rounded-full bg-white/10 p-3 transition hover:bg-[#D4AF37] hover:text-[#041E18]">
-              💼
+            <button className="transition hover:text-[#D4AF37]">
+              Terms of Service
             </button>
 
-            <button className="rounded-full bg-white/10 p-3 transition hover:bg-[#D4AF37] hover:text-[#041E18]">
-              🐦
-            </button>
-
-            <button className="rounded-full bg-white/10 p-3 transition hover:bg-[#D4AF37] hover:text-[#041E18]">
-              📷
+            <button className="transition hover:text-[#D4AF37]">
+              Contact
             </button>
 
           </div>

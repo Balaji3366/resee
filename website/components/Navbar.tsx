@@ -106,42 +106,7 @@ export default function Navbar() {
           </span>
         </button>
 
-        {/* Navigation */}
-
-        <div className="hidden items-center gap-8 lg:flex">
-          <a
-            href="#features"
-            className="text-gray-200 transition hover:text-[#D4AF37]"
-          >
-            Features
-          </a>
-
-          <a
-            href="#plans"
-            className="text-gray-200 transition hover:text-[#D4AF37]"
-          >
-            Pricing
-          </a>
-
-          {user && (
-            <>
-              <button
-                onClick={() => router.push("/dashboard")}
-                className="text-gray-200 transition hover:text-[#D4AF37]"
-              >
-                Dashboard
-              </button>
-
-              <button
-                onClick={() => router.push("/documents")}
-                className="text-gray-200 transition hover:text-[#D4AF37]"
-              >
-                Documents
-              </button>
-            </>
-          )}
-        </div>
-
+      
         {/* Right Side */}
 
         {!user ? (

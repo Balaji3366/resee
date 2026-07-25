@@ -34,7 +34,7 @@ const plans = [
   {
     name: "Enterprise",
     price: "Contact Us",
-    description: "For colleges & organisations.",
+    description: "For colleges & Organisations.",
     features: [
       "Everything in Pro",
       "Team Dashboard",
@@ -53,22 +53,29 @@ export default function Plans() {
   return (
     <section
       id="plans"
-      className="bg-white py-28"
+      className="relative overflow-hidden bg-white py-28"
     >
-      <div className="mx-auto max-w-7xl px-6">
+      {/* Background Glow */}
+
+      <div className="absolute left-0 top-0 h-80 w-80 rounded-full bg-[#D4AF37]/10 blur-[120px]" />
+
+      <div className="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-emerald-400/10 blur-[120px]" />
+
+      <div className="relative mx-auto max-w-7xl px-6">
 
         <div className="text-center">
 
-          <span className="rounded-full bg-[#D4AF37]/20 px-5 py-2 text-sm font-semibold text-[#8B6B00]">
-            PRICING
+          <span className="inline-flex rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-6 py-2 text-sm font-bold uppercase tracking-wider text-[#8B6B00]">
+            💎 Pricing
           </span>
 
-          <h2 className="mt-6 text-5xl font-extrabold text-[#06281F]">
+          <h2 className="mt-8 text-5xl font-extrabold text-[#06281F] md:text-6xl">
             Choose Your Plan
           </h2>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
-            Start free and upgrade when you're ready to accelerate your career.
+          <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-gray-600">
+            Start free today and upgrade whenever you're ready to unlock
+            advanced AI tools for your career growth.
           </p>
 
         </div>
@@ -79,16 +86,19 @@ export default function Plans() {
 
             <div
               key={plan.name}
-              className={`relative overflow-hidden rounded-3xl border p-10 transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl ${
+              className={`group relative overflow-hidden rounded-[32px] border p-10 transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)] ${
                 plan.popular
                   ? "scale-105 border-[#D4AF37] bg-[#06281F] text-white shadow-2xl"
-                  : "border-gray-300 bg-white text-[#06281F] shadow-xl hover:border-[#D4AF37]"
+                  : "border-[#D4AF37]/20 bg-white shadow-xl"
               }`}
             >
+
+              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#D4AF37]/10 blur-3xl opacity-0 transition duration-500 group-hover:opacity-100" />
+
               {plan.popular && (
-                <span className="absolute right-6 top-6 rounded-full bg-[#D4AF37] px-3 py-1 text-xs font-bold text-[#06281F] shadow">
-                  ⭐ MOST POPULAR
-                </span>
+                <div className="absolute right-6 top-6 rounded-full bg-[#D4AF37] px-4 py-2 text-xs font-bold uppercase tracking-wide text-[#06281F] shadow-lg">
+                  ⭐ Most Popular
+                </div>
               )}
 
               <h3
@@ -99,41 +109,110 @@ export default function Plans() {
                 {plan.name}
               </h3>
 
-              <p
-                className={`mt-4 text-5xl font-extrabold ${
-                  plan.popular ? "text-[#D4AF37]" : "text-[#06281F]"
-                }`}
-              >
-                {plan.price}
-              </p>
+              <div className="mt-6">
+
+                <span
+                  className={`text-5xl font-extrabold ${
+                    plan.popular
+                      ? "text-[#D4AF37]"
+                      : "text-[#06281F]"
+                  }`}
+                >
+                  {plan.price}
+                </span>
+
+              </div>
 
               <p
-                className={`mt-3 ${
-                  plan.popular ? "text-gray-300" : "text-gray-600"
+                className={`mt-5 leading-7 ${
+                  plan.popular
+                    ? "text-gray-300"
+                    : "text-gray-600"
                 }`}
               >
                 {plan.description}
               </p>
 
-              <ul className="mt-8 space-y-4">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-3">
-                    <span className="text-green-500 font-bold">✔</span>
-                    <span>{feature}</span>
-                  </li>
+              <div className="mt-8 space-y-4">
+                                {plan.features.map((feature) => (
+                  <div
+                    key={feature}
+                    className={`flex items-center gap-3 rounded-xl px-3 py-3 transition ${
+                      plan.popular
+                        ? "bg-white/5"
+                        : "bg-gray-50"
+                    }`}
+                  >
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 text-sm font-bold text-white">
+                      ✓
+                    </div>
+
+                    <span
+                      className={`font-medium ${
+                        plan.popular
+                          ? "text-gray-100"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      {feature}
+                    </span>
+                  </div>
                 ))}
-              </ul>
+
+              </div>
 
               <button
                 onClick={() => router.push("/signup")}
-                className={`mt-10 w-full rounded-xl py-3 font-semibold transition-all duration-300 ${
+                className={`mt-10 w-full rounded-2xl py-4 text-base font-semibold transition-all duration-300 ${
                   plan.popular
-                    ? "bg-[#D4AF37] text-[#06281F] hover:scale-105 hover:shadow-lg"
-                    : "bg-[#06281F] text-white hover:bg-[#14532D]"
+                    ? "bg-[#D4AF37] text-[#06281F] hover:scale-[1.03] hover:shadow-xl"
+                    : "bg-[#06281F] text-white hover:bg-[#14532D] hover:scale-[1.02]"
                 }`}
               >
                 {plan.button}
               </button>
+
+              <div
+                className={`mt-8 flex items-center justify-between border-t pt-6 ${
+                  plan.popular
+                    ? "border-white/10"
+                    : "border-gray-200"
+                }`}
+              >
+                <span
+                  className={`text-sm ${
+                    plan.popular
+                      ? "text-gray-300"
+                      : "text-gray-500"
+                  }`}
+                >
+                  Secure Payments
+                </span>
+
+                <div className="flex items-center gap-2">
+
+                  <span
+                    className={`h-2.5 w-2.5 rounded-full ${
+                      plan.popular
+                        ? "animate-pulse bg-emerald-400"
+                        : "bg-emerald-500"
+                    }`}
+                  />
+
+                  <span
+                    className={`text-sm font-semibold ${
+                      plan.popular
+                        ? "text-emerald-300"
+                        : "text-emerald-600"
+                    }`}
+                  >
+                    Always Available
+                  </span>
+
+                </div>
+
+              </div>
+
             </div>
 
           ))}
@@ -141,6 +220,9 @@ export default function Plans() {
         </div>
 
       </div>
+
     </section>
   );
 }
+              
+              

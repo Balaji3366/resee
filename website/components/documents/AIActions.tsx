@@ -184,7 +184,7 @@ export default function AIActions({
   };
 
   return (
-    <div className="h-[430px] flex flex-col rounded-[30px] border border-[#D4AF37]/20 bg-white p-8 shadow-[0_20px_70px_rgba(10,59,46,.08)]">
+    <div className="min-h-[430px] rounded-[30px] border border-[#D4AF37]/20 bg-white p-8 shadow-[0_20px_70px_rgba(10,59,46,.08)]">
 
       <h2 className="mb-2 text-2xl font-bold text-[#06281F]">
         AI Actions
@@ -202,12 +202,12 @@ export default function AIActions({
         {loadingSummary ? "Analyzing..." : "Summarize Document"}
       </button>
 
-      <textarea
+     <textarea
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
         placeholder="Ask Mentora anything about this PDF..."
-        rows={2}
-        className="mb-4 w-full rounded-2xl border border-[#D4AF37]/20 bg-white p-4 text-[#06281F] placeholder:text-gray-400 outline-none transition focus:border-[#14532D] focus:ring-4 focus:ring-[#14532D]/10"
+        rows={3}
+        className="mb-4 block w-full resize-none rounded-2xl border border-[#D4AF37]/20 bg-white px-4 py-3 text-[#06281F] placeholder:text-gray-400 outline-none transition-all duration-300 focus:border-[#14532D] focus:ring-2 focus:ring-[#14532D]/10"
       />
 
       <button
