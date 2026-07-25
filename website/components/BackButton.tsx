@@ -1,40 +1,41 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
-type BackButtonProps = {
-  variant?: "light" | "dark";
-};
-
-export default function BackButton({
-  variant = "dark",
-}: BackButtonProps) {
+export default function BackButton() {
   const router = useRouter();
-
-  function handleBack() {
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/");
-    }
-  }
-
-  const styles =
-    variant === "light"
-      ? "group inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-slate-900 shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-lg"
-      : "group inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 backdrop-blur-xl px-4 py-2.5 text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/20 hover:shadow-xl";
 
   return (
     <button
-      onClick={handleBack}
-      className={styles}
-      aria-label="Go Back"
+      onClick={() => router.back()}
+      className="
+        group
+        inline-flex
+        items-center
+        gap-2
+        rounded-2xl
+        border
+        border-[#D4AF37]
+        bg-white
+        px-5
+        py-3
+        font-semibold
+        text-[#0A3B2E]
+        shadow-[0_10px_30px_rgba(10,59,46,0.08)]
+        transition-all
+        duration-300
+        hover:bg-[#0A3B2E]
+        hover:text-white
+        hover:shadow-[0_18px_40px_rgba(10,59,46,0.18)]
+      "
     >
-      <span className="text-lg font-bold text-violet-600 transition-transform duration-300 group-hover:-translate-x-1">
-        ←
-      </span>
+      <ArrowLeft
+        size={20}
+        className="transition-transform duration-300 group-hover:-translate-x-1"
+      />
 
-      <span className="font-semibold">Back</span>
+      Back
     </button>
   );
 }

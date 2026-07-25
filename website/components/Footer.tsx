@@ -1,70 +1,148 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 export default function Footer() {
+  const router = useRouter();
+
   return (
     <footer
-  id="about"
-  className="bg-black text-white py-12 mt-20"
->
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+      id="about"
+      className="bg-[#041E18] text-white"
+    >
+      <div className="mx-auto max-w-7xl px-6 py-20">
 
-        {/* Brand */}
-        <div>
-          <h2 className="text-3xl font-bold text-blue-500">
-            Mentora
-          </h2>
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
 
-          <p className="mt-4 text-gray-400">
-            Your AI Mentor for learning, career growth,
-            interview preparation, and success.
+          {/* Brand */}
+
+          <div>
+
+            <h2 className="text-3xl font-extrabold text-[#D4AF37]">
+              ✦ Mentora
+            </h2>
+
+            <p className="mt-5 leading-8 text-gray-300">
+              Your AI Career Mentor helping students and professionals
+              build stronger resumes, prepare for interviews and grow
+              their careers with confidence.
+            </p>
+
+          </div>
+
+          {/* Quick Links */}
+
+          <div>
+
+            <h3 className="text-xl font-bold">
+              Quick Links
+            </h3>
+
+            <div className="mt-5 flex flex-col gap-3">
+
+              <button
+                onClick={() => router.push("/")}
+                className="text-left text-gray-300 hover:text-[#D4AF37]"
+              >
+                Home
+              </button>
+
+              <button
+                onClick={() => router.push("/login")}
+                className="text-left text-gray-300 hover:text-[#D4AF37]"
+              >
+                Login
+              </button>
+
+              <button
+                onClick={() => router.push("/signup")}
+                className="text-left text-gray-300 hover:text-[#D4AF37]"
+              >
+                Sign Up
+              </button>
+
+            </div>
+
+          </div>
+
+          {/* Features */}
+
+          <div>
+
+            <h3 className="text-xl font-bold">
+              Features
+            </h3>
+
+            <div className="mt-5 flex flex-col gap-3 text-gray-300">
+
+              <span>📄 Resume Analyzer</span>
+
+              <span>📝 Resume Builder</span>
+
+              <span>🎤 Mock Interviews</span>
+
+              <span>🧭 Career Roadmaps</span>
+
+              <span>📈 Skill Gap Analysis</span>
+
+            </div>
+
+          </div>
+
+          {/* Contact */}
+
+          <div>
+
+            <h3 className="text-xl font-bold">
+              Contact
+            </h3>
+
+            <div className="mt-5 space-y-3 text-gray-300">
+
+              <p>📧 support@mentora.ai</p>
+
+              <p>🌐 www.mentora.ai</p>
+
+              <p>🇮🇳 Built with ❤️ in India</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div className="my-10 h-px bg-white/10"></div>
+
+        <div className="flex flex-col items-center justify-between gap-5 md:flex-row">
+
+          <p className="text-sm text-gray-400">
+            © 2026 Mentora. All Rights Reserved.
           </p>
-        </div>
 
-        {/* Product */}
-        <div>
-          <h3 className="font-semibold text-lg mb-4">
-            Product
-          </h3>
+          <div className="flex gap-4">
 
-          <ul className="space-y-2 text-gray-400">
-            <li className="hover:text-white cursor-pointer">AI Mentor</li>
-            <li className="hover:text-white cursor-pointer">Roadmaps</li>
-            <li className="hover:text-white cursor-pointer">Mock Interviews</li>
-            <li className="hover:text-white cursor-pointer">Resume Builder</li>
-          </ul>
-        </div>
+            <button className="rounded-full bg-white/10 p-3 transition hover:bg-[#D4AF37] hover:text-[#041E18]">
+              🌐
+            </button>
 
-        {/* Company */}
-        <div>
-          <h3 className="font-semibold text-lg mb-4">
-            Company
-          </h3>
+            <button className="rounded-full bg-white/10 p-3 transition hover:bg-[#D4AF37] hover:text-[#041E18]">
+              💼
+            </button>
 
-          <ul className="space-y-2 text-gray-400">
-            <li className="hover:text-white cursor-pointer">About</li>
-            <li className="hover:text-white cursor-pointer">Blog</li>
-            <li className="hover:text-white cursor-pointer">Careers</li>
-            <li className="hover:text-white cursor-pointer">Contact</li>
-          </ul>
-        </div>
+            <button className="rounded-full bg-white/10 p-3 transition hover:bg-[#D4AF37] hover:text-[#041E18]">
+              🐦
+            </button>
 
-        {/* Social */}
-        <div>
-          <h3 className="font-semibold text-lg mb-4">
-            Follow Us
-          </h3>
+            <button className="rounded-full bg-white/10 p-3 transition hover:bg-[#D4AF37] hover:text-[#041E18]">
+              📷
+            </button>
 
-          <ul className="space-y-2 text-gray-400">
-            <li className="hover:text-white cursor-pointer">LinkedIn</li>
-            <li className="hover:text-white cursor-pointer">GitHub</li>
-            <li className="hover:text-white cursor-pointer">Twitter</li>
-            <li className="hover:text-white cursor-pointer">Discord</li>
-          </ul>
+          </div>
+
         </div>
 
       </div>
 
-      <div className="border-t border-gray-800 mt-10 pt-6 text-center text-gray-500">
-        © 2026 Mentora. All rights reserved.
-      </div>
     </footer>
   );
 }

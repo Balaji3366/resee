@@ -3,6 +3,7 @@ import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ChatMessage } from "@/types/chat";
+import { User, Bot } from "lucide-react";
 
 type Props = {
   chat: ChatMessage[];
@@ -20,9 +21,9 @@ export default function ChatMessages({
         {chatLoading ? (
             <div className="flex h-full items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                <div className="h-10 w-10 animate-spin rounded-full border-4 border-purple-500 border-t-transparent" />
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#0A3B2E] border-t-transparent" />
 
-                <p className="text-sm text-slate-300">
+                <p className="text-sm text-gray-500">
                     Loading conversation...
                 </p>
                 </div>
@@ -46,43 +47,46 @@ export default function ChatMessages({
             <div
               className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white shadow-md ${
                 msg.sender === "You"
-                  ? "bg-gradient-to-br from-blue-500 to-indigo-600"
-                  : "bg-gradient-to-br from-purple-600 to-indigo-600"
+                ? "bg-gradient-to-br from-[#14532D] to-[#0A3B2E]"
+                : "bg-gradient-to-br from-[#0A3B2E] to-[#14532D] text-white shadow-md"
               }`}
             >
-              {msg.sender === "You" ? "👤" : "✨"}
+              {msg.sender === "You" ? (
+                <User size={18} strokeWidth={2.4} />
+              ) : (
+                <Bot size={18} strokeWidth={2.4} />
+              )}
             </div>
 
             <div
                className={`rounded-2xl px-5 py-3 shadow-lg ${
                 msg.sender === "You"
-                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
-                    : "border border-white/10 bg-white/10 text-white backdrop-blur-xl"
+                ? "bg-gradient-to-r from-[#0A3B2E] to-[#14532D] text-white"
+                : "border border-[#D4AF37]/20 bg-[#EEF7F2] text-[#06281F]"
                 }`}
             >
               <div
-                    className="
-                        prose
-                        prose-invert
-                        prose-sm
-                        max-w-none
-                        prose-headings:text-white
-                        prose-p:text-slate-200
-                        prose-li:text-slate-200
-                        prose-strong:text-white
-                        prose-code:text-pink-300
-                        prose-pre:bg-transparent
-                    "
-                    >
+                className="
+                    prose
+                    prose-sm
+                    max-w-none
+                    prose-headings:text-[#06281F]
+                    prose-p:text-[#06281F]
+                    prose-li:text-[#06281F]
+                    prose-strong:text-[#06281F]
+                    prose-code:text-[#14532D]
+                    prose-pre:bg-transparent
+                "
+              >
                 {msg.sender === "AI" && msg.text === "" ? (
   <div className="flex items-center gap-2 text-slate-300">
-    <div className="h-2 w-2 animate-bounce rounded-full bg-purple-400"></div>
+    <div className="h-2 w-2 animate-bounce rounded-full bg-[#14532D]"></div>
     <div
-      className="h-2 w-2 animate-bounce rounded-full bg-purple-400"
+      className="h-2 w-2 animate-bounce rounded-full bg-[#14532D]"
       style={{ animationDelay: "0.15s" }}
     ></div>
     <div
-      className="h-2 w-2 animate-bounce rounded-full bg-purple-400"
+      className="h-2 w-2 animate-bounce rounded-full bg-[#14532D]"
       style={{ animationDelay: "0.3s" }}
     ></div>
 

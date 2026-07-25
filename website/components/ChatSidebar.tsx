@@ -17,18 +17,18 @@ export default function ChatSidebar({
   activeChatId,
 }: Props) {
   return (
-    <aside className="flex h-full w-80 flex-col rounded-3xl border border-white/10 bg-white/10 p-5 shadow-2xl backdrop-blur-2xl">
+    <aside className="flex h-full w-80 flex-col rounded-[30px] border border-[#D4AF37]/20 bg-white p-6 shadow-[0_20px_70px_rgba(10,59,46,.08)]">
 
       {/* New Chat */}
       <button
         onClick={onNewChat}
-        className="mb-6 w-full rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 py-3 font-semibold text-white transition hover:scale-[1.02]"
+        className="mb-6 w-full rounded-2xl bg-gradient-to-r from-[#0A3B2E] to-[#14532D] py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
         >
         + New Chat
         </button>
 
       {/* Heading */}
-      <h3 className="mb-4 text-xl font-bold text-white">
+      <h3 className="mb-4 text-2xl font-bold text-[#06281F]">
         Recent Chats
       </h3>
 
@@ -38,7 +38,7 @@ export default function ChatSidebar({
         style={{ maxHeight: "calc(88vh - 180px)" }}
         >
         {sessions.length === 0 ? (
-          <div className="mt-10 text-center text-slate-400">
+          <div className="mt-10 text-center text-gray-500">
             No chats yet
           </div>
         ) : (
@@ -48,19 +48,19 @@ export default function ChatSidebar({
             onClick={() => onChatClick(session)}
             className={`w-full rounded-2xl p-4 text-left transition-all duration-300
             ${
-            activeChatId === session.id
-                ? "border border-purple-500 bg-purple-500/20 shadow-lg shadow-purple-500/20"
-                : "border border-white/10 bg-white/5 hover:border-purple-500 hover:bg-white/10"
-            }`}
+              activeChatId === session.id
+                ? "border border-[#14532D] bg-[#EEF7F2] shadow-md"
+                : "border border-[#D4AF37]/20 bg-white hover:border-[#D4AF37] hover:bg-[#F8FAF8]"
+              }`}
             >
               <div className="flex items-center justify-between">
-                <span className="truncate text-sm font-semibold text-white">
+                <span className="truncate text-sm font-semibold text-[#06281F]">
                     💬 {session.title}
                 </span>
 
                 <Trash2
                     size={16}
-                    className="cursor-pointer text-slate-400 transition hover:text-red-500"
+                    className="cursor-pointer text-gray-400 transition hover:text-red-600"
                     onClick={(e) => {
                         e.stopPropagation();
                         console.log("Delete clicked", session);
@@ -69,7 +69,7 @@ export default function ChatSidebar({
                     />
                 </div>
 
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-gray-500">
                 {new Date(session.created_at).toLocaleDateString()}
               </p>
             </button>
@@ -78,12 +78,12 @@ export default function ChatSidebar({
       </div>
 
       {/* Footer */}
-      <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
-        <p className="text-sm font-semibold text-white">
+      <div className="mt-5 rounded-2xl border border-[#D4AF37]/20 bg-[#F8FAF8] p-4">
+        <p className="text-sm font-semibold text-[#06281F]">
           Mentora AI
         </p>
 
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-gray-500">
           Personal Career Mentor
         </p>
       </div>

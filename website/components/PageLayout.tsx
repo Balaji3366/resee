@@ -5,17 +5,23 @@ import BackButton from "./BackButton";
 
 type PageLayoutProps = {
   children: ReactNode;
+  variant?: "light" | "dark";
 };
 
-export default function PageLayout({ children }: PageLayoutProps) {
+export default function PageLayout({
+  children,
+  variant = "light",
+}: PageLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="mx-auto max-w-7xl p-8">
-        <BackButton variant="light"/>
-      </div>
+      <div className="mx-auto max-w-7xl px-8 py-8">
 
-      <div className="p-8">
+        <div className="mb-8">
+          <BackButton />
+        </div>
+
         {children}
+
       </div>
     </div>
   );

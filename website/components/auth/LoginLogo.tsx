@@ -3,15 +3,17 @@ import Image from "next/image";
 export default function LoginLogo() {
   return (
     <div className="flex items-center gap-6">
-      <div className="overflow-hidden rounded-2xl bg-white p-2 shadow-lg ring-1 ring-violet-100 transition-transform duration-300 hover:scale-105">
+      <div className="overflow-hidden rounded-2xl bg-white p-2 shadow-lg ring-1 ring-[#D4AF37]/20 transition-transform duration-300 hover:scale-105">
+          
         <Image
         src="/images/mentora-logo.png"
         alt="Mentora Logo"
         width={84}
         height={84}
         priority
+        unoptimized
         className="rounded-xl"
-        />
+      />
       </div>
 
       <div>
@@ -20,8 +22,12 @@ export default function LoginLogo() {
         </h1>
 
         <p className="mt-2 text-lg font-medium">
-          <span className="text-violet-600">Learn Smarter.</span>{" "}
-          <span className="text-slate-700">Grow Faster.</span>
+          <span className="font-semibold text-[#0A3B2E]">
+            Learn Smarter.
+          </span>{" "}
+          <span className="font-semibold text-[#D4AF37]">
+            Grow Faster.
+          </span>
         </p>
       </div>
     </div>

@@ -15,9 +15,11 @@ export async function POST(request: Request) {
       return Response.json(
         {
           success: false,
-          error: "No resume uploaded.",
+          message: "No resume uploaded.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
     }
 
@@ -29,6 +31,8 @@ export async function POST(request: Request) {
       mergePages: true,
     });
 
+    console.log("✅ PDF extracted");
+
     const prompt = `
 You are an expert ATS Resume Analyzer.
 
@@ -38,35 +42,52 @@ Resume:
 
 ${resumeText}
 
-Return ONLY in this format.
+Return ONLY valid JSON.
 
-ATS_SCORE:
-<number>/100
+Schema:
 
-STRENGTHS:
-- Point 1
-- Point 2
-- Point 3
-- Point 4
-
-WEAKNESSES:
-- Point 1
-- Point 2
-- Point 3
-- Point 4
-
-SUGGESTIONS:
-- Point 1
-- Point 2
-- Point 3
-- Point 4
+{
+  "atsScore": 0,
+  "summary": "",
+  "strengths": [
+    "",
+    "",
+    "",
+    ""
+  ],
+  "weaknesses": [
+    "",
+    "",
+    "",
+    ""
+  ],
+  "missingKeywords": [
+    "",
+    "",
+    "",
+    ""
+  ],
+  "suggestions": [
+    "",
+    "",
+    "",
+    ""
+  ]
+}
 
 Rules:
-- Don't use markdown.
-- Keep every point under 20 words.
+
+- Return ONLY valid JSON.
+- Do NOT use markdown.
+- Do NOT wrap JSON inside \`\`\`.
+- ATS score must be between 0 and 100.
+- Summary must be under 40 words.
+- Each array must contain exactly 4 points.
+- Each point must be under 20 words.
 - Give a realistic ATS score.
 `;
-const response = await ai.models.generateContent({
+
+    const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: [
         {
@@ -80,23 +101,42 @@ const response = await ai.models.generateContent({
       ],
     });
 
+    console.log("✅ Gemini response received");
+
+    const text = response.text?.trim() || "";
+
+    if (!text) {
+      throw new Error("Empty response from Gemini.");
+    }
+
+    console.log("Gemini Raw Response:");
+    console.log(text);
+
+    const cleanText = text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    const result = JSON.parse(cleanText);
+
     return Response.json({
       success: true,
-      message: response.text,
+      resumeText,
+      data: result,
     });
-
   } catch (error: any) {
     console.error("Resume Analyzer Error:", error);
 
     return Response.json(
-  {
-    success: false,
-    message:
-      "Gemini API quota exceeded. Please try again later.",
-  },
-  {
-    status: 500,
-  }
-);
+      {
+        success: false,
+        message:
+          error?.message ||
+          "Something went wrong while analyzing the resume.",
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }

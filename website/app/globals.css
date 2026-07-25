@@ -96,25 +96,22 @@ body {
   animation: pulse-soft 2.5s ease-in-out infinite;
 }
 /* ========================= */
-/* Mentora Scrollbar         */
-/* ========================= */
+/* Mentora Scrollbar */
 
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 999px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #94a3b8;
-  border-radius: 999px;
+  background: #14532D;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #0A3B2E;
 }
 
 /* Custom Scrollbar */
@@ -139,7 +136,7 @@ body {
 /* Sidebar Scrollbar */
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -147,10 +144,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #9333ea, #6366f1);
+  background: #14532D;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #a855f7, #7c3aed);
+  background: #0A3B2E;
 }

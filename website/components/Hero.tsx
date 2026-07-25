@@ -1,87 +1,174 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function Hero() {
   const router = useRouter();
 
+  async function handleLaunchWorkspace() {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (session) {
+      router.push("/dashboard");
+    } else {
+      router.push("/login");
+    }
+  }
+
   return (
     <section
       id="home"
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-black px-6"
+      className="relative overflow-hidden bg-gradient-to-br from-[#06281F] via-[#0A3B2E] to-[#14532D] pt-36 pb-24"
     >
       {/* Background Glow */}
-      <div className="absolute left-20 top-24 h-72 w-72 rounded-full bg-cyan-500/10 blur-[140px]" />
-      <div className="absolute bottom-20 right-20 h-72 w-72 rounded-full bg-blue-600/10 blur-[140px]" />
+      <div className="absolute -left-32 top-20 h-96 w-96 rounded-full bg-[#D4AF37]/20 blur-[150px]" />
 
-      {/* Live Badge */}
-      <div className="relative inline-flex items-center gap-3 rounded-full border border-cyan-400/30 bg-white/5 px-8 py-4 backdrop-blur-xl shadow-[0_0_35px_rgba(34,211,238,0.25)] animate-pulse-soft">
-        <span className="relative flex h-3 w-3">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-          <span className="relative inline-flex h-3 w-3 rounded-full bg-green-500"></span>
-        </span>
+      <div className="absolute -right-20 bottom-10 h-96 w-96 rounded-full bg-emerald-500/20 blur-[150px]" />
 
-        <span className="text-base font-semibold tracking-wide text-cyan-100">
-          Live AI Mentor
-        </span>
-      </div>
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-16 px-6 lg:flex-row lg:px-10">
 
-      {/* Heading */}
-      <h1 className="mt-8 text-center text-5xl font-extrabold leading-tight md:text-7xl">
-        <span className="bg-gradient-to-r from-white via-cyan-300 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(59,130,246,0.4)]">
-          Learn Smarter.
-        </span>
+        {/* LEFT */}
 
-        <br />
+        <div className="flex-1">
 
-        <span className="bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-600 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]">
-          Grow Faster.
-        </span>
-      </h1>
+          <div className="mb-6 inline-flex items-center rounded-full border border-[#D4AF37]/30 bg-white/10 px-5 py-2 text-sm font-medium text-[#F5E7A1] backdrop-blur-md">
+            ✨ Your AI Career Mentor
+          </div>
 
-      {/* Description */}
-      <p className="mt-6 max-w-3xl text-center text-xl leading-8 text-slate-300">
-        Upload any PDF and instantly generate AI summaries, ask questions,
-        create quizzes, prepare for interviews, and analyze resumes —
-        all in one intelligent workspace.
-      </p>
+          <h1 className="text-5xl font-extrabold leading-tight text-white md:text-7xl">
 
-      {/* CTA */}
-      <div className="mt-12">
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/50"
-        >
-          🚀 Get Started →
-        </button>
-      </div>
+            Plan.
 
-      {/* Trust Indicators */}
-      <div className="mt-16 flex flex-wrap justify-center gap-8 text-sm text-slate-400">
-        <div className="flex items-center gap-2">
-          <span>📄</span>
-          <span>AI PDF Analysis</span>
+            <br />
+
+            Learn.
+
+            <br />
+
+            <span className="text-[#D4AF37]">
+              Practice.
+            </span>
+
+            <br />
+
+            Get Hired.
+
+          </h1>
+
+          <p className="mt-8 max-w-xl text-lg leading-8 text-gray-200">
+
+            Mentora is your AI-powered Career Operating System.
+
+            Analyse resumes, prepare interviews, build personalized
+            roadmaps, improve skills and land your dream job.
+
+          </p>
+
+          <div className="mt-10 flex flex-wrap gap-5">
+
+            <button
+              onClick={handleLaunchWorkspace}
+              className="rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8860B] px-8 py-4 font-semibold text-[#06281F] shadow-xl transition duration-300 hover:-translate-y-1 hover:scale-105"
+            >
+              Get Started Free →
+            </button>
+
+            <button
+              onClick={() => {
+                document
+                  .getElementById("features")
+                  ?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+              }}
+              className="rounded-xl border border-[#D4AF37] px-8 py-4 font-semibold text-[#D4AF37] transition hover:bg-[#D4AF37] hover:text-[#06281F]"
+            >
+              Explore Features
+            </button>
+
+          </div>
+
+          {/* Trust */}
+
+          <div className="mt-12 flex flex-wrap items-center gap-8 text-gray-300">
+
+            <div>
+              ⭐⭐⭐⭐⭐
+            </div>
+
+            <div>
+              Trusted by <b className="text-white">10,000+</b> learners
+            </div>
+
+          </div>
+
         </div>
 
-        <div className="flex items-center gap-2">
-          <span>⚡</span>
-          <span>Instant Summaries</span>
+        {/* RIGHT */}
+
+        <div className="flex-1">
+
+          <div className="rounded-3xl border border-white/10 bg-white/10 p-8 backdrop-blur-xl shadow-2xl">
+
+            <h2 className="text-2xl font-bold text-white">
+              Welcome to Mentora
+            </h2>
+
+            <p className="mt-2 text-gray-300">
+              Let's build your dream career.
+            </p>
+
+            <div className="mt-8 grid grid-cols-2 gap-5">
+
+              <div className="rounded-2xl bg-white p-5 shadow-lg">
+                <p className="text-sm text-gray-500">
+                  ATS Score
+                </p>
+
+                <h3 className="mt-2 text-4xl font-bold text-[#14532D]">
+                  92%
+                </h3>
+              </div>
+
+              <div className="rounded-2xl bg-white p-5 shadow-lg">
+                <p className="text-sm text-gray-500">
+                  Interviews
+                </p>
+
+                <h3 className="mt-2 text-4xl font-bold text-[#14532D]">
+                  12
+                </h3>
+              </div>
+
+              <div className="rounded-2xl bg-white p-5 shadow-lg">
+                <p className="text-sm text-gray-500">
+                  Resume Score
+                </p>
+
+                <h3 className="mt-2 text-4xl font-bold text-[#14532D]">
+                  Excellent
+                </h3>
+              </div>
+
+              <div className="rounded-2xl bg-white p-5 shadow-lg">
+                <p className="text-sm text-gray-500">
+                  Roadmap
+                </p>
+
+                <h3 className="mt-2 text-lg font-bold text-[#14532D]">
+                  Ready
+                </h3>
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div className="flex items-center gap-2">
-          <span>📝</span>
-          <span>Smart Quiz Generator</span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span>🎤</span>
-          <span>Interview Preparation</span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span>📊</span>
-          <span>ATS Resume Analyzer</span>
-        </div>
       </div>
     </section>
   );

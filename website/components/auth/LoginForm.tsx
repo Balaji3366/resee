@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, Lock, Eye } from "lucide-react";
+import { Mail, Lock, Eye , EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import GoogleButton from "./GoogleButton";
@@ -11,10 +11,11 @@ import GoogleButton from "./GoogleButton";
 
   export default function LoginForm() {
   const router = useRouter();
-
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);  
+  const [rememberMe, setRememberMe] = useState(false);
   async function handleLogin(e: React.FormEvent) {
   e.preventDefault();
 
@@ -42,108 +43,164 @@ import GoogleButton from "./GoogleButton";
   router.push("/dashboard");
 }
   return (
-    <div className="w-full max-w-lg rounded-[32px] border border-white/70 bg-white/95 p-10 shadow-[0_25px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
-      <div className="mb-8 text-center">
-        <h2 className="text-4xl font-extrabold tracking-tight text-slate-900">
-          Welcome Back 👋
-        </h2>
+  <div className="w-full max-w-lg rounded-[32px] border border-[#D4AF37]/20 bg-white p-10 shadow-2xl">
 
-        <p className="mt-3 text-base leading-7 text-slate-500">
-          Sign in to continue your AI learning journey.
-        </p>
+    {/* Heading */}
+
+    <div className="mb-8 text-center">
+
+      <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#0A3B2E] text-3xl">
+        ✨
       </div>
 
-      <form onSubmit={handleLogin} className="space-y-5">
-        {/* Email */}
-        <div>
-          <label className="mb-2 block text-sm font-medium text-slate-700">
-            Email Address
-          </label>
+      <h2 className="text-4xl font-extrabold text-[#06281F]">
+        Welcome Back
+      </h2>
 
-          <div className="flex h-16 items-center gap-4 rounded-2xl border border-slate-200 bg-white px-5 transition-all duration-300 focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-100">
-            <Mail size={22} className="text-slate-400" />
+      <p className="mt-3 text-gray-600">
+        Login to continue your Mentora journey.
+      </p>
 
-            <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-transparent text-slate-800 placeholder:text-slate-400 outline-none"
-                />
-          </div>
-        </div>
-
-        {/* Password */}
-        <div>
-          <label className="mb-2 block text-sm font-medium text-slate-700">
-            Password
-          </label>
-
-          <div className="flex h-16 items-center gap-4 rounded-2xl border border-slate-200 bg-white px-5 transition-all duration-300 focus-within:border-violet-500 focus-within:ring-4 focus-within:ring-violet-100">
-            <Lock size={22} className="text-slate-400" />
-
-            <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-transparent text-slate-800 placeholder:text-slate-400 outline-none"
-                />
-
-            <Eye
-              size={20}
-              className="cursor-pointer text-slate-400 hover:text-violet-600"
-            />
-          </div>
-        </div>
-
-        {/* Remember + Forgot */}
-        <div className="flex items-center justify-between text-sm">
-          <label className="flex items-center gap-2 text-slate-600">
-            <input type="checkbox" />
-            Remember me
-          </label>
-
-          <Link
-            href="#"
-            className="font-medium text-violet-600 hover:text-violet-700"
-          >
-            Forgot Password?
-          </Link>
-        </div>
-
-        {/* Sign In */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 py-4 text-lg font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(124,58,237,0.35)] active:scale-[0.98]"
-        >
-          {loading ? "Signing In..." : "Sign In"}
-        </button>
-
-        {/* Divider */}
-        <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-slate-200" />
-
-          <span className="text-sm text-slate-400">
-            OR
-          </span>
-
-          <div className="h-px flex-1 bg-slate-200" />
-        </div>
-
-        <GoogleButton />
-
-        <p className="text-center text-sm text-slate-600">
-          Don't have an account?{" "}
-          <Link
-            href="/signup"
-            className="font-semibold text-violet-600 hover:text-violet-700"
-          >
-            Create Account
-          </Link>
-        </p>
-      </form>
     </div>
-  );
+
+    <form onSubmit={handleLogin} className="space-y-6">
+
+      {/* Email */}
+
+      <div>
+
+        <label className="mb-2 block font-medium text-[#06281F]">
+          Email Address
+        </label>
+
+        <div className="flex h-14 items-center gap-4 rounded-xl border border-gray-300 bg-white px-4 transition-all duration-200 focus-within:border-[#0A3B2E] focus-within:ring-4 focus-within:ring-[#0A3B2E]/10">
+
+          <Mail size={20} className="text-[#0A3B2E]" />
+
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full bg-transparent text-[#06281F] placeholder:text-gray-400 outline-none"
+          />
+
+        </div>
+
+      </div>
+
+      {/* Password */}
+
+      <div>
+
+        <label className="mb-2 block font-medium text-[#06281F]">
+          Password
+        </label>
+
+        <div className="flex h-14 items-center gap-4 rounded-xl border border-gray-300 bg-white px-4 transition-all duration-200 focus-within:border-[#0A3B2E] focus-within:ring-4 focus-within:ring-[#0A3B2E]/10">
+
+          <Lock size={20} className="text-[#0A3B2E]" />
+
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full bg-transparent text-[#06281F] placeholder:text-gray-400 outline-none"
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <EyeOff
+                size={20}
+                className="text-gray-500 hover:text-[#D4AF37]"
+              />
+            ) : (
+              <Eye
+                size={20}
+                className="text-gray-500 hover:text-[#D4AF37]"
+              />
+            )}
+          </button>
+
+        </div>
+
+      </div>
+
+      {/* Remember */}
+
+      <div className="flex items-center justify-between text-sm">
+
+        <label className="flex items-center gap-2 text-gray-600">
+
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            className="accent-[#0A3B2E]"
+          />
+
+          Remember Me
+
+        </label>
+
+        <Link
+          href="/forgot-password"
+          className="font-semibold text-[#0A3B2E] hover:text-[#D4AF37]"
+        >
+          Forgot Password?
+        </Link>
+
+      </div>
+
+      {/* Login Button */}
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full rounded-xl bg-[#0A3B2E] py-4 text-lg font-bold text-white transition hover:bg-[#14532D] disabled:opacity-60"
+      >
+        {loading ? "Signing In..." : "Login"}
+      </button>
+
+      {/* Divider */}
+
+      <div className="flex items-center gap-4">
+
+        <div className="h-px flex-1 bg-gray-300" />
+
+        <span className="text-sm text-gray-500">
+          OR
+        </span>
+
+        <div className="h-px flex-1 bg-gray-300" />
+
+      </div>
+
+      {/* Google */}
+
+      <GoogleButton />
+
+      {/* Signup */}
+
+      <p className="text-center text-sm text-gray-600">
+
+        Don't have an account?{" "}
+
+        <Link
+          href="/signup"
+          className="font-bold text-[#0A3B2E] hover:text-[#D4AF37]"
+        >
+          Create Account
+        </Link>
+
+      </p>
+
+    </form>
+
+  </div>
+);
 }

@@ -114,45 +114,47 @@ useEffect(() => {
         </p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-12">
-        <UploadCard
-          file={file}
-          setFile={setFile}
-          uploading={uploading}
-          uploadSuccess={uploadSuccess}
-          uploadFile={uploadFile}
-        />
+      <div className="grid gap-8 lg:grid-cols-3 lg:auto-rows-fr">
 
-        <RecentFiles
-          files={files}
-          selectedFile={selectedFile}
-          setSelectedFile={setSelectedFile}
-          setSummary={setSummary}
-        />
+  <UploadCard
+  file={file}
+  setFile={setFile}
+  uploading={uploading}
+  uploadSuccess={uploadSuccess}
+  uploadFile={uploadFile}
+/>
 
-        <AIActions
-          selectedFile={selectedFile}
-          scrollToWorkspace={scrollToWorkspace}
-          summary={summary}
-          setSummary={setSummary}
-          loadingSummary={loadingSummary}
-          setLoadingSummary={setLoadingSummary}
-          question={question}
-          setQuestion={setQuestion}
-          answer={answer}
-          setAnswer={setAnswer}
-          loadingAnswer={loadingAnswer}
-          setLoadingAnswer={setLoadingAnswer}
-          quiz={quiz}
-          setQuiz={setQuiz}
-          loadingQuiz={loadingQuiz}
-          setLoadingQuiz={setLoadingQuiz}
-          interview={interview}
-          setInterview={setInterview}
-          loadingInterview={loadingInterview}
-          setLoadingInterview={setLoadingInterview}
-        />
-      </div>
+<RecentFiles
+  files={files}
+  selectedFile={selectedFile}
+  setSelectedFile={setSelectedFile}
+  setSummary={setSummary}
+/>
+
+<AIActions
+  selectedFile={selectedFile}
+  scrollToWorkspace={scrollToWorkspace}
+  summary={summary}
+  setSummary={setSummary}
+  loadingSummary={loadingSummary}
+  setLoadingSummary={setLoadingSummary}
+  question={question}
+  setQuestion={setQuestion}
+  answer={answer}
+  setAnswer={setAnswer}
+  loadingAnswer={loadingAnswer}
+  setLoadingAnswer={setLoadingAnswer}
+  quiz={quiz}
+  setQuiz={setQuiz}
+  loadingQuiz={loadingQuiz}
+  setLoadingQuiz={setLoadingQuiz}
+  interview={interview}
+  setInterview={setInterview}
+  loadingInterview={loadingInterview}
+  setLoadingInterview={setLoadingInterview}
+/>
+
+</div>
 
       <div ref={workspaceRef} className="mt-8">
         <AIWorkspace

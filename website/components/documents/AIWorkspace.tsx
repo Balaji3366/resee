@@ -33,161 +33,212 @@ export default function AIWorkspace({
   return (
     <>
       {(loadingSummary ||
-        loadingAnswer ||
-        loadingQuiz ||
-        loadingInterview) && (
-        <div className="animate-in fade-in duration-500 mb-6 animate-pulse rounded-2xl border border-cyan-200 bg-cyan-50 p-8 text-center">
-          <div className="mb-4 text-5xl">🤖</div>
+  loadingAnswer ||
+  loadingQuiz ||
+  loadingInterview) && (
+  <div className="mb-8 animate-pulse rounded-[30px] border border-[#D4AF37]/20 bg-[#EEF7F2] p-10 text-center shadow-[0_15px_50px_rgba(10,59,46,.08)]">
 
-          <h3 className="text-2xl font-bold text-cyan-700">
-            Mentora AI is analyzing your document...
-          </h3>
+    <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#0A3B2E] to-[#14532D] shadow-lg">
+      <span className="text-4xl">🤖</span>
+    </div>
 
-          <p className="mt-3 text-gray-600">
-            {loadingSummary &&
-              "Analyzing your document and preparing summary..."}
-            {loadingAnswer &&
-              "Reading your PDF and finding the answer..."}
-            {loadingQuiz &&
-              "Generating quiz questions..."}
-            {loadingInterview &&
-              "Preparing interview questions..."}
-          </p>
-        </div>
-      )}
+    <h3 className="text-3xl font-bold text-[#06281F]">
+      Mentora AI is working...
+    </h3>
 
-      <div className="rounded-2xl bg-white p-6 shadow-md">
-        <h2 className="mb-6 text-2xl font-bold text-gray-900">
-        ✨ AI Insights
+    <p className="mt-4 text-gray-600">
+      {loadingSummary &&
+        "Analyzing your PDF and preparing a concise summary..."}
+
+      {loadingAnswer &&
+        "Reading your document and finding the best answer..."}
+
+      {loadingQuiz &&
+        "Creating quiz questions from your document..."}
+
+      {loadingInterview &&
+        "Generating interview questions..."}
+
+    </p>
+
+  </div>
+)}
+
+      <div className="rounded-[30px] border border-[#D4AF37]/20 bg-white p-8 shadow-[0_20px_70px_rgba(10,59,46,.08)]">
+        <h2 className="mb-8 text-3xl font-bold text-[#06281F]">
+        AI Insights
         </h2>
 
         {!summary && !answer && !quiz && !interview && (
-          <div className="rounded-xl border-2 border-dashed border-gray-300 p-10 text-center text-gray-500">
-            <p className="text-lg font-medium">
-              ✨ Your AI insights will appear here.
-            </p>
+  <div className="rounded-[28px] border-2 border-dashed border-[#D4AF37]/30 bg-[#F8FAF8] p-14 text-center">
 
-            <p className="mt-2 text-sm">
-              Select a document and choose an AI action to begin.
-            </p>
-          </div>
-        )}
+    <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-[#0A3B2E] to-[#14532D] shadow-lg">
+      <span className="text-5xl">📄</span>
+    </div>
+
+    <h3 className="text-2xl font-bold text-[#06281F]">
+      AI Insights Await
+    </h3>
+
+    <p className="mt-4 text-gray-600">
+      Select a document and choose an AI action.
+    </p>
+
+    <div className="mt-8 flex justify-center gap-4 text-sm text-gray-500">
+      <span className="rounded-full bg-white px-4 py-2 shadow">
+        Upload PDF
+      </span>
+
+      <span>→</span>
+
+      <span className="rounded-full bg-white px-4 py-2 shadow">
+        Choose Action
+      </span>
+
+      <span>→</span>
+
+      <span className="rounded-full bg-white px-4 py-2 shadow">
+        AI Result
+      </span>
+    </div>
+
+  </div>
+)}
 
         {/* Summary */}
 
         {summary && (
-          <div className="animate-in fade-in duration-500 mb-6 rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-bold text-blue-700">
-                📄 Summary
-              </h3>
+  <div className="mb-8 rounded-[28px] border border-[#D4AF37]/20 bg-[#EEF7F2] p-8 shadow-md">
 
-              <button
-                onClick={() => copyText(summary)}
-                className="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
-              >
-                📋 Copy
-              </button>
-            </div>
+    <div className="mb-6 flex items-center justify-between">
 
-            <div className="prose prose-lg max-w-none text-gray-900 prose-headings:text-orange-700">
-            <ReactMarkdown>
-                {summary}
-            </ReactMarkdown>
-            </div>
-          </div>
-        )}
+      <h3 className="text-2xl font-bold text-[#14532D]">
+        📄 Document Summary
+      </h3>
+
+      <button
+        onClick={() => copyText(summary)}
+        className="rounded-xl bg-gradient-to-r from-[#0A3B2E] to-[#14532D] px-4 py-2 text-sm font-semibold text-white shadow transition hover:shadow-lg"
+      >
+        Copy
+      </button>
+
+    </div>
+
+    <div className="prose prose-lg max-w-none text-[#06281F]">
+      <ReactMarkdown>
+        {summary}
+      </ReactMarkdown>
+    </div>
+
+  </div>
+)}
 
         {/* Answer */}
 
         {answer && (
-          <div className="animate-in fade-in duration-500 mb-6 rounded-2xl border border-green-200 bg-green-50 p-8 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-bold text-green-700">
-                ❓ AI Answer
-              </h3>
+  <div className="mb-8 rounded-[28px] border border-[#D4AF37]/20 bg-[#EEF7F2] p-8 shadow-md">
 
-              <button
-                onClick={() => copyText(answer)}
-                className="rounded-lg bg-green-600 px-3 py-2 text-sm text-white hover:bg-green-700"
-              >
-                📋 Copy
-              </button>
-            </div>
+    <div className="mb-6 flex items-center justify-between">
 
-            <div className="whitespace-pre-wrap rounded-xl bg-white p-5 text-[16px] leading-8 text-gray-900">
-              {answer}
-            </div>
-          </div>
-        )}
+      <h3 className="text-2xl font-bold text-[#14532D]">
+        🤖 AI Answer
+      </h3>
+
+      <button
+        onClick={() => copyText(answer)}
+        className="rounded-xl bg-gradient-to-r from-[#0A3B2E] to-[#14532D] px-4 py-2 text-sm font-semibold text-white shadow transition hover:shadow-lg"
+      >
+        Copy
+      </button>
+
+    </div>
+
+    <div className="whitespace-pre-wrap rounded-2xl bg-white p-6 text-[16px] leading-8 text-[#06281F]">
+      {answer}
+    </div>
+
+  </div>
+)}
 
         {/* Quiz */}
 
         {quiz && (
-  <div className="animate-in fade-in duration-500 mb-6 rounded-2xl border border-purple-200 bg-purple-50 p-6 shadow-sm">
-    <div className="mb-4 flex items-center justify-between">
-      <h3 className="text-xl font-bold text-purple-700">
-        📚 Quiz
+  <div className="mb-8 rounded-[28px] border border-[#D4AF37]/20 bg-[#EEF7F2] p-8 shadow-md">
+
+    <div className="mb-6 flex items-center justify-between">
+
+      <h3 className="text-2xl font-bold text-[#14532D]">
+        📝 Quiz
       </h3>
 
       <button
         onClick={() => copyText(quiz)}
-        className="rounded-lg bg-purple-600 px-3 py-2 text-sm text-white hover:bg-purple-700"
+        className="rounded-xl bg-gradient-to-r from-[#0A3B2E] to-[#14532D] px-4 py-2 text-sm font-semibold text-white shadow transition hover:shadow-lg"
       >
-        📋 Copy
+        Copy
       </button>
+
     </div>
 
-    <div className="whitespace-pre-wrap rounded-xl bg-white p-5 text-base leading-8 text-black">
-  <ReactMarkdown
-    components={{
-      p: ({ children }) => (
-        <p className="text-black mb-4">{children}</p>
-      ),
-      h1: ({ children }) => (
-        <h1 className="text-2xl font-bold text-black mb-4">{children}</h1>
-      ),
-      h2: ({ children }) => (
-        <h2 className="text-xl font-bold text-black mb-3">{children}</h2>
-      ),
-      li: ({ children }) => (
-        <li className="text-black">{children}</li>
-      ),
-      strong: ({ children }) => (
-        <strong className="text-black">{children}</strong>
-      ),
-    }}
-  >
-    {quiz}
-  </ReactMarkdown>
-</div>
+    <div className="rounded-2xl bg-white p-6">
+
+      <ReactMarkdown
+        components={{
+          p: ({ children }) => (
+            <p className="mb-4 text-[#06281F]">{children}</p>
+          ),
+          h1: ({ children }) => (
+            <h1 className="mb-5 text-2xl font-bold text-[#06281F]">
+              {children}
+            </h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="mb-4 text-xl font-bold text-[#14532D]">
+              {children}
+            </h2>
+          ),
+          li: ({ children }) => (
+            <li className="text-[#06281F]">{children}</li>
+          ),
+          strong: ({ children }) => (
+            <strong className="text-[#14532D]">{children}</strong>
+          ),
+        }}
+      >
+        {quiz}
+      </ReactMarkdown>
+
+    </div>
+
   </div>
 )}
-
-        {/* Interview */}
-
         {interview && (
-          <div className="rounded-2xl border border-orange-200 bg-orange-50 p-6 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-xl font-bold text-orange-700">
-                💼 Interview Questions
-              </h3>
+  <div className="rounded-[28px] border border-[#D4AF37]/20 bg-[#EEF7F2] p-8 shadow-md">
 
-              <button
-                onClick={() => copyText(interview)}
-                className="rounded-lg bg-orange-600 px-3 py-2 text-sm text-white hover:bg-orange-700"
-              >
-                📋 Copy
-              </button>
-            </div>
+    <div className="mb-6 flex items-center justify-between">
 
-            <div className="prose prose-lg max-w-none text-gray-900 prose-headings:text-orange-700">
-            <ReactMarkdown>
-                {interview}
-            </ReactMarkdown>
-            </div>
-          </div>
-        )}
+      <h3 className="text-2xl font-bold text-[#14532D]">
+        🎤 Interview Questions
+      </h3>
+
+      <button
+        onClick={() => copyText(interview)}
+        className="rounded-xl bg-gradient-to-r from-[#0A3B2E] to-[#14532D] px-4 py-2 text-sm font-semibold text-white shadow transition hover:shadow-lg"
+      >
+        Copy
+      </button>
+
+    </div>
+
+    <div className="prose prose-lg max-w-none rounded-2xl bg-white p-6 text-[#06281F]">
+      <ReactMarkdown>
+        {interview}
+      </ReactMarkdown>
+    </div>
+
+  </div>
+)}
       </div>
     </>
   );

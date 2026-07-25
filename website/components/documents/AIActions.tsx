@@ -50,20 +50,16 @@ export default function AIActions({
   setLoadingInterview,
 }: AIActionsProps) {
   const checkFile = () => {
-  console.log("selectedFile:", selectedFile);
-
-  if (!selectedFile || selectedFile.trim() === "") {
-    console.log("No file selected");
-    toast.error("Please select a document first.");
-    return false;
-  }
-
-  console.log("Selected:", selectedFile);
-  return true;
-};
+    if (!selectedFile || selectedFile.trim() === "") {
+      toast.error("Please select a document first.");
+      return false;
+    }
+    return true;
+  };
 
   const summarizeDocument = async () => {
     if (!checkFile()) return;
+
     setSummary("");
     setAnswer("");
     setQuiz("");
@@ -83,8 +79,6 @@ export default function AIActions({
       });
 
       const data = await res.json();
-      console.log("API DATA:", data);
-      console.log(data);
       setSummary(data.summary || "No summary generated.");
     } catch {
       toast.error("Failed to summarize document.");
@@ -100,12 +94,14 @@ export default function AIActions({
       toast.error("Enter a question.");
       return;
     }
+
     setSummary("");
     setAnswer("");
     setQuiz("");
     setInterview("");
     setLoadingAnswer(true);
     scrollToWorkspace();
+
     try {
       const res = await fetch("/api/pdf-chat", {
         method: "POST",
@@ -119,7 +115,6 @@ export default function AIActions({
       });
 
       const data = await res.json();
-
       setAnswer(data.answer || "No answer found.");
     } catch {
       toast.error("Failed to get AI answer.");
@@ -130,12 +125,14 @@ export default function AIActions({
 
   const generateQuiz = async () => {
     if (!checkFile()) return;
+
     setSummary("");
     setAnswer("");
     setQuiz("");
     setInterview("");
     setLoadingQuiz(true);
     scrollToWorkspace();
+
     try {
       const res = await fetch("/api/quiz", {
         method: "POST",
@@ -148,7 +145,6 @@ export default function AIActions({
       });
 
       const data = await res.json();
-
       setQuiz(data.quiz || "Quiz not generated.");
     } catch {
       toast.error("Quiz generation failed.");
@@ -159,6 +155,7 @@ export default function AIActions({
 
   const generateInterview = async () => {
     if (!checkFile()) return;
+
     setSummary("");
     setAnswer("");
     setQuiz("");
@@ -178,7 +175,6 @@ export default function AIActions({
       });
 
       const data = await res.json();
-
       setInterview(data.interview || "Interview questions not generated.");
     } catch {
       toast.error("Failed to generate interview questions.");
@@ -188,49 +184,56 @@ export default function AIActions({
   };
 
   return (
-    <div className="lg:col-span-4 h-[430px] rounded-3xl border border-slate-200 bg-white p-6 shadow-lg flex flex-col">
-      <h2 className="mb-5 text-2xl font-bold text-gray-900">
-    🤖 AI Actions
-        </h2>
+    <div className="h-[430px] flex flex-col rounded-[30px] border border-[#D4AF37]/20 bg-white p-8 shadow-[0_20px_70px_rgba(10,59,46,.08)]">
+
+      <h2 className="mb-2 text-2xl font-bold text-[#06281F]">
+        AI Actions
+      </h2>
+
+      <p className="mb-6 text-sm text-gray-500">
+        Select an action to analyze your document.
+      </p>
 
       <button
         onClick={summarizeDocument}
         disabled={loadingSummary}
-        className="mb-4 w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-3 font-semibold text-white shadow-md transition-all hover:scale-[1.02] disabled:opacity-50"
+        className="mb-3 w-full rounded-2xl bg-gradient-to-r from-[#0A3B2E] to-[#14532D] px-5 py-3.5 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl disabled:opacity-50"
       >
-        {loadingSummary ? "⏳ Thinking..." : "📄 Summarize Document"}
+        {loadingSummary ? "Analyzing..." : "Summarize Document"}
       </button>
 
       <textarea
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
-        placeholder="Ask Mentora AI anything about this document..."
-        rows={4}
-        className="mb-4 w-full rounded-xl border border-gray-300 bg-white p-3 text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        placeholder="Ask Mentora anything about this PDF..."
+        rows={2}
+        className="mb-4 w-full rounded-2xl border border-[#D4AF37]/20 bg-white p-4 text-[#06281F] placeholder:text-gray-400 outline-none transition focus:border-[#14532D] focus:ring-4 focus:ring-[#14532D]/10"
+      />
 
       <button
         onClick={askQuestion}
-  disabled={loadingAnswer}
-  className="mb-4 w-full rounded-xl bg-gradient-to-r from-green-600 to-emerald-500 px-4 py-3 font-semibold text-white transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:bg-gray-400"
->
-  {loadingAnswer ? "⏳ Thinking..." : "❓ Ask AI"}
+        disabled={loadingAnswer}
+        className="mb-3 w-full rounded-2xl bg-gradient-to-r from-[#0A3B2E] to-[#14532D] px-5 py-3.5 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl disabled:opacity-50"
+      >
+        {loadingAnswer ? "Thinking..." : "Ask AI"}
       </button>
 
       <button
         onClick={generateQuiz}
         disabled={loadingQuiz}
-        className="mb-4 w-full rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 px-4 py-3 font-semibold text-white shadow-md transition-all hover:scale-[1.02] disabled:opacity-50"
+        className="mb-3 w-full rounded-2xl bg-gradient-to-r from-[#0A3B2E] to-[#14532D] px-5 py-3.5 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl disabled:opacity-50"
       >
-        {loadingQuiz ? "⏳ Thinking..." : "📝 Generate Quiz"}
+        {loadingQuiz ? "Generating..." : "Generate Quiz"}
       </button>
 
       <button
         onClick={generateInterview}
         disabled={loadingInterview}
-        className="w-full rounded-xl bg-gradient-to-r from-orange-500 to-red-500 px-4 py-3 font-semibold text-white shadow-md transition-all hover:scale-[1.02] disabled:opacity-50"
+        className="w-full rounded-2xl bg-gradient-to-r from-[#0A3B2E] to-[#14532D] px-5 py-3.5 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl disabled:opacity-50"
       >
-        {loadingInterview ? "⏳ Thinking..." : "💼 Interview Questions"}
+        {loadingInterview
+          ? "Generating..."
+          : "Interview Questions"}
       </button>
     </div>
   );

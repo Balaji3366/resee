@@ -6,9 +6,11 @@ type Props = {
   setSelectedFile: (file: string) => void;
   setSummary: (summary: string) => void;
 };
+
 const cleanFileName = (name: string) => {
   return name.replace(/^\d+-/, "");
 };
+
 export default function RecentFiles({
   files,
   selectedFile,
@@ -16,19 +18,39 @@ export default function RecentFiles({
   setSummary,
 }: Props) {
   return (
-    <div className="lg:col-span-3 h-[430px] rounded-3xl border border-slate-200 bg-white p-6 shadow-lg flex flex-col">
-      <h2 className="mb-5 flex items-center justify-between text-2xl font-bold text-slate-800">
-            <span>📄 Recent Files</span>
+    <div className="h-[430px] rounded-[30px] border border-[#D4AF37]/20 bg-white p-8 shadow-[0_20px_70px_rgba(10,59,46,.08)] flex flex-col">
 
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-600">
-                {files.length}
-            </span>
-            </h2>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-[#06281F]">
+            Recent Files
+          </h2>
 
-      <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+          <p className="mt-1 text-sm text-gray-500">
+            Select a document for AI analysis
+          </p>
+        </div>
+
+        <div className="rounded-full bg-[#EEF7F2] px-4 py-1.5 text-sm font-bold text-[#0A3B2E]">
+          {files.length}
+        </div>
+      </div>
+
+      <div className="mt-6 h-[520px] overflow-y-auto space-y-4 pr-2">
+
         {files.length === 0 ? (
-          <div className="rounded-xl bg-slate-50 p-6 text-center text-slate-500">
-            No documents uploaded yet.
+          <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-[#D4AF37]/30 bg-[#F8FAF8] p-8 text-center">
+
+            <div className="mb-4 text-4xl">📄</div>
+
+            <p className="font-semibold text-[#06281F]">
+              No Documents Yet
+            </p>
+
+            <p className="mt-2 text-sm text-gray-500">
+              Upload your first PDF to get started.
+            </p>
+
           </div>
         ) : (
           files.map((fileName) => (
@@ -38,27 +60,43 @@ export default function RecentFiles({
                 setSelectedFile(fileName);
                 setSummary("");
               }}
-              className={`w-full rounded-xl border p-4 text-left transition ${
+              className={`w-full rounded-2xl border p-4 text-left transition-all duration-300 ${
                 selectedFile === fileName
-                  ? "border-blue-500 bg-blue-50 shadow-md"
-                  : "border-slate-200 hover:border-blue-300 hover:bg-slate-50"
+                  ? "border-[#14532D] bg-[#EEF7F2] shadow-md"
+                  : "border-[#D4AF37]/20 bg-white hover:border-[#D4AF37] hover:bg-[#F8FAF8] hover:shadow-md"
               }`}
             >
               <div className="flex items-center justify-between gap-3">
-                <p className="truncate font-medium text-slate-700">
-                    {cleanFileName(fileName)}
+
+                <div className="flex items-center gap-3 overflow-hidden">
+
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A3B2E] to-[#14532D] text-lg text-white">
+                    📄
+                  </div>
+
+                  <div className="overflow-hidden">
+                    <p className="truncate font-semibold text-[#06281F]">
+                      {cleanFileName(fileName)}
                     </p>
 
+                    <p className="text-xs text-gray-500">
+                      PDF Document
+                    </p>
+                  </div>
+
+                </div>
+
                 {selectedFile === fileName && (
-                <span className="flex items-center gap-1 text-xs font-semibold text-green-600">
-                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                  <span className="rounded-full bg-[#0A3B2E] px-3 py-1 text-xs font-semibold text-white">
                     Active
-                </span>
+                  </span>
                 )}
+
               </div>
             </button>
           ))
         )}
+
       </div>
     </div>
   );

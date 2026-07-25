@@ -3,24 +3,31 @@ import LoginForm from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-violet-50 via-white to-indigo-100">
-      {/* Background Glow */}
-      <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-violet-200/40 blur-3xl" />
+    <main className="relative min-h-screen overflow-hidden bg-[#F8FAF8]">
 
-      <div className="absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-indigo-200/40 blur-3xl" />
+      {/* Background Glow */}
+      <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-[#D4AF37]/20 blur-3xl" />
+
+      <div className="absolute -bottom-40 -right-40 h-[420px] w-[420px] rounded-full bg-[#0A3B2E]/20 blur-3xl" />
+
+      {/* Decorative Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:40px_40px]" />
 
       {/* Content */}
-      <div className="relative mx-auto flex min-h-screen max-w-7xl items-start justify-between gap-20 px-6 pt-24 pb-12">
-        {/* Left Section */}
+      <div className="relative mx-auto flex min-h-screen max-w-7xl items-center justify-between gap-20 px-6 py-16">
+
+        {/* Left Side */}
         <div className="hidden flex-1 lg:block">
           <LoginFeatures />
         </div>
 
-        {/* Right Section */}
-        <div className="flex flex-1 justify-center pt-10">
+        {/* Right Side */}
+        <div className="flex flex-1 justify-center">
           <LoginForm />
         </div>
+
       </div>
+
     </main>
   );
 }

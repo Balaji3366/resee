@@ -1,74 +1,145 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
+const plans = [
+  {
+    name: "Free",
+    price: "₹0",
+    description: "Perfect for students getting started.",
+    features: [
+      "Resume Analyzer",
+      "Basic ATS Report",
+      "Limited AI Usage",
+      "Community Support",
+    ],
+    button: "Get Started",
+    popular: false,
+  },
+  {
+    name: "Pro",
+    price: "₹199/mo",
+    description: "For serious job seekers.",
+    features: [
+      "Everything in Free",
+      "AI Resume Builder",
+      "Mock Interviews",
+      "Career Roadmaps",
+      "Unlimited AI Usage",
+      "Priority Support",
+    ],
+    button: "Upgrade to Pro",
+    popular: true,
+  },
+  {
+    name: "Enterprise",
+    price: "Contact Us",
+    description: "For colleges & organisations.",
+    features: [
+      "Everything in Pro",
+      "Team Dashboard",
+      "Analytics",
+      "Dedicated Support",
+      "Custom Integrations",
+    ],
+    button: "Contact Sales",
+    popular: false,
+  },
+];
+
 export default function Plans() {
+  const router = useRouter();
+
   return (
     <section
       id="plans"
-      className="bg-slate-950 px-6 py-24 text-white"
+      className="bg-white py-28"
     >
-      <div className="mx-auto max-w-6xl text-center">
-        <h2 className="text-5xl font-bold">
-          Simple <span className="text-cyan-400">Pricing</span>
-        </h2>
+      <div className="mx-auto max-w-7xl px-6">
 
-        <p className="mt-4 text-lg text-slate-400">
-          Start free. Upgrade whenever you're ready.
-        </p>
+        <div className="text-center">
 
-        <div className="mt-16 grid gap-8 md:grid-cols-2">
-          {/* Free Plan */}
-          <div className="rounded-3xl border border-slate-700 bg-slate-900 p-8 shadow-xl">
-            <h3 className="text-3xl font-bold">Free</h3>
+          <span className="rounded-full bg-[#D4AF37]/20 px-5 py-2 text-sm font-semibold text-[#8B6B00]">
+            PRICING
+          </span>
 
-            <p className="mt-3 text-5xl font-extrabold">
-              ₹0
-            </p>
+          <h2 className="mt-6 text-5xl font-extrabold text-[#06281F]">
+            Choose Your Plan
+          </h2>
 
-            <p className="mt-2 text-slate-400">
-              Forever Free
-            </p>
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
+            Start free and upgrade when you're ready to accelerate your career.
+          </p>
 
-            <ul className="mt-8 space-y-4 text-left text-slate-300">
-              <li>✅ AI PDF Summary</li>
-              <li>✅ Ask AI</li>
-              <li>✅ Quiz Generator</li>
-              <li>✅ Interview Questions</li>
-              <li>✅ ATS Resume Analyzer</li>
-            </ul>
+        </div>
 
-            <button className="mt-10 w-full rounded-xl bg-cyan-500 py-3 font-semibold text-black hover:bg-cyan-400">
-              Current Plan
-            </button>
-          </div>
+        <div className="mt-20 grid gap-8 lg:grid-cols-3">
 
-          {/* Pro Plan */}
-          <div className="relative rounded-3xl border-2 border-cyan-500 bg-gradient-to-b from-slate-900 to-slate-950 p-8 shadow-2xl">
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-cyan-500 px-4 py-1 text-sm font-bold text-black">
-              Coming Soon
+          {plans.map((plan) => (
+
+            <div
+              key={plan.name}
+              className={`relative overflow-hidden rounded-3xl border p-10 transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl ${
+                plan.popular
+                  ? "scale-105 border-[#D4AF37] bg-[#06281F] text-white shadow-2xl"
+                  : "border-gray-300 bg-white text-[#06281F] shadow-xl hover:border-[#D4AF37]"
+              }`}
+            >
+              {plan.popular && (
+                <span className="absolute right-6 top-6 rounded-full bg-[#D4AF37] px-3 py-1 text-xs font-bold text-[#06281F] shadow">
+                  ⭐ MOST POPULAR
+                </span>
+              )}
+
+              <h3
+                className={`text-3xl font-bold ${
+                  plan.popular ? "text-white" : "text-[#06281F]"
+                }`}
+              >
+                {plan.name}
+              </h3>
+
+              <p
+                className={`mt-4 text-5xl font-extrabold ${
+                  plan.popular ? "text-[#D4AF37]" : "text-[#06281F]"
+                }`}
+              >
+                {plan.price}
+              </p>
+
+              <p
+                className={`mt-3 ${
+                  plan.popular ? "text-gray-300" : "text-gray-600"
+                }`}
+              >
+                {plan.description}
+              </p>
+
+              <ul className="mt-8 space-y-4">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-3">
+                    <span className="text-green-500 font-bold">✔</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => router.push("/signup")}
+                className={`mt-10 w-full rounded-xl py-3 font-semibold transition-all duration-300 ${
+                  plan.popular
+                    ? "bg-[#D4AF37] text-[#06281F] hover:scale-105 hover:shadow-lg"
+                    : "bg-[#06281F] text-white hover:bg-[#14532D]"
+                }`}
+              >
+                {plan.button}
+              </button>
             </div>
 
-            <h3 className="text-3xl font-bold">Pro</h3>
+          ))}
 
-            <p className="mt-3 text-5xl font-extrabold">
-              ₹199
-              <span className="text-xl text-slate-400">/month</span>
-            </p>
-
-            <ul className="mt-8 space-y-4 text-left text-slate-300">
-              <li>🚀 Unlimited AI Requests</li>
-              <li>🚀 Resume Generator</li>
-              <li>🚀 Cover Letter Generator</li>
-              <li>🚀 LinkedIn Optimizer</li>
-              <li>🚀 Priority AI Speed</li>
-              <li>🚀 Premium Resume Templates</li>
-            </ul>
-
-            <button
-              disabled
-              className="mt-10 w-full cursor-not-allowed rounded-xl bg-slate-700 py-3 font-semibold"
-            >
-              Coming Soon
-            </button>
-          </div>
         </div>
+
       </div>
     </section>
   );
