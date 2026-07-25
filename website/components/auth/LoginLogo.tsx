@@ -6,7 +6,7 @@ export default function LoginLogo() {
       <div className="overflow-hidden rounded-2xl bg-white p-2 shadow-lg ring-1 ring-[#D4AF37]/20 transition-transform duration-300 hover:scale-105">
           
         <Image
-        src="/images/mentora-logo.png"
+        src="/Images/Mentora-logo.png"
         alt="Mentora Logo"
         width={84}
         height={84}
