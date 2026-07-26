@@ -19,13 +19,33 @@ export default function useChat() {
 
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
+const [chat, setChat] = useState<ChatMessage[]>([
+  {
+    sender: "AI",
+    text: `# 👋 Welcome to RESEE AI
 
-  const [chat, setChat] = useState<ChatMessage[]>([
-    {
-      sender: "AI",
-      text: "👋 Hello Balaji! I'm your AI Mentor. How can I help you today?",
-    },
-  ]);
+**See Your Future**
+
+I'm **RESEE AI**, your personal AI career assistant.
+
+I can help you with:
+
+- 📄 Resume Reviews & ATS Analysis
+- 🎤 Mock Interview Preparation
+- 💻 Learning Roadmaps
+- 📈 Career Planning & Growth
+- 💼 Salary Guidance
+- 🧠 Technical & HR Interview Questions
+
+### 🚀 Try asking me:
+
+- Review my resume
+- Prepare me for an SDET interview
+- Create a Python learning roadmap
+
+**How can I help you today?**`,
+  },
+]);
   async function loadSessions() {
     try {
       const res = await fetch("/api/chat/sessions");

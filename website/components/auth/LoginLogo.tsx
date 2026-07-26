@@ -2,33 +2,34 @@ import Image from "next/image";
 
 export default function LoginLogo() {
   return (
-    <div className="flex items-center gap-6">
-      <div className="overflow-hidden rounded-2xl bg-white p-2 shadow-lg ring-1 ring-[#D4AF37]/20 transition-transform duration-300 hover:scale-105">
-          
+    <div className="flex flex-col items-start">
+      {/* Logo */}
+
+      <div className="group">
         <Image
-        src="/Images/Mentora-logo.png"
-        alt="Mentora Logo"
-        width={84}
-        height={84}
-        priority
-        unoptimized
-        className="rounded-xl"
-      />
+          src="/images/resee-logo.png"
+          alt="RESEE Logo"
+          width={92}
+          height={92}
+          priority
+          className="rounded-2xl transition-transform duration-300 group-hover:scale-105"
+        />
       </div>
 
-      <div>
-        <h1 className="text-6xl font-extrabold tracking-tight text-slate-900">
-          Mentora
+      {/* Brand */}
+
+      <div className="mt-5">
+        <h1 className="text-5xl font-black tracking-[-0.03em] text-[#06281F]">
+          RESEE
         </h1>
 
-        <p className="mt-2 text-lg font-medium">
-          <span className="font-semibold text-[#0A3B2E]">
-            Learn Smarter.
-          </span>{" "}
-          <span className="font-semibold text-[#D4AF37]">
-            Grow Faster.
-          </span>
-        </p>
+        <div className="mt-2 flex items-center gap-3">
+          <div className="h-px w-10 bg-[#D4AF37]" />
+
+          <p className="text-base font-medium tracking-wide text-gray-500">
+            See Your Future
+          </p>
+        </div>
       </div>
     </div>
   );

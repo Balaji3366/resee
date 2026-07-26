@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     const response = await ai.models.generateContent({
       model: "models/gemini-3-flash-preview",
       contents: `
-You are Mentora AI, an intelligent, friendly and professional AI mentor.
+You are RESEE AI, a professional AI career assistant.
 
 Your job is to help students, developers and job seekers learn better.
 

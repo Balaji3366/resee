@@ -9,25 +9,21 @@ import ChatMessages from "@/components/ChatMessages";
 import ChatInput from "@/components/ChatInput";
 import { toast } from "sonner";
 import { ChatMessage, ChatSession } from "@/types/chat";
-import { DEFAULT_CHAT } from "@/constants/chat";
-
-
+import { uploadAttachment } from "@/lib/uploadAttachment";
 
 export default function AIChat() {
-
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [selectedChat, setSelectedChat] =
-  useState<ChatSession | null>(null);
-  
-  
+    useState<ChatSession | null>(null);
+
   const [chatLoading, setChatLoading] = useState(false);
-  const [chat, setChat] = useState<ChatMessage[]>(DEFAULT_CHAT);
-  
+  const [chat, setChat] = useState<ChatMessage[]>([]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,55 +35,102 @@ export default function AIChat() {
       behavior: "smooth",
     });
   }, [chat, loading]);
- async function loadSessions() {
-  try {
-    const res = await fetch("/api/chat/sessions");
-    const data = await res.json();
 
-    setSessions(data);
-  } catch (err) {
-    console.error(err);
-  }
-}
- async function loadChat(session: ChatSession) {
-  setChatLoading(true);
+  async function loadSessions() {
+    try {
+      const res = await fetch("/api/chat/sessions");
+      const data = await res.json();
 
-  try {
-    const res = await fetch(`/api/chat/${session.id}`);
-
-    if (!res.ok) {
-      throw new Error("Failed to load chat");
+      setSessions(data);
+    } catch (err) {
+      console.error(err);
     }
+  }
 
-    const data = await res.json();
+  async function loadChat(session: ChatSession) {
+    setChatLoading(true);
 
-    setSessionId(session.id);
+    try {
+      const res = await fetch(`/api/chat/${session.id}`);
 
-    setChat(
+      if (!res.ok) {
+        throw new Error("Failed to load chat");
+      }
+
+      const data = await res.json();
+
+      setSessionId(session.id);
+
+      setChat(
       data.map((msg: any) => ({
         sender: msg.sender,
         text: msg.message,
+
+        attachmentName: msg.attachment_name,
+        attachmentUrl: msg.attachment_url,
+        attachmentType: msg.attachment_type,
+        attachmentSize: msg.attachment_size,
       }))
     );
-    setChatLoading(false);
-  } catch (err) {
-  console.error(err);
-  setChatLoading(false);
-}
-}
-  async function sendMessage() {
-  if (!message.trim() || loading) return;
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setChatLoading(false);
+    }
+  }
+    async function sendMessage() {
+    if (!message.trim() || loading) return;
 
-  const userMessage = message;
-  setLoading(true);
-  setMessage("");
+    const userMessage = message;
+    let attachment = null;
 
-  // Add user message
-  setChat((prev) => [
+      if (selectedFile) {
+        try {
+          attachment = await uploadAttachment(selectedFile);
+          console.log("UPLOAD RESULT", attachment);
+          console.log("Attachment:", attachment);
+        } catch (error) {
+          console.error(error);
+          toast.error("Failed to upload attachment.");
+          return;
+        }
+      }
+
+    // Latest history (includes current user message)
+    const history: ChatMessage[] = [
+      ...chat,
+      {
+        sender: "You",
+        text: userMessage,
+
+        attachmentName: attachment?.name ?? null,
+        attachmentUrl: attachment?.url ?? null,
+        attachmentType: attachment?.type ?? null,
+        attachmentSize: attachment?.size ?? null,
+      },
+    ];
+
+        setLoading(true);
+      setMessage("");
+      setSelectedFile(null);
+
+    // Show user message immediately
+    console.log("ADDING TO CHAT", {
+      attachmentName: attachment?.name,
+      attachmentUrl: attachment?.url,
+      attachmentType: attachment?.type,
+      attachmentSize: attachment?.size,
+    });
+    setChat((prev) => [
   ...prev,
   {
     sender: "You",
     text: userMessage,
+
+    attachmentName: attachment?.name ?? null,
+    attachmentUrl: attachment?.url ?? null,
+    attachmentType: attachment?.type ?? null,
+    attachmentSize: attachment?.size ?? null,
   },
   {
     sender: "AI",
@@ -95,105 +138,106 @@ export default function AIChat() {
   },
 ]);
 
-  try {
-    const res = await fetch("/api/chat/stream", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    try {
+      const res = await fetch("/api/chat/stream", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
         message: userMessage,
-        history: chat,
+        history,
         sessionId,
+        attachment,
       }),
-    });
+      });
 
-    if (!res.body) {
-      throw new Error("No response body");
-    }
+      if (!res.body) {
+        throw new Error("No response body");
+      }
 
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
 
-    let buffer = "";
+      let buffer = "";
 
-    while (true) {
-      const { value, done } = await reader.read();
+      while (true) {
+        const { value, done } = await reader.read();
 
-      if (done) break;
+        if (done) break;
 
-      buffer += decoder.decode(value, { stream: true });
+        buffer += decoder.decode(value, {
+          stream: true,
+        });
 
-      const events = buffer.split("\n\n");
-      buffer = events.pop() || "";
+        const events = buffer.split("\n\n");
+        buffer = events.pop() || "";
 
-      for (const event of events) {
-        const lines = event.split("\n");
+        for (const event of events) {
+          const lines = event.split("\n");
 
-        const eventName = lines
-          .find((l) => l.startsWith("event:"))
-          ?.replace("event:", "")
-          .trim();
+          const eventName = lines
+            .find((l) => l.startsWith("event:"))
+            ?.replace("event:", "")
+            .trim();
 
-        const dataLine = lines
-          .find((l) => l.startsWith("data:"))
-          ?.replace("data:", "")
-          .trim();
+          const dataLine = lines
+            .find((l) => l.startsWith("data:"))
+            ?.replace("data:", "")
+            .trim();
 
-        if (!eventName || !dataLine) continue;
+          if (!eventName || !dataLine) continue;
 
-        const data = JSON.parse(dataLine);
+          const data = JSON.parse(dataLine);
 
-        switch (eventName) {
-          case "session":
-            if (!sessionId && data.sessionId) {
-              setSessionId(data.sessionId);
-              loadSessions();
-            }
-            break;
-            
-          case "chunk":
-          
-          setChat((prev) => {
-            const updated = [...prev];
+          switch (eventName) {
+            case "session":
+              if (!sessionId && data.sessionId) {
+                setSessionId(data.sessionId);
+                loadSessions();
+              }
+              break;
 
-            const lastIndex = updated
-              .map((m) => m.sender)
-              .lastIndexOf("AI");
+            case "chunk":
+              setChat((prev) => {
+                const updated = [...prev];
 
-            if (lastIndex !== -1) {
-              updated[lastIndex] = {
-                ...updated[lastIndex],
-                text: updated[lastIndex].text + data.text,
-              };
-            }
+                const lastIndex = updated
+                  .map((m) => m.sender)
+                  .lastIndexOf("AI");
 
-            return updated;
-          });
-          break;
+                if (lastIndex !== -1) {
+                  updated[lastIndex] = {
+                    ...updated[lastIndex],
+                    text:
+                      updated[lastIndex].text + data.text,
+                  };
+                }
 
-        case "done":
-        
-        setLoading(false);
-        break;
+                return updated;
+              });
+              break;
+
+            case "done":
+              setLoading(false);
+              break;
+          }
         }
       }
+    } catch (err) {
+      console.error(err);
+
+      setChat((prev) => [
+        ...prev,
+        {
+          sender: "AI",
+          text: "❌ Something went wrong.",
+        },
+      ]);
+
+      setLoading(false);
     }
-  } catch (err) {
-    console.error(err);
-
-    setChat((prev) => [
-      ...prev,
-      {
-        sender: "AI",
-        text: "❌ Something went wrong.",
-      },
-    ]);
-
-    setLoading(false);
   }
-}
-
 
   async function handleDelete(id: string) {
     try {
@@ -205,77 +249,87 @@ export default function AIChat() {
         throw new Error("Failed to delete chat");
       }
 
-      setSessions((prev) => prev.filter((chat) => chat.id !== id));
+      setSessions((prev) =>
+        prev.filter((chat) => chat.id !== id)
+      );
 
       toast.success("Conversation deleted");
 
       if (sessionId === id) {
         setSessionId(null);
-
-        setChat(DEFAULT_CHAT);
+        setChat([]);
       }
     } catch (error) {
       console.error(error);
       toast.error("Failed to delete chat");
     }
   }
+    return (
+    <>
+      <section className="min-h-screen bg-gradient-to-br from-[#F8FAF8] via-white to-[#EEF7F2] px-8 py-8">
+        <div className="mb-6">
+          <BackButton />
+        </div>
 
-  return (
-  <>
-    <section className="min-h-screen bg-gradient-to-br from-[#F8FAF8] via-white to-[#EEF7F2] px-8 py-8">
-      <div className="mb-6">
-        <BackButton  />
-      </div>
+        <div className="mx-auto flex h-[calc(100vh-130px)] max-w-7xl gap-8">
+          {/* Sidebar */}
+          <ChatSidebar
+            sessions={sessions}
+            activeChatId={sessionId}
+            onChatClick={loadChat}
+            onNewChat={() => {
+              setSessionId(null);
+              setSelectedChat(null);
 
-      <div className="mx-auto flex h-[88vh] max-w-7xl gap-8">
-        {/* Sidebar */}
-        <ChatSidebar
-        sessions={sessions}
-        activeChatId={sessionId}
-        onChatClick={loadChat}
-        onNewChat={() => {
-          setSessionId(null);
+              setChat([]);
+              setMessage("");
+              setSelectedFile(null);
 
-          setChat(DEFAULT_CHAT);
-        }}
-        onDeleteClick={(chat) => {
-          setSelectedChat(chat);
-        }}
-      />
+              setLoading(false);
+              setChatLoading(false);
+            }}
+            onDeleteClick={(chat) => {
+              setSelectedChat(chat);
+            }}
+          />
 
-        {/* Chat Window */}
-        <div className="flex flex-1 flex-col overflow-hidden rounded-[30px] border border-[#D4AF37]/20 bg-white shadow-[0_20px_70px_rgba(10,59,46,.08)]">
-          {/* Header */}
-          <ChatHeader />
+          {/* Chat Window */}
+          <div className="flex flex-1 flex-col overflow-hidden rounded-[30px] border border-[#D4AF37]/20 bg-white shadow-[0_20px_70px_rgba(10,59,46,.08)]">
+            {/* Header */}
+            <ChatHeader />
 
-          {/* Messages */}
-          <ChatMessages
-          chat={chat}
-          chatLoading={chatLoading}
-          messagesEndRef={messagesEndRef}
-        />
-          {/* Input */}
-          <ChatInput
+            {/* Messages */}
+            <ChatMessages
+              chat={chat}
+              chatLoading={chatLoading}
+              messagesEndRef={messagesEndRef}
+            />
+
+            {/* Input */}
+            <ChatInput
             message={message}
             loading={loading}
+            selectedFile={selectedFile}
+            setSelectedFile={setSelectedFile}
             setMessage={setMessage}
             sendMessage={sendMessage}
           />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <DeleteChatModal
-      open={selectedChat !== null}
-      title={selectedChat?.title ?? ""}
-      onCancel={() => setSelectedChat(null)}
-      onConfirm={() => {
-        if (selectedChat) {
-          handleDelete(selectedChat.id);
-        }
-        setSelectedChat(null);
-      }}
-    />
-  </>
-);
+      <DeleteChatModal
+        open={selectedChat !== null}
+        title={selectedChat?.title ?? ""}
+        onCancel={() => setSelectedChat(null)}
+        onConfirm={() => {
+          if (selectedChat) {
+            handleDelete(selectedChat.id);
+          }
+
+          setSelectedChat(null);
+        }}
+      />
+    </>
+  );
 }

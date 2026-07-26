@@ -64,17 +64,13 @@ export default function SignupForm() {
     {/* Heading */}
 
     <div className="mb-8 text-center">
-
-      <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#0A3B2E] text-3xl">
-        🚀
-      </div>
-
+   
       <h2 className="text-4xl font-extrabold text-[#06281F]">
-        Create Your Account
+        Create your account
       </h2>
 
       <p className="mt-3 text-gray-600">
-        Join Mentora and accelerate your career with AI.
+        Start your AI-powered career journey.
       </p>
 
     </div>
@@ -98,7 +94,7 @@ export default function SignupForm() {
             placeholder="Enter your full name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full bg-transparent outline-none"
+            className="w-full bg-transparent text-[#06281F] placeholder:text-gray-400 outline-none"
           />
 
         </div>
@@ -122,7 +118,7 @@ export default function SignupForm() {
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-transparent outline-none"
+            className="w-full bg-transparent text-[#06281F] placeholder:text-gray-400 outline-none"
           />
 
         </div>
@@ -146,7 +142,7 @@ export default function SignupForm() {
             placeholder="Create a password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-transparent outline-none"
+            className="w-full bg-transparent text-[#06281F] placeholder:text-gray-400 outline-none"
           />
 
           <button
@@ -187,7 +183,7 @@ export default function SignupForm() {
             placeholder="Confirm your password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full bg-transparent outline-none"
+            className="w-full bg-transparent text-[#06281F] placeholder:text-gray-400 outline-none"
           />
 
           <button
@@ -241,7 +237,7 @@ export default function SignupForm() {
 
       <p className="text-center text-sm text-gray-600">
 
-        Already have an account?{" "}
+        Already a RESEE member?{" "}
 
         <Link
           href="/login"

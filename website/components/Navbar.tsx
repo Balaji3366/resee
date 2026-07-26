@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import LogoutModal from "@/components/auth/LogoutModal";
+
 
 export default function Navbar() {
   const router = useRouter();
@@ -95,15 +97,26 @@ export default function Navbar() {
 
         <button
           onClick={() => router.push("/")}
-          className="flex flex-col items-start"
+          className="flex items-center gap-3"
         >
-          <h1 className="text-3xl font-extrabold text-[#D4AF37]">
-            Mentora
-          </h1>
+          <Image
+            src="/images/resee-logo.png"
+            alt="RESEE Logo"
+            width={48}
+            height={48}
+            priority
+            className="rounded-xl"
+          />
 
-          <span className="text-xs uppercase tracking-[0.25em] text-gray-300">
-            AI Career Mentor
-          </span>
+          <div className="flex flex-col items-start">
+            <h1 className="text-3xl font-extrabold text-[#D4AF37]">
+              RESEE
+            </h1>
+
+            <span className="text-xs uppercase tracking-[0.25em] text-gray-300">
+              See Your Future
+            </span>
+          </div>
         </button>
 
       

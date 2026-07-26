@@ -44,7 +44,7 @@ export default function DashboardHero({
 
           <span className="inline-flex items-center gap-2 rounded-full bg-[#D4AF37]/20 px-4 py-2 text-sm font-semibold text-[#F7D978]">
             <Sparkles size={15} />
-            AI Career Dashboard
+            RESEE AI Career OS
           </span>
 
           <h1 className="mt-6 text-5xl font-extrabold leading-tight text-white lg:text-6xl">
@@ -52,30 +52,20 @@ export default function DashboardHero({
           </h1>
 
           <h2 className="mt-4 text-3xl font-bold text-[#F7D978]">
-            Build Your Dream Career
+            See Your Future
           </h2>
 
           <p className="mt-6 max-w-xl text-lg leading-8 text-gray-200">
-            Analyse resumes, prepare for interviews,
-            organise your documents and accelerate
-            your career journey with the power of AI.
+            Talk to RESEE AI, analyse your resume, organise your documents, prepare for interviews and build your career with one intelligent workspace.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
 
             <div className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-white">
               <CheckCircle2 size={16} className="text-[#D4AF37]" />
+              AI Career Chat
               ATS Resume Analysis
-            </div>
-
-            <div className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-white">
-              <FolderOpen size={16} className="text-[#D4AF37]" />
-              AI Documents
-            </div>
-
-            <div className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-white">
-              <Bot size={16} className="text-[#D4AF37]" />
-              Career Mentor
+              Smart Documents
             </div>
 
           </div>
@@ -83,19 +73,19 @@ export default function DashboardHero({
           <div className="mt-10 flex flex-wrap gap-4">
 
             <button
-              onClick={() => router.push("/resume")}
+              onClick={() => router.push("/chat")}
               className="flex items-center gap-2 rounded-2xl bg-[#D4AF37] px-7 py-4 font-bold text-[#06281F] transition duration-300 hover:scale-105"
             >
               <FileText size={20} />
-              Analyse Resume
+              Open AI Chat
             </button>
 
             <button
-              onClick={() => router.push("/resume-history")}
+              onClick={() => router.push("/resume")}
               className="flex items-center gap-2 rounded-2xl border border-[#D4AF37] px-7 py-4 font-semibold text-[#F7D978] transition hover:bg-[#D4AF37] hover:text-[#06281F]"
             >
               <History size={20} />
-              Resume History
+              Analyse Resume
             </button>
 
           </div>
@@ -117,7 +107,7 @@ export default function DashboardHero({
           <div className="flex items-center justify-between">
 
             <h3 className="text-2xl font-bold text-white">
-              Workspace Overview
+              Your AI Workspace
             </h3>
 
             <TrendingUp className="text-[#F7D978]" />
@@ -128,7 +118,7 @@ export default function DashboardHero({
             <div>
 
               <div className="mb-2 flex justify-between text-white">
-                <span>Resume Reports</span>
+                <span>Resume Analyses</span>
                 <span className="font-bold">{resumeCount}</span>
               </div>
 
@@ -160,7 +150,7 @@ export default function DashboardHero({
             <div>
 
               <div className="mb-2 flex justify-between text-white">
-                <span>AI Status</span>
+                <span>RESEE AI</span>
                 <span className="font-bold text-emerald-300">
                   Ready
                 </span>
@@ -178,7 +168,7 @@ export default function DashboardHero({
             <div>
 
               <div className="mb-2 flex justify-between text-white">
-                <span>Profile Completion</span>
+                <span>Career Progress</span>
                 <span className="font-bold text-[#F7D978]">
                   78%
                 </span>
@@ -199,7 +189,7 @@ export default function DashboardHero({
             onClick={() => router.push("/documents")}
             className="mt-10 flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-4 font-bold text-[#06281F] transition hover:scale-[1.02]"
           >
-            Open Workspace
+            Open Documents
             <ArrowRight size={18} />
           </button>
 
