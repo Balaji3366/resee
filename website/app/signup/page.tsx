@@ -7,9 +7,7 @@ export default function SignupPage() {
 
       {/* Background Glow */}
 
-      <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-amber/20 blur-3xl" />
-
-      <div className="absolute -bottom-40 -right-40 h-[420px] w-[420px] rounded-full bg-amber/20 blur-3xl" />
+      <div className="pointer-events-none absolute right-0 top-1/4 h-[32rem] w-[32rem] rounded-full bg-amber/10 blur-[140px]" />
 
       {/* Decorative Grid */}
 

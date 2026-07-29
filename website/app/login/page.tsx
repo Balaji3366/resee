@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import LoginFeatures from "@/components/auth/LoginFeature";
 import LoginForm from "@/components/auth/LoginForm";
 
@@ -6,9 +7,7 @@ export default function LoginPage() {
     <main className="relative min-h-screen overflow-hidden bg-ink">
 
       {/* Background Glow */}
-      <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-amber/20 blur-3xl" />
-
-      <div className="absolute -bottom-40 -right-40 h-[420px] w-[420px] rounded-full bg-amber/20 blur-3xl" />
+      <div className="pointer-events-none absolute right-0 top-1/4 h-[32rem] w-[32rem] rounded-full bg-amber/10 blur-[140px]" />
 
       {/* Decorative Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:40px_40px]" />
@@ -23,7 +22,9 @@ export default function LoginPage() {
 
         {/* Right Side */}
         <div className="flex flex-1 justify-center">
-          <LoginForm />
+          <Suspense fallback={null}>
+            <LoginForm />
+          </Suspense>
         </div>
 
       </div>

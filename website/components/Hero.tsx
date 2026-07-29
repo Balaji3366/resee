@@ -1,7 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+
+const floatingCards = [
+  { label: "Learning Progress", value: "68%", className: "left-0 top-6" },
+  { label: "Resume Score", value: "82", className: "right-0 top-1/2 -translate-y-1/2" },
+  { label: "Mock Interview Score", value: "90%", className: "left-6 bottom-2" },
+];
 
 export default function Hero() {
   const router = useRouter();
@@ -14,206 +22,136 @@ export default function Hero() {
     if (session) {
       router.push("/dashboard");
     } else {
-      router.push("/login");
+      router.push("/signup");
     }
   }
 
   return (
     <section
       id="home"
-      className="relative overflow-hidden bg-gradient-to-br from-bone via-amber to-amber-dim pt-36 pb-24"
+      className="relative flex min-h-screen items-center overflow-hidden bg-ink pt-24"
     >
-      {/* Background Glow */}
+      {/* Soft sky-blue glow */}
 
-      <div className="absolute -left-32 top-20 h-96 w-96 rounded-full bg-amber/20 blur-[150px]" />
+      <div className="pointer-events-none absolute right-0 top-1/4 h-[32rem] w-[32rem] rounded-full bg-amber/10 blur-[140px]" />
 
-      <div className="absolute -right-20 bottom-10 h-96 w-96 rounded-full bg-teal/20 blur-[150px]" />
-
-      <div className="mx-auto flex max-w-7xl flex-col items-center gap-20 px-6 lg:flex-row lg:px-12">
+      <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-16 px-6 lg:flex-row lg:px-12">
 
         {/* LEFT */}
 
-        <div className="flex-1">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="flex-1 text-center lg:text-left"
+        >
 
-          <div className="mb-6 inline-flex items-center rounded-full border border-amber/30 bg-panel/10 px-5 py-2 text-sm font-medium text-amber backdrop-blur-md">
-            ✨ Your AI Career Mentor
-          </div>
-
-          <h1 className="font-display text-5xl font-extrabold leading-tight text-white md:text-7xl">
-            Plan.
+          <h1 className="font-display text-5xl font-extrabold leading-tight text-bone md:text-6xl">
+            Stop Searching.
             <br />
-            Learn.
+            Start Building
             <br />
-            <span className="text-amber">
-              Practice.
-            </span>
-            <br />
-            Get Hired.
+            <span className="text-amber">Your Career.</span>
           </h1>
 
-          <p className="mt-8 max-w-xl text-lg leading-8 text-bone/70">
-            RESEE is your AI-powered Career Operating System.
-            Analyse resumes, prepare interviews,
-            build personalized roadmaps,
-            improve skills and land your dream job.
+          <p className="mx-auto mt-8 max-w-lg text-lg leading-8 text-slate lg:mx-0">
+            One platform to learn, practice, prepare for interviews, and get hired.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-5">
-
-            <button
+          <div className="mt-10 flex justify-center lg:justify-start">
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handleLaunchWorkspace}
-              className="rounded-xl bg-gradient-to-r from-amber to-amber-dim px-8 py-4 font-semibold text-bone shadow-xl transition duration-300 hover:-translate-y-1 hover:scale-105"
+              className="rounded-xl bg-amber px-9 py-4 font-semibold text-white shadow-lg shadow-amber/20 transition hover:shadow-xl hover:shadow-amber/30"
             >
-              Get Started Free →
-            </button>
+              Get Started Free
+            </motion.button>
+          </div>
 
-            <button
-              onClick={() => {
-                document
-                  .getElementById("features")
-                  ?.scrollIntoView({
-                    behavior: "smooth",
-                  });
+          <p className="mt-6 text-sm text-slate">
+            Trusted by learners worldwide.
+          </p>
+
+        </motion.div>
+
+        {/* RIGHT — illustration */}
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="relative flex flex-1 items-center justify-center lg:max-w-[38%]"
+        >
+
+          <motion.div
+            animate={{ y: [0, -14, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="relative"
+          >
+
+            {/* Abstract "person at laptop" illustration */}
+
+            <svg
+              width="280"
+              height="260"
+              viewBox="0 0 280 260"
+              className="drop-shadow-[0_20px_50px_rgba(47,143,239,0.15)]"
+            >
+              <ellipse cx="140" cy="230" rx="110" ry="16" fill="var(--color-amber)" opacity="0.08" />
+
+              {/* seat / desk */}
+              <rect x="60" y="150" width="160" height="70" rx="16" fill="var(--color-panel)" />
+
+              {/* laptop */}
+              <rect x="95" y="128" width="90" height="58" rx="8" fill="var(--color-amber-dim)" />
+              <rect x="103" y="136" width="74" height="42" rx="4" fill="var(--color-ink)" />
+              <rect x="90" y="182" width="100" height="8" rx="4" fill="var(--color-amber-dim)" />
+
+              {/* person */}
+              <circle cx="140" cy="80" r="30" fill="var(--color-amber)" />
+              <path
+                d="M92 150c0-30 22-48 48-48s48 18 48 48"
+                fill="var(--color-amber)"
+              />
+            </svg>
+
+          </motion.div>
+
+          {floatingCards.map((card, i) => (
+            <motion.div
+              key={card.label}
+              animate={{ y: [0, -8, 0] }}
+              transition={{
+                duration: 4 + i,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: i * 0.6,
               }}
-              className="rounded-xl border border-amber px-8 py-4 font-semibold text-amber transition hover:bg-amber hover:text-bone"
+              className={`absolute rounded-2xl border border-amber/15 bg-panel px-4 py-3 shadow-md ${card.className}`}
             >
-              Explore Features
-            </button>
+              <p className="text-xs font-medium text-slate">{card.label}</p>
+              <p className="text-lg font-bold text-bone">{card.value}</p>
+            </motion.div>
+          ))}
 
-          </div>
-
-          <div className="mt-12 flex flex-wrap items-center gap-8 text-slate">
-
-            <div>
-              ⭐⭐⭐⭐⭐
-            </div>
-
-            <div>
-              Trusted by{" "}
-              <b className="text-white">
-                10,000+
-              </b>{" "}
-              learners
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* RIGHT */}
-
-        <div className="flex-1">
-
-          <div className="relative overflow-hidden rounded-[36px] border border-white/10 bg-gradient-to-br from-white/10 to-white/5 p-8 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,0,0,0.35)]">
-
-            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-amber/10 blur-3xl" />
-
-            <div className="absolute -bottom-12 -left-10 h-40 w-40 rounded-full bg-teal/10 blur-3xl" />
-
-            <h2 className="font-display text-2xl font-bold text-white">
-              Today's Career Dashboard
-            </h2>
-
-            <p className="mt-2 text-slate">
-              Track your AI-powered career progress.
-            </p>
-
-            {/* Dashboard Cards Start */}
-                        <div className="mt-8 grid grid-cols-2 gap-5">
-
-              {/* Resume Analysis */}
-
-              <div className="group rounded-3xl bg-panel p-5 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-
-                <div className="flex items-center justify-between">
-
-                  <p className="text-sm font-medium text-slate">
-                    Resume Analysis
-                  </p>
-
-                  <span className="rounded-full bg-teal-dim/20 px-2 py-1 text-[10px] font-bold text-teal">
-                    LIVE
-                  </span>
-
-                </div>
-
-                <h3 className="mt-3 text-4xl font-extrabold text-amber-dim">
-                  92%
-                </h3>
-
-                <div className="mt-5 h-2 rounded-full bg-panel-2">
-                  <div className="h-2 w-[92%] rounded-full bg-gradient-to-r from-teal to-teal-dim" />
-                </div>
-
-              </div>
-
-              {/* Mock Interviews */}
-
-              <div className="group rounded-3xl bg-panel p-5 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-
-                <p className="text-sm font-medium text-slate">
-                  Mock Interviews
-                </p>
-
-                <h3 className="mt-3 text-4xl font-extrabold text-amber-dim">
-                  12
-                </h3>
-
-                <p className="mt-5 text-sm font-semibold text-teal">
-                  ↗ +3 This Week
-                </p>
-
-              </div>
-
-              {/* Career Score */}
-
-              <div className="group rounded-3xl bg-panel p-5 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-
-                <p className="text-sm font-medium text-slate">
-                  Career Score
-                </p>
-
-                <h3 className="mt-3 text-2xl font-extrabold text-amber-dim">
-                  Excellent
-                </h3>
-
-                <div className="mt-5 h-2 rounded-full bg-panel-2">
-                  <div className="h-2 w-[88%] rounded-full bg-gradient-to-r from-amber to-yellow-400" />
-                </div>
-
-              </div>
-
-              {/* AI Roadmap */}
-
-              <div className="group rounded-3xl bg-panel p-5 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-
-                <p className="text-sm font-medium text-slate">
-                  AI Roadmap
-                </p>
-
-                <h3 className="mt-3 text-xl font-extrabold text-teal">
-                  Ready
-                </h3>
-
-                <div className="mt-5 flex items-center gap-2">
-
-                  <span className="h-3 w-3 animate-pulse rounded-full bg-teal" />
-
-                  <span className="text-sm font-semibold text-teal">
-                    AI Ready
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
+        </motion.div>
 
       </div>
+
+      {/* Scroll indicator */}
+
+      <motion.button
+        onClick={() =>
+          document.getElementById("goals")?.scrollIntoView({ behavior: "smooth" })
+        }
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-slate transition hover:text-amber"
+        aria-label="Scroll down"
+      >
+        <ChevronDown size={28} />
+      </motion.button>
 
     </section>
   );

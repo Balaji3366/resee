@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import DashboardNavbar from "@/components/DashboardNavbar";
 import DashboardHero from "@/components/DashboardHero";
 import DashboardStats from "@/components/DashboardStats";
+import DashboardCareerScore from "@/components/DashboardCareerScore";
 import DashboardFeatures from "@/components/DashboardFeatures";
 
 export default function Dashboard() {
@@ -53,6 +54,8 @@ export default function Dashboard() {
           resumeCount={resumeCount}
           documentCount={documentCount}
         />
+
+        <DashboardCareerScore />
 
         <DashboardFeatures />
 

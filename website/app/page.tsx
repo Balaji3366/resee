@@ -1,8 +1,7 @@
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import Features from "../components/Features";
-import Stats from "../components/Stats";
-import Testimonials from "../components/Testimonials";
+import GoalChips from "@/components/GoalChips";
+import JourneySteps from "@/components/JourneySteps";
 import Footer from "../components/Footer";
 import Plans from "@/components/plans";
 import CTA from "@/components/CTA";
@@ -11,10 +10,9 @@ return (
 <>
   <Navbar />
   <Hero />
-  <Features />
+  <GoalChips />
+  <JourneySteps />
   <Plans />
-  <Stats />
-  <Testimonials />
   <CTA />
   <Footer />
 </>

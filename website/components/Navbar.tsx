@@ -119,7 +119,32 @@ export default function Navbar() {
           </div>
         </button>
 
-      
+        {/* Center Links */}
+
+        <div className="hidden items-center gap-10 lg:flex">
+          <button
+            onClick={() =>
+              document
+                .getElementById("about")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="text-sm font-medium text-slate transition hover:text-bone"
+          >
+            About
+          </button>
+
+          <button
+            onClick={() =>
+              document
+                .getElementById("plans")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="text-sm font-medium text-slate transition hover:text-bone"
+          >
+            Pricing
+          </button>
+        </div>
+
         {/* Right Side */}
 
         {!user ? (
