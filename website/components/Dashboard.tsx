@@ -38,7 +38,7 @@ export default function Dashboard() {
   return (
     <section
       id="dashboard"
-      className="min-h-screen bg-[#F8FAF8] pt-2 pb-16"
+      className="min-h-screen bg-ink pt-2 pb-16"
     >
       <div className="mx-auto max-w-7xl px-6">
 
@@ -56,33 +56,33 @@ export default function Dashboard() {
 
         <DashboardFeatures />
 
-        <footer className="mt-20 border-t border-[#D4AF37]/20 pt-10 text-center">
-          <h3 className="text-2xl font-bold text-[#06281F]">
-            ✨ Mentora
+        <footer className="mt-20 border-t border-amber/20 pt-10 text-center">
+          <h3 className="text-2xl font-bold text-bone">
+            ✨ RESEE
           </h3>
 
-          <p className="mt-3 max-w-2xl mx-auto text-gray-600 leading-7">
+          <p className="mt-3 max-w-2xl mx-auto text-slate leading-7">
             Your AI Career Mentor. Helping students and professionals
             analyse resumes, prepare for interviews and build successful
             careers using Artificial Intelligence.
           </p>
 
           <div className="mt-8 flex justify-center gap-3">
-            <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700">
+            <span className="rounded-full bg-teal-dim/20 px-4 py-2 text-sm font-semibold text-teal">
               Resume AI
             </span>
 
-            <span className="rounded-full bg-yellow-100 px-4 py-2 text-sm font-semibold text-yellow-700">
+            <span className="rounded-full bg-amber-dim/20 px-4 py-2 text-sm font-semibold text-amber">
               Career Growth
             </span>
 
-            <span className="rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700">
+            <span className="rounded-full bg-panel-2 px-4 py-2 text-sm font-semibold text-slate">
               Documents
             </span>
           </div>
 
-          <p className="mt-8 text-sm text-gray-500">
-            © 2026 Mentora. All Rights Reserved.
+          <p className="mt-8 text-sm text-slate">
+            © 2026 RESEE. All Rights Reserved.
           </p>
         </footer>
 

@@ -67,13 +67,13 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="relative overflow-hidden bg-[#F8FAF8] py-28"
+      className="relative overflow-hidden bg-ink py-28"
     >
       {/* Background */}
 
-      <div className="absolute left-0 top-0 h-80 w-80 rounded-full bg-[#D4AF37]/10 blur-[120px]" />
+      <div className="absolute left-0 top-0 h-80 w-80 rounded-full bg-amber/10 blur-[120px]" />
 
-      <div className="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-emerald-400/10 blur-[120px]" />
+      <div className="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-teal/10 blur-[120px]" />
 
       <div className="relative mx-auto max-w-7xl px-6">
 
@@ -81,18 +81,18 @@ export default function Features() {
 
         <div className="text-center">
 
-          <span className="inline-flex rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-6 py-2 text-sm font-bold uppercase tracking-wider text-[#8B6B00]">
+          <span className="inline-flex rounded-full border border-amber/30 bg-amber/10 px-6 py-2 text-sm font-bold uppercase tracking-wider text-amber">
             ✨ Powerful AI Features
           </span>
 
-          <h2 className="mt-8 text-5xl font-extrabold leading-tight text-[#06281F] md:text-6xl">
+          <h2 className="font-display mt-8 text-5xl font-extrabold leading-tight text-bone md:text-6xl">
             Everything You Need
             <br />
             To Build Your Career
           </h2>
 
-          <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-gray-600">
-            Mentora combines powerful AI tools to analyse resumes,
+          <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-slate">
+            RESEE combines powerful AI tools to analyse resumes,
             prepare interviews,
             generate learning roadmaps,
             discover skill gaps,
@@ -109,10 +109,10 @@ export default function Features() {
 
             <div
                 key={feature.title}
-                className="group relative flex h-full flex-col overflow-hidden rounded-[30px] border border-[#D4AF37]/20 bg-white p-8 shadow-lg transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)]"
+                className="group relative flex h-full flex-col overflow-hidden rounded-[30px] border border-amber/20 bg-panel p-8 shadow-lg transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_25px_60px_rgba(0,0,0,0.12)]"
               >
 
-              <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#D4AF37]/10 blur-3xl opacity-0 transition duration-500 group-hover:opacity-100" />
+              <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-amber/10 blur-3xl opacity-0 transition duration-500 group-hover:opacity-100" />
 
               <div
                 className={`inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br ${feature.color} text-4xl shadow-xl transition duration-300 group-hover:scale-110 group-hover:rotate-6`}
@@ -122,27 +122,27 @@ export default function Features() {
 
               <div className="mt-8 flex items-center justify-between">
 
-                <h3 className="text-2xl font-bold text-[#06281F]">
+                <h3 className="text-2xl font-bold text-bone">
                   {feature.title}
                 </h3>
 
                 {feature.available ? (
-                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">
+                  <span className="rounded-full bg-teal-dim/20 px-3 py-1 text-xs font-bold text-teal">
                     LIVE
                   </span>
                 ) : (
-                  <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">
+                  <span className="rounded-full bg-amber-dim/20 px-3 py-1 text-xs font-bold text-amber">
                     SOON
                   </span>
                 )}
 
               </div>
 
-              <p className="mt-5 h-[140px] leading-8 text-gray-600">
+              <p className="mt-5 h-[140px] leading-8 text-slate">
                 {feature.desc}
               </p>
 
-              <div className="mt-8 h-2 overflow-hidden rounded-full bg-gray-100">
+              <div className="mt-8 h-2 overflow-hidden rounded-full bg-panel-2">
 
                 <div
                   className={`h-full rounded-full bg-gradient-to-r ${feature.color}`}
@@ -158,8 +158,8 @@ export default function Features() {
                   onClick={() => handleClick(feature)}
                   className={`group/button inline-flex w-full items-center justify-center rounded-2xl px-6 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.03] ${
                     feature.available
-                      ? "bg-[#06281F] hover:bg-[#14532D]"
-                      : "bg-gray-400 hover:bg-gray-500"
+                      ? "bg-amber hover:bg-amber-dim"
+                      : "bg-gray-400 hover:bg-slate"
                   }`}
                 >
                   <span>
@@ -174,9 +174,9 @@ export default function Features() {
 
               </div>
 
-              <div className="mt-8 flex items-center justify-between border-t border-gray-100 pt-6">
+              <div className="mt-8 flex items-center justify-between border-t border-bone/15 pt-6">
 
-                <span className="text-sm font-medium text-gray-500">
+                <span className="text-sm font-medium text-slate">
                   AI Powered
                 </span>
 
@@ -185,7 +185,7 @@ export default function Features() {
                   <span
                     className={`h-2.5 w-2.5 rounded-full ${
                       feature.available
-                        ? "animate-pulse bg-emerald-500"
+                        ? "animate-pulse bg-teal"
                         : "bg-amber-400"
                     }`}
                   />
@@ -193,7 +193,7 @@ export default function Features() {
                   <span
                     className={`text-sm font-semibold ${
                       feature.available
-                        ? "text-emerald-600"
+                        ? "text-teal"
                         : "text-amber-600"
                     }`}
                   >

@@ -122,7 +122,7 @@ suggestions.forEach((item: string) => {
 }
 });
 
-    doc.save("Mentora_AI_Resume_Report.pdf");
+    doc.save("RESEE_AI_Resume_Report.pdf");
   } catch (error) {
     console.error(error);
   } finally {
@@ -232,7 +232,7 @@ setResult(data.data);
 };
 console.log("RESULT STATE:", result);
   return (
-  <section className="min-h-screen bg-gradient-to-br from-[#F8FAF8] via-white to-[#EEF7F2] py-14">
+  <section className="min-h-screen bg-gradient-to-br from-ink via-white to-panel py-14">
     <div className="mx-auto max-w-6xl px-6">
 
   <div className="mb-8">
@@ -243,17 +243,17 @@ console.log("RESULT STATE:", result);
 
   <div className="text-center">
 
-    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#0A3B2E] to-[#14532D] shadow-xl ring-4 ring-[#D4AF37]/20">
+    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-amber to-amber-dim shadow-xl ring-4 ring-amber/20">
 
       <FileText className="h-12 w-12 text-white" />
 
     </div>
 
-    <h1 className="text-5xl font-extrabold text-[#06281F]">
+    <h1 className="font-display text-5xl font-extrabold text-bone">
       AI Resume Analyzer
     </h1>
 
-    <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-gray-600">
+    <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate">
       Upload your resume and receive a professional ATS score,
       AI-powered insights, strengths, weaknesses, missing keywords
       and improvement suggestions.
@@ -263,17 +263,17 @@ console.log("RESULT STATE:", result);
 
   {/* Upload Card */}
 
-  <div className="mx-auto mt-14 max-w-4xl overflow-hidden rounded-[32px] border border-[#D4AF37]/20 bg-white shadow-[0_30px_80px_rgba(10,59,46,0.12)]">
+  <div className="mx-auto mt-14 max-w-4xl overflow-hidden rounded-[32px] border border-amber/20 bg-panel shadow-[0_30px_80px_rgba(10,59,46,0.12)]">
 
     {/* Header */}
 
-    <div className="relative overflow-hidden bg-gradient-to-r from-[#0A3B2E] via-[#14532D] to-[#0A3B2E] px-10 py-8">
+    <div className="relative overflow-hidden bg-gradient-to-r from-amber via-amber-dim to-amber px-10 py-8">
 
-      <h2 className="text-3xl font-bold text-white">
+      <h2 className="font-display text-3xl font-bold text-white">
         Upload Resume
       </h2>
 
-      <p className="mt-2 text-[#E7E7E7]">
+      <p className="mt-2 text-bone/80">
         Supported format: PDF
       </p>
 
@@ -281,21 +281,21 @@ console.log("RESULT STATE:", result);
 
     <div className="p-10">
 
-      <label className="group flex cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-[#D4AF37] bg-gradient-to-br from-white to-[#F8FAF8] py-10 px-8 transition-all duration-300 hover:scale-[1.01] hover:border-[#0A3B2E] hover:shadow-2xl">
+      <label className="group flex cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-amber bg-gradient-to-br from-white to-ink py-10 px-8 transition-all duration-300 hover:scale-[1.01] hover:border-amber hover:shadow-2xl">
 
-        <div className="mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#14532D] to-[#0A3B2E] text-5xl shadow-xl transition duration-300 group-hover:scale-110">
+        <div className="mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-amber-dim to-amber text-5xl shadow-xl transition duration-300 group-hover:scale-110">
           📄
         </div>
 
-        <h3 className="text-3xl font-bold text-[#06281F]">
+        <h3 className="text-3xl font-bold text-bone">
           Upload Your Resume
         </h3>
 
-        <p className="mt-3 text-center text-gray-600 leading-7">
+        <p className="mt-3 text-center text-slate leading-7">
           Drop your PDF here or click to browse.
         </p>
 
-        <p className="mt-2 text-sm font-medium text-[#14532D]">
+        <p className="mt-2 text-sm font-medium text-amber-dim">
           PDF only • Max 5 MB
         </p>
 
@@ -310,9 +310,9 @@ console.log("RESULT STATE:", result);
 
       {file && (
 
-        <div className="mt-8 rounded-2xl border border-green-200 bg-green-50 p-5">
+        <div className="mt-8 rounded-2xl border border-teal/30 bg-panel-2 p-5">
 
-          <p className="font-semibold text-[#0A3B2E]">
+          <p className="font-semibold text-amber">
             ✅ {file.name}
           </p>
 
@@ -323,7 +323,7 @@ console.log("RESULT STATE:", result);
       <button
           onClick={analyzeResume}
           disabled={loading || !file}
-          className="mt-8 flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[#0A3B2E] via-[#14532D] to-[#0A3B2E] py-4 text-lg font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none disabled:hover:translate-y-0"
+          className="mt-8 flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-amber via-amber-dim to-amber py-4 text-lg font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl disabled:cursor-not-allowed disabled:bg-panel-2 disabled:text-slate disabled:shadow-none disabled:hover:translate-y-0"
         >
           {loading ? (
             <div className="flex items-center gap-3">
@@ -335,7 +335,7 @@ console.log("RESULT STATE:", result);
           )}
         </button>
         {!file && (
-        <p className="mt-3 text-center text-sm text-gray-500">
+        <p className="mt-3 text-center text-sm text-slate">
           Please upload a PDF to enable analysis.
         </p>
       )}
@@ -344,19 +344,19 @@ console.log("RESULT STATE:", result);
   </div>
 
     {result && (
-  <div className="mt-8 rounded-2xl bg-white p-8 shadow-xl border">
+  <div className="mt-8 rounded-2xl bg-panel p-8 shadow-xl border">
 
-    <h2 className="mb-6 text-3xl font-bold text-center text-gray-900">
+    <h2 className="font-display mb-6 text-3xl font-bold text-center text-bone">
         📊 AI Resume Analysis
         </h2>
 
     {/* ATS Score */}
-<div className="mb-8 rounded-xl bg-blue-100 p-6">
-  <h3 className="text-xl font-bold text-blue-800">
+<div className="mb-8 rounded-xl bg-panel-2 p-6">
+  <h3 className="text-xl font-bold text-blue-400">
     📊 ATS Score
   </h3>
 
-  <p className="mt-2 text-gray-600">
+  <p className="mt-2 text-slate">
     {score >= 75
       ? "Excellent ATS Score ⭐⭐⭐⭐"
       : score >= 50
@@ -367,16 +367,16 @@ console.log("RESULT STATE:", result);
   <p
     className={`mt-2 text-4xl font-extrabold ${
       score >= 75
-        ? "text-green-700"
+        ? "text-green-400"
         : score >= 50
-        ? "text-yellow-700"
-        : "text-red-700"
+        ? "text-yellow-400"
+        : "text-red-400"
     }`}
   >
     {score}/100
   </p>
 
-  <div className="mt-4 h-4 w-full rounded-full bg-blue-200">
+  <div className="mt-4 h-4 w-full rounded-full bg-panel-2">
     <div
       className={`h-4 rounded-full ${scoreColor} transition-all duration-700`}
       style={{ width: `${score}%` }}
@@ -384,24 +384,24 @@ console.log("RESULT STATE:", result);
   </div>
 </div>
 {/* AI Summary */}
-<div className="mb-6 rounded-xl bg-indigo-100 p-6">
-  <h3 className="mb-4 text-xl font-bold text-indigo-800">
+<div className="mb-6 rounded-xl bg-panel-2 p-6">
+  <h3 className="mb-4 text-xl font-bold text-indigo-400">
     📝 AI Summary
   </h3>
 
-  <p className="leading-7 text-gray-700">
+  <p className="leading-7 text-bone">
     {summary}
   </p>
 </div>
 {/* Strengths */}
-<div className="mb-6 rounded-xl bg-green-100 p-6">
-  <h3 className="mb-4 text-xl font-bold text-green-800">
+<div className="mb-6 rounded-xl bg-panel-2 p-6">
+  <h3 className="mb-4 text-xl font-bold text-green-400">
     💪 Strengths
   </h3>
 
   <ul className="space-y-2">
     {strengths.map((item, index) => (
-      <li key={index} className="text-gray-700">
+      <li key={index} className="text-bone">
         ✅ {item}
       </li>
     ))}
@@ -409,42 +409,42 @@ console.log("RESULT STATE:", result);
 </div>
 
 {/* Weaknesses */}
-<div className="mb-6 rounded-xl bg-yellow-100 p-6">
-  <h3 className="mb-4 text-xl font-bold text-yellow-800">
+<div className="mb-6 rounded-xl bg-panel-2 p-6">
+  <h3 className="mb-4 text-xl font-bold text-yellow-400">
     ⚠ Weaknesses
   </h3>
 
   <ul className="space-y-2">
     {weaknesses.map((item, index) => (
-      <li key={index} className="text-gray-700">
+      <li key={index} className="text-bone">
         ❌ {item}
       </li>
     ))}
   </ul>
 </div>
 {/* Missing Keywords */}
-<div className="mb-6 rounded-xl bg-orange-100 p-6">
-  <h3 className="mb-4 text-xl font-bold text-orange-800">
+<div className="mb-6 rounded-xl bg-panel-2 p-6">
+  <h3 className="mb-4 text-xl font-bold text-orange-400">
     🏷 Missing Keywords
   </h3>
 
   <ul className="space-y-2">
     {missingKeywords.map((item, index) => (
-      <li key={index} className="text-gray-700">
+      <li key={index} className="text-bone">
         🔑 {item}
       </li>
     ))}
   </ul>
 </div>
 {/* Suggestions */}
-<div className="mb-6 rounded-xl bg-purple-100 p-6">
-  <h3 className="mb-4 text-xl font-bold text-purple-800">
+<div className="mb-6 rounded-xl bg-panel-2 p-6">
+  <h3 className="mb-4 text-xl font-bold text-purple-400">
     🚀 Suggestions
   </h3>
 
   <ul className="space-y-2">
     {suggestions.map((item, index) => (
-      <li key={index} className="text-gray-700">
+      <li key={index} className="text-bone">
         💡 {item}
       </li>
     ))}
@@ -453,7 +453,7 @@ console.log("RESULT STATE:", result);
 <button
   onClick={improveResume}
   disabled={loading}
-  className="mt-8 w-full rounded-xl bg-emerald-600 py-4 text-lg font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
+  className="mt-8 w-full rounded-xl bg-teal py-4 text-lg font-semibold text-white transition hover:bg-teal-dim disabled:opacity-50"
 >
   {loading ? "Improving Resume..." : "✨ Improve My Resume"}
 </button>

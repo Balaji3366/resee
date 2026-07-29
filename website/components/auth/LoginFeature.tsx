@@ -9,18 +9,18 @@ export default function LoginFeatures() {
 
       <div className="mt-8">
 
-        <span className="rounded-full bg-[#D4AF37]/20 px-4 py-2 text-sm font-semibold text-[#B8860B]">
+        <span className="rounded-full bg-amber/20 px-4 py-2 text-sm font-semibold text-amber">
           AI CAREER PLATFORM
         </span>
 
-        <h2 className="mt-6 text-5xl font-extrabold leading-tight text-[#06281F]">
+        <h2 className="font-display mt-6 text-5xl font-extrabold leading-tight text-bone">
           Build Your Dream Career
-          <span className="block text-[#D4AF37]">
-            with Mentora AI
+          <span className="block text-amber">
+            with RESEE AI
           </span>
         </h2>
 
-        <p className="mt-6 text-lg leading-8 text-gray-600">
+        <p className="mt-6 text-lg leading-8 text-slate">
           Analyse resumes, prepare for interviews, organise documents,
           discover career roadmaps and grow your professional skills—
           all from one intelligent platform.
@@ -52,15 +52,15 @@ export default function LoginFeatures() {
 
       <div className="mt-10 flex flex-wrap gap-3">
 
-        <span className="rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-4 py-2 text-sm font-semibold text-[#B8860B]">
+        <span className="rounded-full border border-amber/30 bg-amber/10 px-4 py-2 text-sm font-semibold text-amber">
           ✓ ATS Friendly
         </span>
 
-        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">
+        <span className="rounded-full border border-teal/30 bg-panel-2 px-4 py-2 text-sm font-semibold text-teal">
           ✓ AI Powered
         </span>
 
-        <span className="rounded-full border border-[#0A3B2E]/20 bg-[#0A3B2E]/10 px-4 py-2 text-sm font-semibold text-[#0A3B2E]">
+        <span className="rounded-full border border-amber/20 bg-amber/10 px-4 py-2 text-sm font-semibold text-amber">
           ✓ Career Focused
         </span>
 

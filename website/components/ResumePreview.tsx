@@ -28,33 +28,33 @@ type Props = {
 
 export default function ResumePreview({ data }: Props) {
   return (
-    <div className="mx-auto w-full max-w-4xl rounded-2xl bg-white p-12 shadow-2xl">
+    <div className="mx-auto w-full max-w-4xl rounded-2xl bg-panel p-12 shadow-2xl">
 
       {/* Header */}
       <div className="border-b pb-6">
-        <h1 className="text-4xl font-extrabold text-slate-900">
+        <h1 className="font-display text-4xl font-extrabold text-bone">
           {data.name}
         </h1>
 
-        <p className="mt-2 text-gray-600">
+        <p className="mt-2 text-slate">
           {data.phone} • {data.email}
         </p>
       </div>
 
       {/* Summary */}
       <section className="mt-8">
-        <h2 className="mb-3 text-xl font-bold text-emerald-700 uppercase tracking-wide">
+        <h2 className="font-display mb-3 text-xl font-bold text-teal uppercase tracking-wide">
           Professional Summary
         </h2>
 
-        <p className="leading-8 text-gray-700">
+        <p className="leading-8 text-bone">
           {data.summary}
         </p>
       </section>
 
       {/* Skills */}
       <section className="mt-10">
-        <h2 className="mb-4 text-xl font-bold text-emerald-700 uppercase tracking-wide">
+        <h2 className="font-display mb-4 text-xl font-bold text-teal uppercase tracking-wide">
           Skills
         </h2>
 
@@ -62,7 +62,7 @@ export default function ResumePreview({ data }: Props) {
           {data.skills.map((skill, index) => (
             <span
               key={index}
-              className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800"
+              className="rounded-full bg-teal-dim/20 px-4 py-2 text-sm font-semibold text-teal"
             >
               {skill}
             </span>
@@ -72,7 +72,7 @@ export default function ResumePreview({ data }: Props) {
 
       {/* Experience */}
       <section className="mt-10">
-        <h2 className="mb-5 text-xl font-bold text-emerald-700 uppercase tracking-wide">
+        <h2 className="font-display mb-5 text-xl font-bold text-teal uppercase tracking-wide">
           Professional Experience
         </h2>
 
@@ -87,12 +87,12 @@ export default function ResumePreview({ data }: Props) {
                   {job.company}
                 </h3>
 
-                <p className="font-medium text-gray-600">
+                <p className="font-medium text-slate">
                   {job.role}
                 </p>
               </div>
 
-              <div className="text-right text-sm text-gray-500">
+              <div className="text-right text-sm text-slate">
                 <p>{job.location}</p>
                 <p>{job.duration}</p>
               </div>
@@ -100,7 +100,7 @@ export default function ResumePreview({ data }: Props) {
 
             <ul className="mt-5 list-disc space-y-2 pl-6">
               {job.points.map((point, i) => (
-                <li key={i} className="leading-7 text-gray-700">
+                <li key={i} className="leading-7 text-bone">
                   {point}
                 </li>
               ))}
@@ -111,7 +111,7 @@ export default function ResumePreview({ data }: Props) {
 
       {/* Education */}
       <section className="mt-10">
-        <h2 className="mb-4 text-xl font-bold text-emerald-700 uppercase tracking-wide">
+        <h2 className="font-display mb-4 text-xl font-bold text-teal uppercase tracking-wide">
           Education
         </h2>
 
@@ -124,11 +124,11 @@ export default function ResumePreview({ data }: Props) {
               {edu.degree}
             </h3>
 
-            <p className="text-gray-600">
+            <p className="text-slate">
               {edu.college}
             </p>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-slate">
               {edu.year}
             </p>
           </div>

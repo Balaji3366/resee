@@ -77,9 +77,9 @@ export default function QuizPage() {
 
         <BackButton variant="dark" />
 
-        <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur-xl">
+        <div className="mt-10 rounded-3xl border border-white/10 bg-panel/5 p-10 backdrop-blur-xl">
 
-          <h1 className="text-center text-5xl font-bold text-white">
+          <h1 className="font-display text-center text-5xl font-bold text-white">
             📝 AI Quiz Generator
           </h1>
 
@@ -171,8 +171,8 @@ export default function QuizPage() {
         </div>
 
         {quiz && (
-          <div className="mt-10 rounded-3xl bg-white/5 p-8">
-            <h2 className="mb-6 text-3xl font-bold text-white">
+          <div className="mt-10 rounded-3xl bg-panel/5 p-8">
+            <h2 className="font-display mb-6 text-3xl font-bold text-white">
               Generated Quiz
             </h2>
 

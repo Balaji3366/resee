@@ -28,9 +28,9 @@ export default function ChatMessages({
       {chatLoading ? (
         <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center gap-4">
-            <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#0A3B2E] border-t-transparent" />
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-amber border-t-transparent" />
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-slate">
               Loading conversation...
             </p>
           </div>
@@ -39,46 +39,46 @@ export default function ChatMessages({
         <>
           {chat.length === 0 && (
             <div className="flex min-h-full flex-col items-center justify-center px-6">
-              <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#06281F] via-[#0A3B2E] to-[#14532D] text-white shadow-xl">
+              <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-bone via-amber to-amber-dim text-white shadow-xl">
                 <Bot size={38} />
               </div>
 
-              <h1 className="text-4xl font-bold tracking-tight text-[#06281F]">
+              <h1 className="font-display text-4xl font-bold tracking-tight text-bone">
                 Welcome to RESEE
               </h1>
 
-              <p className="mt-3 max-w-xl text-center text-lg text-gray-600">
+              <p className="mt-3 max-w-xl text-center text-lg text-slate">
                 Your AI Career Companion
               </p>
 
-              <p className="mt-2 max-w-2xl text-center text-gray-500 leading-7">
+              <p className="mt-2 max-w-2xl text-center text-slate leading-7">
                 Ask anything about your career, resume, interviews,
                 learning roadmap or professional growth.
               </p>
 
               <div className="mt-10 flex flex-wrap justify-center gap-3">
-                <button className="flex items-center gap-2 rounded-full border border-[#D4AF37]/20 bg-white px-5 py-3 text-sm font-medium text-[#06281F] shadow-sm transition hover:border-[#14532D] hover:shadow-md">
+                <button className="flex items-center gap-2 rounded-full border border-amber/20 bg-panel px-5 py-3 text-sm font-medium text-bone shadow-sm transition hover:border-amber-dim hover:shadow-md">
                   <FileText size={18} />
                   Review my resume
                 </button>
 
-                <button className="flex items-center gap-2 rounded-full border border-[#D4AF37]/20 bg-white px-5 py-3 text-sm font-medium text-[#06281F] shadow-sm transition hover:border-[#14532D] hover:shadow-md">
+                <button className="flex items-center gap-2 rounded-full border border-amber/20 bg-panel px-5 py-3 text-sm font-medium text-bone shadow-sm transition hover:border-amber-dim hover:shadow-md">
                   <Briefcase size={18} />
                   Mock interview
                 </button>
 
-                <button className="flex items-center gap-2 rounded-full border border-[#D4AF37]/20 bg-white px-5 py-3 text-sm font-medium text-[#06281F] shadow-sm transition hover:border-[#14532D] hover:shadow-md">
+                <button className="flex items-center gap-2 rounded-full border border-amber/20 bg-panel px-5 py-3 text-sm font-medium text-bone shadow-sm transition hover:border-amber-dim hover:shadow-md">
                   <GraduationCap size={18} />
                   Learning roadmap
                 </button>
 
-                <button className="flex items-center gap-2 rounded-full border border-[#D4AF37]/20 bg-white px-5 py-3 text-sm font-medium text-[#06281F] shadow-sm transition hover:border-[#14532D] hover:shadow-md">
+                <button className="flex items-center gap-2 rounded-full border border-amber/20 bg-panel px-5 py-3 text-sm font-medium text-bone shadow-sm transition hover:border-amber-dim hover:shadow-md">
                   <Sparkles size={18} />
                   Career guidance
                 </button>
               </div>
 
-              <p className="mt-10 text-sm text-gray-400">
+              <p className="mt-10 text-sm text-slate">
                 Start typing below to begin your conversation.
               </p>
             </div>
@@ -105,8 +105,8 @@ export default function ChatMessages({
                   <div
                     className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white shadow-md ${
                       msg.sender === "You"
-                        ? "bg-gradient-to-br from-[#14532D] to-[#0A3B2E]"
-                        : "bg-gradient-to-br from-[#06281F] via-[#0A3B2E] to-[#14532D]"
+                        ? "bg-gradient-to-br from-amber-dim to-amber"
+                        : "bg-gradient-to-br from-bone via-amber to-amber-dim"
                     }`}
                   >
                     {msg.sender === "You" ? (
@@ -120,8 +120,8 @@ export default function ChatMessages({
                   <div
                     className={`w-full rounded-2xl px-6 py-4 shadow-lg ${
                       msg.sender === "You"
-                        ? "bg-gradient-to-br from-[#0A3B2E] to-[#14532D] text-white"
-                        : "border border-[#D4AF37]/20 bg-gradient-to-br from-[#F8FCF9] to-[#EEF7F2] text-[#06281F]"
+                        ? "bg-gradient-to-br from-amber to-amber-dim text-white"
+                        : "border border-amber/20 bg-gradient-to-br from-panel-2 to-panel text-bone"
                     }`}
                   >
                     <div
@@ -129,23 +129,23 @@ export default function ChatMessages({
                         prose
                         prose-sm
                         max-w-none
-                        prose-headings:text-[#06281F]
-                        prose-p:text-[#06281F]
-                        prose-li:text-[#06281F]
-                        prose-strong:text-[#06281F]
-                        prose-code:text-[#14532D]
+                        prose-headings:text-bone
+                        prose-p:text-bone
+                        prose-li:text-bone
+                        prose-strong:text-bone
+                        prose-code:text-amber-dim
                         prose-pre:bg-transparent
                       "
                     >
                       {msg.sender === "AI" && msg.text === "" ? (
                         <div className="flex items-center gap-2 text-slate-500">
-                          <div className="h-2 w-2 animate-bounce rounded-full bg-[#14532D]" />
+                          <div className="h-2 w-2 animate-bounce rounded-full bg-amber-dim" />
                           <div
-                            className="h-2 w-2 animate-bounce rounded-full bg-[#14532D]"
+                            className="h-2 w-2 animate-bounce rounded-full bg-amber-dim"
                             style={{ animationDelay: "0.15s" }}
                           />
                           <div
-                            className="h-2 w-2 animate-bounce rounded-full bg-[#14532D]"
+                            className="h-2 w-2 animate-bounce rounded-full bg-amber-dim"
                             style={{ animationDelay: "0.3s" }}
                           />
 
@@ -156,7 +156,7 @@ export default function ChatMessages({
                       ) : (
                         <>
                           {msg.sender === "AI" && (
-                            <div className="mb-3 flex items-center gap-2 text-xs font-semibold text-[#0A3B2E]">
+                            <div className="mb-3 flex items-center gap-2 text-xs font-semibold text-amber">
                               <Bot size={13} />
                               RESEE AI
                             </div>
@@ -175,8 +175,8 @@ export default function ChatMessages({
                             rel="noopener noreferrer"
                             className={`mb-4 flex items-center justify-between rounded-xl border px-4 py-3 transition hover:shadow ${
                               msg.sender === "You"
-                                ? "border-white/20 bg-white/10 text-white"
-                                : "border-[#14532D]/20 bg-white"
+                                ? "border-white/20 bg-panel/10 text-white"
+                                : "border-amber-dim/20 bg-panel"
                             }`}
                           >
                             <div className="flex items-center gap-3">

@@ -25,12 +25,12 @@ export default function DashboardHero({
   const router = useRouter();
 
   return (
-    <section className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#06281F] via-[#0A3B2E] to-[#14532D] p-8 lg:p-12 shadow-2xl">
+    <section className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-bone via-amber to-amber-dim p-8 lg:p-12 shadow-2xl">
 
       {/* Background Glow */}
 
-      <div className="absolute -top-24 -right-16 h-72 w-72 rounded-full bg-[#D4AF37]/10 blur-3xl" />
-      <div className="absolute -bottom-20 left-0 h-72 w-72 rounded-full bg-white/5 blur-3xl" />
+      <div className="absolute -top-24 -right-16 h-72 w-72 rounded-full bg-amber/10 blur-3xl" />
+      <div className="absolute -bottom-20 left-0 h-72 w-72 rounded-full bg-panel/5 blur-3xl" />
 
       <div className="relative grid items-center gap-12 lg:grid-cols-2">
 
@@ -42,27 +42,27 @@ export default function DashboardHero({
           transition={{ duration: 0.6 }}
         >
 
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#D4AF37]/20 px-4 py-2 text-sm font-semibold text-[#F7D978]">
+          <span className="inline-flex items-center gap-2 rounded-full bg-amber/20 px-4 py-2 text-sm font-semibold text-amber">
             <Sparkles size={15} />
             RESEE AI Career OS
           </span>
 
-          <h1 className="mt-6 text-5xl font-extrabold leading-tight text-white lg:text-6xl">
+          <h1 className="font-display mt-6 text-5xl font-extrabold leading-tight text-white lg:text-6xl">
             👋 Welcome Back
           </h1>
 
-          <h2 className="mt-4 text-3xl font-bold text-[#F7D978]">
+          <h2 className="font-display mt-4 text-3xl font-bold text-amber">
             See Your Future
           </h2>
 
-          <p className="mt-6 max-w-xl text-lg leading-8 text-gray-200">
+          <p className="mt-6 max-w-xl text-lg leading-8 text-bone/70">
             Talk to RESEE AI, analyse your resume, organise your documents, prepare for interviews and build your career with one intelligent workspace.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
 
-            <div className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-white">
-              <CheckCircle2 size={16} className="text-[#D4AF37]" />
+            <div className="flex items-center gap-2 rounded-full bg-panel/10 px-4 py-2 text-sm text-white">
+              <CheckCircle2 size={16} className="text-amber" />
               AI Career Chat
               ATS Resume Analysis
               Smart Documents
@@ -74,7 +74,7 @@ export default function DashboardHero({
 
             <button
               onClick={() => router.push("/chat")}
-              className="flex items-center gap-2 rounded-2xl bg-[#D4AF37] px-7 py-4 font-bold text-[#06281F] transition duration-300 hover:scale-105"
+              className="flex items-center gap-2 rounded-2xl bg-amber px-7 py-4 font-bold text-bone transition duration-300 hover:scale-105"
             >
               <FileText size={20} />
               Open AI Chat
@@ -82,7 +82,7 @@ export default function DashboardHero({
 
             <button
               onClick={() => router.push("/resume")}
-              className="flex items-center gap-2 rounded-2xl border border-[#D4AF37] px-7 py-4 font-semibold text-[#F7D978] transition hover:bg-[#D4AF37] hover:text-[#06281F]"
+              className="flex items-center gap-2 rounded-2xl border border-amber px-7 py-4 font-semibold text-amber transition hover:bg-amber hover:text-bone"
             >
               <History size={20} />
               Analyse Resume
@@ -101,7 +101,7 @@ export default function DashboardHero({
             duration: 0.7,
             delay: 0.2,
           }}
-          className="rounded-3xl border border-white/10 bg-white/10 p-8 backdrop-blur-xl"
+          className="rounded-3xl border border-white/10 bg-panel/10 p-8 backdrop-blur-xl"
         >
 
           <div className="flex items-center justify-between">
@@ -110,7 +110,7 @@ export default function DashboardHero({
               Your AI Workspace
             </h3>
 
-            <TrendingUp className="text-[#F7D978]" />
+            <TrendingUp className="text-amber" />
           </div>
 
           <div className="mt-8 space-y-6">
@@ -122,9 +122,9 @@ export default function DashboardHero({
                 <span className="font-bold">{resumeCount}</span>
               </div>
 
-              <div className="h-2 rounded-full bg-white/10">
+              <div className="h-2 rounded-full bg-panel/10">
                 <div
-                  className="h-2 rounded-full bg-[#D4AF37]"
+                  className="h-2 rounded-full bg-amber"
                   style={{ width: "90%" }}
                 />
               </div>
@@ -138,9 +138,9 @@ export default function DashboardHero({
                 <span className="font-bold">{documentCount}</span>
               </div>
 
-              <div className="h-2 rounded-full bg-white/10">
+              <div className="h-2 rounded-full bg-panel/10">
                 <div
-                  className="h-2 rounded-full bg-emerald-400"
+                  className="h-2 rounded-full bg-teal"
                   style={{ width: "60%" }}
                 />
               </div>
@@ -151,14 +151,14 @@ export default function DashboardHero({
 
               <div className="mb-2 flex justify-between text-white">
                 <span>RESEE AI</span>
-                <span className="font-bold text-emerald-300">
+                <span className="font-bold text-teal">
                   Ready
                 </span>
               </div>
 
-              <div className="h-2 rounded-full bg-white/10">
+              <div className="h-2 rounded-full bg-panel/10">
                 <div
-                  className="h-2 rounded-full bg-emerald-400"
+                  className="h-2 rounded-full bg-teal"
                   style={{ width: "100%" }}
                 />
               </div>
@@ -169,14 +169,14 @@ export default function DashboardHero({
 
               <div className="mb-2 flex justify-between text-white">
                 <span>Career Progress</span>
-                <span className="font-bold text-[#F7D978]">
+                <span className="font-bold text-amber">
                   78%
                 </span>
               </div>
 
-              <div className="h-2 rounded-full bg-white/10">
+              <div className="h-2 rounded-full bg-panel/10">
                 <div
-                  className="h-2 rounded-full bg-[#D4AF37]"
+                  className="h-2 rounded-full bg-amber"
                   style={{ width: "78%" }}
                 />
               </div>
@@ -187,7 +187,7 @@ export default function DashboardHero({
 
           <button
             onClick={() => router.push("/documents")}
-            className="mt-10 flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-4 font-bold text-[#06281F] transition hover:scale-[1.02]"
+            className="mt-10 flex w-full items-center justify-center gap-2 rounded-2xl bg-panel py-4 font-bold text-bone transition hover:scale-[1.02]"
           >
             Open Documents
             <ArrowRight size={18} />

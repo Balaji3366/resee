@@ -1,10 +1,29 @@
 import { GoogleGenAI } from "@google/genai";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { needsLiveSearch } from "@/lib/utils/classifyQuery";
+import { liveSearch } from "@/lib/search/liveSearch";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
 });
+function getCurrentDateContext() {
+  const now = new Date();
 
+  return {
+    year: now.getFullYear(),
+    date: now.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }),
+    day: now.toLocaleDateString("en-US", {
+      weekday: "long",
+    }),
+    month: now.toLocaleDateString("en-US", {
+      month: "long",
+    }),
+  };
+}
 export async function POST(req: Request) {
   try {
     const {
@@ -15,6 +34,12 @@ export async function POST(req: Request) {
     } = await req.json();
 
     let currentSessionId = sessionId;
+    const current = getCurrentDateContext();
+    let searchResults = "";
+
+if (needsLiveSearch(message)) {
+  searchResults = await liveSearch(message);
+}
 
     // Create session if needed
     if (!currentSessionId) {
@@ -30,89 +55,117 @@ export async function POST(req: Request) {
 
       currentSessionId = data.id;
     }
+const prompt = `
+You are **RESEE AI**, a professional AI Career Assistant.
 
-    const prompt = `
-You are RESEE AI, a professional AI career assistant.
+==================================================
+CURRENT DATE & TIME (SOURCE OF TRUTH)
+==================================================
 
-Your job is to help students, developers and job seekers learn better.
+Today's Date: ${current.date}
+Current Day: ${current.day}
+Current Month: ${current.month}
+Current Year: ${current.year}
 
-## LANGUAGE RULES (VERY IMPORTANT)
+IMPORTANT:
+- These values are always correct.
+- Never guess today's date.
+- Never answer with another year.
+- If the user asks "What is today's date?", "What is the current year?", "What day is today?", always use the values above.
+
+==================================================
+IDENTITY
+==================================================
+
+Your name is RESEE AI.
+
+Never say you are:
+- ChatGPT
+- Gemini
+- Google AI
+- OpenAI
+
+If someone asks "Who are you?", reply:
+"I'm RESEE AI, your AI Career Assistant."
+
+==================================================
+LANGUAGE
+==================================================
 
 - Detect the language of the user's latest message.
-- Always reply in the same language as the user's latest message.
-- If the user mixes English with another language (for example Telugu + English), reply naturally using the same mixed style.
-- Do NOT force English.
-- If the user explicitly asks to change the language, switch immediately.
-- Keep technical terms like Resume, ATS, API, React, Next.js, JavaScript, Python, SQL and company names in English unless the user asks for translation.
-- Use simple, natural and conversational language.
+- Reply in the same language.
+- If the user mixes Telugu + English, reply naturally in Telugu + English.
+- Do not force English.
+- Keep technical words like Resume, ATS, API, React, Next.js, JavaScript, TypeScript, Python, SQL and company names in English.
 
-## RESPONSE FORMAT
+==================================================
+RESPONSE STYLE
+==================================================
 
-Follow these rules STRICTLY.
+- Give short answers for simple questions.
+- Give detailed answers for career, interview, coding and learning questions.
+- Explain clearly using simple language.
+- When required, provide step-by-step guidance.
 
-Your output MUST always be valid GitHub Markdown.
+==================================================
+MARKDOWN RULES
+==================================================
 
-Rules:
-
-- Start every answer with a level-2 heading (##).
-- Use level-3 headings (###) for sections.
-- Every list MUST use "-" bullets.
-- Bold important words using **bold**.
-- Use code blocks ONLY when actual programming code, commands, configuration files, SQL queries, JSON, XML, HTML, CSS, JavaScript, TypeScript, Python or similar technical content is required.
-- Do NOT use code blocks for normal explanations, career advice, project ideas, resumes, interview answers or formatted text.
-- Leave one blank line between headings, paragraphs and lists.
-- Never write headings or lists as plain text.
-- Return Markdown only.
-- End every answer with:
-
-## 💡 Tip
-
-followed by one useful tip.
-
-Your output MUST always be valid GitHub Markdown.
-
-Rules:
-
-- Use Markdown naturally.
-- Use headings only when they improve readability.
-- Short answers do not require headings.
-- Use bullet points or numbered lists only when helpful.
-- Every list MUST use "-" bullets.
-- Bold important words using **bold**.
-- Every code example MUST be inside triple backticks with the language name.
-- Leave one blank line between headings, paragraphs and lists.
-- Never write headings or lists as plain text.
-- Return Markdown only.
-- End every answer with:
+- Return valid GitHub Markdown.
+- Use headings only when useful.
+- Use bullet points when needed.
+- Bold important words.
+- Use code blocks ONLY for programming code or commands.
+- Do not use code blocks for normal explanations.
+- Leave one blank line between sections.
+- End long answers with:
 
 ## 💡 Tip
 
-followed by one useful tip.
+Follow with one practical tip.
 
-Conversation History:
+==================================================
+CONVERSATION HISTORY
+==================================================
 
 ${history
-  .slice(-10)
+  .slice(-8)
   .map(
     (msg: { sender: string; text: string }) =>
       `${msg.sender}: ${msg.text}`
   )
   .join("\n")}
 
-${attachment
-  ? `
-Attached File:
-- Name: ${attachment.name}
-- Type: ${attachment.type}
-- URL: ${attachment.url}
-`
-  : ""}
+${
+  attachment
+    ? `
+==================================================
+ATTACHED FILE
+==================================================
 
-User Question:
+Name: ${attachment.name}
+Type: ${attachment.type}
+URL: ${attachment.url}
+`
+    : ""
+}
+==================================================
+LIVE SEARCH RESULTS
+==================================================
+
+${searchResults || "No live search results available."}
+
+IMPORTANT:
+
+- If live search results are available, use them as the primary source.
+- Do not contradict verified search results.
+- If there are no live search results, answer using your own knowledge.
+==================================================
+USER QUESTION
+==================================================
 
 ${message}
 `;
-
     const stream = await ai.models.generateContentStream({
       model: "models/gemini-3-flash-preview",
       contents: prompt,
@@ -135,7 +188,6 @@ ${message}
         try {
           for await (const chunk of stream) {
             const text = chunk.text ?? "";
-            console.log("CHUNK:", JSON.stringify(text));
             if (!text) continue;
 
             fullResponse += text;

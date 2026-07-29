@@ -19,7 +19,7 @@ console.log("Modal open:", open);
 
       <div className="w-[420px] rounded-3xl border border-white/10 bg-slate-900 p-6 shadow-2xl">
 
-        <h2 className="text-xl font-bold text-white">
+        <h2 className="font-display text-xl font-bold text-white">
           Delete Chat
         </h2>
 
@@ -39,7 +39,7 @@ console.log("Modal open:", open);
 
           <button
             onClick={onCancel}
-            className="rounded-xl border border-white/10 px-5 py-2 text-white hover:bg-white/10"
+            className="rounded-xl border border-white/10 px-5 py-2 text-white hover:bg-panel/10"
           >
             Cancel
           </button>

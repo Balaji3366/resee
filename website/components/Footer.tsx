@@ -8,14 +8,14 @@ export default function Footer() {
   return (
     <footer
       id="about"
-      className="relative overflow-hidden bg-[#041E18] text-white"
+      className="relative overflow-hidden bg-panel-2 text-white"
     >
 
       {/* Background Glow */}
 
-      <div className="absolute -left-24 top-0 h-80 w-80 rounded-full bg-[#D4AF37]/10 blur-[120px]" />
+      <div className="absolute -left-24 top-0 h-80 w-80 rounded-full bg-amber/10 blur-[120px]" />
 
-      <div className="absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-emerald-500/10 blur-[120px]" />
+      <div className="absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-teal/10 blur-[120px]" />
 
       <div className="relative mx-auto max-w-7xl px-6 py-24">
 
@@ -25,15 +25,15 @@ export default function Footer() {
 
           <div>
 
-            <div className="inline-flex items-center rounded-2xl bg-white/5 px-5 py-3 backdrop-blur-md">
+            <div className="inline-flex items-center rounded-2xl bg-panel/5 px-5 py-3 backdrop-blur-md">
 
-              <h2 className="text-3xl font-extrabold text-[#D4AF37]">
-                ✦ Mentora
+              <h2 className="font-display text-3xl font-extrabold text-amber">
+                ✦ RESEE
               </h2>
 
             </div>
 
-            <p className="mt-6 leading-8 text-gray-300">
+            <p className="mt-6 leading-8 text-slate">
               Your AI Career Mentor helping students and professionals
               build stronger resumes, prepare for interviews,
               improve skills and confidently land their dream careers.
@@ -41,25 +41,25 @@ export default function Footer() {
 
             <div className="mt-8 flex gap-4">
 
-              <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center backdrop-blur-md">
+              <div className="rounded-xl border border-white/10 bg-panel/5 px-4 py-3 text-center backdrop-blur-md">
 
-                <h3 className="text-2xl font-bold text-[#D4AF37]">
+                <h3 className="text-2xl font-bold text-amber">
                   10K+
                 </h3>
 
-                <p className="mt-1 text-xs text-gray-400">
+                <p className="mt-1 text-xs text-slate">
                   Users
                 </p>
 
               </div>
 
-              <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center backdrop-blur-md">
+              <div className="rounded-xl border border-white/10 bg-panel/5 px-4 py-3 text-center backdrop-blur-md">
 
-                <h3 className="text-2xl font-bold text-[#D4AF37]">
+                <h3 className="text-2xl font-bold text-amber">
                   ★4.9
                 </h3>
 
-                <p className="mt-1 text-xs text-gray-400">
+                <p className="mt-1 text-xs text-slate">
                   Rating
                 </p>
 
@@ -81,21 +81,21 @@ export default function Footer() {
 
               <button
                 onClick={() => router.push("/")}
-                className="text-left text-gray-300 transition hover:translate-x-2 hover:text-[#D4AF37]"
+                className="text-left text-slate transition hover:translate-x-2 hover:text-amber"
               >
                 Home
               </button>
 
               <button
                 onClick={() => router.push("/login")}
-                className="text-left text-gray-300 transition hover:translate-x-2 hover:text-[#D4AF37]"
+                className="text-left text-slate transition hover:translate-x-2 hover:text-amber"
               >
                 Login
               </button>
 
               <button
                 onClick={() => router.push("/signup")}
-                className="text-left text-gray-300 transition hover:translate-x-2 hover:text-[#D4AF37]"
+                className="text-left text-slate transition hover:translate-x-2 hover:text-amber"
               >
                 Sign Up
               </button>
@@ -112,7 +112,7 @@ export default function Footer() {
               AI Features
             </h3>
 
-            <div className="mt-6 flex flex-col gap-4 text-gray-300">
+            <div className="mt-6 flex flex-col gap-4 text-slate">
 
               <span>📄 Resume Analyzer</span>
 
@@ -138,11 +138,11 @@ export default function Footer() {
               Contact
             </h3>
 
-            <div className="mt-6 space-y-4 text-gray-300">
+            <div className="mt-6 space-y-4 text-slate">
 
-              <p>📧 support@mentora.ai</p>
+              <p>📧 support@resee.ai</p>
 
-              <p>🌍 www.mentora.ai</p>
+              <p>🌍 www.resee.ai</p>
 
               <p>🇮🇳 Built with ❤️ in India</p>
 
@@ -151,19 +151,19 @@ export default function Footer() {
             </div>
 
             <div className="mt-8 flex gap-3">
-                            <button className="rounded-xl border border-white/10 bg-white/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-[#D4AF37] hover:text-[#041E18]">
+                            <button className="rounded-xl border border-white/10 bg-panel/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-amber hover:text-ink">
                 🌐
               </button>
 
-              <button className="rounded-xl border border-white/10 bg-white/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-[#D4AF37] hover:text-[#041E18]">
+              <button className="rounded-xl border border-white/10 bg-panel/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-amber hover:text-ink">
                 💼
               </button>
 
-              <button className="rounded-xl border border-white/10 bg-white/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-[#D4AF37] hover:text-[#041E18]">
+              <button className="rounded-xl border border-white/10 bg-panel/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-amber hover:text-ink">
                 🐦
               </button>
 
-              <button className="rounded-xl border border-white/10 bg-white/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-[#D4AF37] hover:text-[#041E18]">
+              <button className="rounded-xl border border-white/10 bg-panel/5 p-3 transition-all duration-300 hover:scale-110 hover:bg-amber hover:text-ink">
                 📷
               </button>
 
@@ -179,27 +179,27 @@ export default function Footer() {
 
           <div>
 
-            <p className="text-sm text-gray-400">
-              © 2026 <span className="font-semibold text-[#D4AF37]">Mentora</span>. All Rights Reserved.
+            <p className="text-sm text-slate">
+              © 2026 <span className="font-semibold text-amber">RESEE</span>. All Rights Reserved.
             </p>
 
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="mt-2 text-xs text-slate">
               Built with ❤️ to help students and professionals grow their careers.
             </p>
 
           </div>
 
-          <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400">
+          <div className="flex flex-wrap items-center gap-6 text-sm text-slate">
 
-            <button className="transition hover:text-[#D4AF37]">
+            <button className="transition hover:text-amber">
               Privacy Policy
             </button>
 
-            <button className="transition hover:text-[#D4AF37]">
+            <button className="transition hover:text-amber">
               Terms of Service
             </button>
 
-            <button className="transition hover:text-[#D4AF37]">
+            <button className="transition hover:text-amber">
               Contact
             </button>
 

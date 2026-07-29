@@ -19,8 +19,8 @@ export default function BackButton({
       onClick={() => router.back()}
       className={`group inline-flex items-center gap-2 rounded-2xl px-5 py-3 font-semibold transition-all duration-300 ${
         isDark
-          ? "border border-white/20 bg-white/10 text-white backdrop-blur-md hover:bg-white hover:text-[#0A3B2E]"
-          : "border border-[#D4AF37] bg-white text-[#0A3B2E] shadow-[0_10px_30px_rgba(10,59,46,0.08)] hover:bg-[#0A3B2E] hover:text-white hover:shadow-[0_18px_40px_rgba(10,59,46,0.18)]"
+          ? "border border-white/20 bg-panel/10 text-white backdrop-blur-md hover:bg-panel hover:text-amber"
+          : "border border-amber bg-panel text-amber shadow-[0_10px_30px_rgba(10,59,46,0.08)] hover:bg-amber hover:text-white hover:shadow-[0_18px_40px_rgba(10,59,46,0.18)]"
       }`}
     >
       <ArrowLeft

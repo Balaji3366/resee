@@ -90,7 +90,7 @@ export default function Navbar() {
     "User";
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-[#D4AF37]/20 bg-[#06281F]/95 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-amber/20 bg-ink/95 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
 
         {/* Logo */}
@@ -109,11 +109,11 @@ export default function Navbar() {
           />
 
           <div className="flex flex-col items-start">
-            <h1 className="text-3xl font-extrabold text-[#D4AF37]">
+            <h1 className="font-display text-3xl font-extrabold text-amber">
               RESEE
             </h1>
 
-            <span className="text-xs uppercase tracking-[0.25em] text-gray-300">
+            <span className="text-xs uppercase tracking-[0.25em] text-slate">
               See Your Future
             </span>
           </div>
@@ -126,14 +126,14 @@ export default function Navbar() {
           <div className="hidden items-center gap-4 lg:flex">
             <button
               onClick={() => router.push("/login")}
-              className="rounded-xl border border-[#D4AF37] px-5 py-2 font-semibold text-[#D4AF37] transition hover:bg-[#D4AF37] hover:text-[#06281F]"
+              className="rounded-xl border border-amber px-5 py-2 font-semibold text-amber transition hover:bg-amber hover:text-bone"
             >
               Login
             </button>
 
             <button
               onClick={() => router.push("/signup")}
-              className="rounded-xl bg-[#D4AF37] px-6 py-2 font-semibold text-[#06281F] transition hover:brightness-110"
+              className="rounded-xl bg-amber px-6 py-2 font-semibold text-bone transition hover:brightness-110"
             >
               Get Started
             </button>
@@ -143,9 +143,9 @@ export default function Navbar() {
 
             <button
               onClick={() => setOpen((prev) => !prev)}
-              className="flex items-center gap-3 rounded-xl border border-[#D4AF37]/30 bg-[#0A3B2E] px-4 py-2 transition hover:border-[#D4AF37]"
+              className="flex items-center gap-3 rounded-xl border border-amber/30 bg-amber px-4 py-2 transition hover:border-amber"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#D4AF37] font-bold text-[#06281F]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber font-bold text-bone">
                 {fullName.charAt(0).toUpperCase()}
               </div>
 
@@ -154,21 +154,21 @@ export default function Navbar() {
                   {fullName}
                 </p>
 
-                <p className="text-xs text-gray-300">
+                <p className="text-xs text-slate">
                   Welcome Back
                 </p>
               </div>
             </button>
 
             {open && (
-              <div className="absolute right-0 mt-3 w-60 overflow-hidden rounded-2xl border border-[#D4AF37]/20 bg-white shadow-2xl">
+              <div className="absolute right-0 mt-3 w-60 overflow-hidden rounded-2xl border border-amber/20 bg-panel shadow-2xl">
 
                 <button
                   onClick={() => {
                     setOpen(false);
                     router.push("/dashboard");
                   }}
-                  className="block w-full px-5 py-3 text-left text-[#06281F] transition hover:bg-[#F8FAF8]"
+                  className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
                 >
                   Dashboard
                 </button>
@@ -178,7 +178,7 @@ export default function Navbar() {
                     setOpen(false);
                     router.push("/resume-history");
                   }}
-                  className="block w-full px-5 py-3 text-left text-[#06281F] transition hover:bg-[#F8FAF8]"
+                  className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
                 >
                   Resume History
                 </button>
@@ -188,7 +188,7 @@ export default function Navbar() {
                     setOpen(false);
                     router.push("/documents");
                   }}
-                  className="block w-full px-5 py-3 text-left text-[#06281F] transition hover:bg-[#F8FAF8]"
+                  className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
                 >
                   Documents
                 </button>
@@ -200,7 +200,7 @@ export default function Navbar() {
                     setOpen(false);
                     setLogoutOpen(true);
                   }}
-                  className="block w-full px-5 py-3 text-left text-[#06281F] transition hover:bg-[#F8FAF8]"
+                  className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
                 >
                   Logout
                 </button>

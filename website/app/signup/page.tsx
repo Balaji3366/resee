@@ -3,13 +3,13 @@ import SignupForm from "@/components/auth/SignUpForm";
 
 export default function SignupPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#F8FAF8]">
+    <main className="relative min-h-screen overflow-hidden bg-ink">
 
       {/* Background Glow */}
 
-      <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-[#D4AF37]/20 blur-3xl" />
+      <div className="absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full bg-amber/20 blur-3xl" />
 
-      <div className="absolute -bottom-40 -right-40 h-[420px] w-[420px] rounded-full bg-[#0A3B2E]/20 blur-3xl" />
+      <div className="absolute -bottom-40 -right-40 h-[420px] w-[420px] rounded-full bg-amber/20 blur-3xl" />
 
       {/* Decorative Grid */}
 

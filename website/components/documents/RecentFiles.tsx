@@ -67,33 +67,33 @@ export default function RecentFiles({
   }
 
   return (
-    <div className="flex h-[430px] flex-col rounded-[30px] border border-[#D4AF37]/20 bg-white p-8 shadow-[0_20px_70px_rgba(10,59,46,.08)]">
+    <div className="flex h-[430px] flex-col rounded-[30px] border border-amber/20 bg-panel p-8 shadow-[0_20px_70px_rgba(10,59,46,.08)]">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-[#06281F]">
+          <h2 className="font-display text-2xl font-bold text-bone">
             Recent Files
           </h2>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-slate">
             Select a document for AI analysis
           </p>
         </div>
 
-        <div className="rounded-full bg-[#EEF7F2] px-4 py-1.5 text-sm font-bold text-[#0A3B2E]">
+        <div className="rounded-full bg-panel px-4 py-1.5 text-sm font-bold text-amber">
           {files.length}
         </div>
       </div>
 
-      <div className="mt-2 flex-1 overflow-y-auto pr-2 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#14532D]/40 hover:[&::-webkit-scrollbar-thumb]:bg-[#14532D]/70">
+      <div className="mt-2 flex-1 overflow-y-auto pr-2 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-panel-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-amber-dim/40 hover:[&::-webkit-scrollbar-thumb]:bg-amber-dim/70">
         {files.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-[#D4AF37]/30 bg-[#F8FAF8] p-8 text-center">
+          <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-amber/30 bg-ink p-8 text-center">
             <div className="mb-4 text-4xl">📄</div>
 
-            <p className="font-semibold text-[#06281F]">
+            <p className="font-semibold text-bone">
               No Documents Yet
             </p>
 
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-slate">
               Upload your first PDF to get started.
             </p>
           </div>
@@ -107,22 +107,22 @@ export default function RecentFiles({
               }}
               className={`mb-3 w-full cursor-pointer rounded-2xl border p-4 transition-all duration-300 ${
                 selectedFile === fileName
-                  ? "border-[#14532D] bg-[#EEF7F2] shadow-md"
-                  : "border-[#D4AF37]/20 bg-white hover:border-[#D4AF37] hover:bg-[#F8FAF8] hover:shadow-md"
+                  ? "border-amber-dim bg-panel shadow-md"
+                  : "border-amber/20 bg-panel hover:border-amber hover:bg-ink hover:shadow-md"
               }`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A3B2E] to-[#14532D] text-lg text-white">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber to-amber-dim text-lg text-white">
                     📄
                   </div>
 
                   <div className="overflow-hidden">
-                    <p className="truncate font-semibold text-[#06281F]">
+                    <p className="truncate font-semibold text-bone">
                       {cleanFileName(fileName)}
                     </p>
 
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-slate">
                       PDF Document
                     </p>
                   </div>
@@ -130,7 +130,7 @@ export default function RecentFiles({
 
                 <div className="flex items-center gap-2">
                   {selectedFile === fileName && (
-                    <span className="rounded-full bg-[#0A3B2E] px-3 py-1 text-xs font-semibold text-white">
+                    <span className="rounded-full bg-amber px-3 py-1 text-xs font-semibold text-white">
                       Active
                     </span>
                   )}
@@ -141,7 +141,7 @@ export default function RecentFiles({
                       setFileToDelete(fileName);
                       setShowDeleteModal(true);
                     }}
-                    className="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                    className="rounded-lg p-2 text-slate transition hover:bg-panel-2 hover:text-red-400"
                   >
                     <Trash2 size={16} />
                   </button>

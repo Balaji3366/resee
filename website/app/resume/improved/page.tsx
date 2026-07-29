@@ -105,15 +105,15 @@ export default function ImprovedResumePage() {
             <BackButton variant="light" />
           </div>
 
-          <div className="rounded-2xl bg-white p-8 shadow-xl">
+          <div className="rounded-2xl bg-panel p-8 shadow-xl">
 
             <div className="mb-10 text-center">
 
-              <h1 className="text-4xl font-bold text-emerald-600">
+              <h1 className="font-display text-4xl font-bold text-teal">
                 ✨ Resume Improved Successfully
               </h1>
 
-              <p className="mt-3 text-gray-600">
+              <p className="mt-3 text-slate">
                 Your resume has been optimized for ATS and recruiter readability.
               </p>
 
@@ -133,14 +133,14 @@ export default function ImprovedResumePage() {
 
                   <button
                     onClick={handleDownloadDOCX}
-                    className="rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700"
+                    className="rounded-lg bg-teal px-6 py-3 font-semibold text-white transition hover:bg-teal-dim"
                   >
                     📝 Download DOCX
                   </button>
 
                   <button
                     onClick={copyResume}
-                    className="rounded-lg border border-gray-300 bg-white px-6 py-3 font-semibold text-gray-800 transition hover:bg-gray-100"
+                    className="rounded-lg border border-bone/15 bg-panel px-6 py-3 font-semibold text-bone transition hover:bg-panel-2 hover:text-white"
                   >
                     📋 Copy Resume
                   </button>
@@ -148,12 +148,12 @@ export default function ImprovedResumePage() {
                 </div>
               </>
             ) : (
-              <div className="rounded-xl border border-dashed border-gray-300 py-16 text-center">
-                <h2 className="text-2xl font-semibold text-gray-700">
+              <div className="rounded-xl border border-dashed border-bone/15 py-16 text-center">
+                <h2 className="font-display text-2xl font-semibold text-bone">
                   No Improved Resume Found
                 </h2>
 
-                <p className="mt-3 text-gray-500">
+                <p className="mt-3 text-slate">
                   Please go back and generate an improved resume first.
                 </p>
               </div>

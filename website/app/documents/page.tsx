@@ -100,11 +100,11 @@ useEffect(() => {
     <div className="mx-auto max-w-7xl pt-16">
     
       <div className="mb-8">
-        <h1 className="mb-2 text-4xl font-bold text-gray-900">
+        <h1 className="font-display mb-2 text-4xl font-bold text-bone">
           📄 AI Document Workspace
         </h1>
 
-        <p className="text-gray-600">
+        <p className="text-slate">
           Upload any PDF and instantly generate summaries, answers, quizzes,
           and interview questions using AI.
         </p>

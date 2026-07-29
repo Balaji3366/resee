@@ -1,19 +1,25 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --color-ink: #f7f9fc;
+  --color-panel: #eef2f9;
+  --color-panel-2: #0f1b2e;
+  --color-amber: #2f8fef;
+  --color-amber-dim: #1b3a63;
+  --color-teal: #1f9d92;
+  --color-teal-dim: #15706a;
+  --color-bone: #101826;
+  --color-slate: #6b7280;
+  --font-display: var(--font-space-grotesk);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: var(--color-ink);
+  --foreground: var(--color-bone);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-ibm-plex-mono);
 }
 
 html {
@@ -27,7 +33,7 @@ body {
 }
 
 /* ========================= */
-/* Mentora Mascot Animation  */
+/* RESEE Mascot Animation */
 /* ========================= */
 
 @keyframes float {
@@ -96,7 +102,7 @@ body {
   animation: pulse-soft 2.5s ease-in-out infinite;
 }
 /* ========================= */
-/* Mentora Scrollbar */
+/* Scrollbar */
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -107,47 +113,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #14532D;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #0A3B2E;
-}
-
-/* Custom Scrollbar */
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #7c3aed;
+  background: var(--color-amber-dim);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9333ea;
-}
-
-/* Sidebar Scrollbar */
-
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #14532D;
-  border-radius: 9999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #0A3B2E;
+  background: var(--color-amber);
 }

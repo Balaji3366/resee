@@ -19,14 +19,14 @@ export default function LoginLogo() {
       {/* Brand */}
 
       <div className="mt-5">
-        <h1 className="text-5xl font-black tracking-[-0.03em] text-[#06281F]">
+        <h1 className="font-display text-5xl font-black tracking-[-0.03em] text-bone">
           RESEE
         </h1>
 
         <div className="mt-2 flex items-center gap-3">
-          <div className="h-px w-10 bg-[#D4AF37]" />
+          <div className="h-px w-10 bg-amber" />
 
-          <p className="text-base font-medium tracking-wide text-gray-500">
+          <p className="text-base font-medium tracking-wide text-slate">
             See Your Future
           </p>
         </div>

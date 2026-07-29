@@ -26,7 +26,7 @@ export default function Toast({
   if (!show) return null;
 
   return (
-    <div className="fixed right-6 top-6 z-50 rounded-xl bg-emerald-600 px-5 py-3 text-white shadow-2xl">
+    <div className="fixed right-6 top-6 z-50 rounded-xl bg-teal px-5 py-3 text-white shadow-2xl">
       {message}
     </div>
   );

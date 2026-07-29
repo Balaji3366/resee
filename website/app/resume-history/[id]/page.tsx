@@ -20,8 +20,8 @@ export default async function ViewReportPage({
 
   if (!data) {
     return (
-      <section className="min-h-screen flex items-center justify-center bg-gray-100">
-        <h1 className="text-3xl font-bold text-red-600">
+      <section className="min-h-screen flex items-center justify-center bg-panel-2">
+        <h1 className="font-display text-3xl font-bold text-red-400">
           Report not found
         </h1>
       </section>
@@ -52,39 +52,39 @@ export default async function ViewReportPage({
       .map((line: string) => line.replace("-", "").trim()) || [];
 
   return (
-    <section className="min-h-screen bg-gray-100 py-20">
+    <section className="min-h-screen bg-panel-2 py-20">
       <div className="mx-auto max-w-5xl px-6">
 
-        <div className="rounded-3xl bg-white p-10 shadow-xl">
+        <div className="rounded-3xl bg-panel p-10 shadow-xl">
 
-          <h1 className="text-center text-4xl font-bold text-gray-900">
+          <h1 className="font-display text-center text-4xl font-bold text-bone">
             📄 AI Resume Report
           </h1>
 
-          <p className="mt-4 text-center text-gray-500">
+          <p className="mt-4 text-center text-slate">
             {data.file_name}
           </p>
 
           {/* ATS Score */}
-          <div className="mt-10 rounded-2xl bg-blue-50 p-8">
+          <div className="mt-10 rounded-2xl bg-panel-2 p-8">
 
-            <h2 className="text-2xl font-bold text-blue-800">
+            <h2 className="font-display text-2xl font-bold text-blue-400">
               📊 ATS Score
             </h2>
 
             <p
               className={`mt-4 text-5xl font-extrabold ${
                 score >= 75
-                  ? "text-green-700"
+                  ? "text-green-400"
                   : score >= 50
-                  ? "text-yellow-600"
-                  : "text-red-600"
+                  ? "text-yellow-400"
+                  : "text-red-400"
               }`}
             >
               {score}/100
             </p>
 
-            <div className="mt-5 h-4 w-full rounded-full bg-blue-200">
+            <div className="mt-5 h-4 w-full rounded-full bg-panel-2">
               <div
                 className={`h-4 rounded-full ${
                   score >= 75
@@ -101,9 +101,9 @@ export default async function ViewReportPage({
 
           {/* Strengths */}
 
-          <div className="mt-8 rounded-2xl bg-green-50 p-8">
+          <div className="mt-8 rounded-2xl bg-panel-2 p-8">
 
-            <h2 className="mb-5 text-2xl font-bold text-green-700">
+            <h2 className="font-display mb-5 text-2xl font-bold text-green-400">
               💪 Strengths
             </h2>
 
@@ -119,9 +119,9 @@ export default async function ViewReportPage({
 
           {/* Weaknesses */}
 
-          <div className="mt-8 rounded-2xl bg-yellow-50 p-8">
+          <div className="mt-8 rounded-2xl bg-panel-2 p-8">
 
-            <h2 className="mb-5 text-2xl font-bold text-yellow-700">
+            <h2 className="font-display mb-5 text-2xl font-bold text-yellow-400">
               ⚠ Weaknesses
             </h2>
 
@@ -137,9 +137,9 @@ export default async function ViewReportPage({
 
           {/* Suggestions */}
 
-          <div className="mt-8 rounded-2xl bg-purple-50 p-8">
+          <div className="mt-8 rounded-2xl bg-panel-2 p-8">
 
-            <h2 className="mb-5 text-2xl font-bold text-purple-700">
+            <h2 className="font-display mb-5 text-2xl font-bold text-purple-400">
               🚀 Suggestions
             </h2>
 

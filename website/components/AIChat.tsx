@@ -266,7 +266,7 @@ export default function AIChat() {
   }
     return (
     <>
-      <section className="min-h-screen bg-gradient-to-br from-[#F8FAF8] via-white to-[#EEF7F2] px-8 py-8">
+      <section className="min-h-screen bg-gradient-to-br from-ink via-white to-panel px-8 py-8">
         <div className="mb-6">
           <BackButton />
         </div>
@@ -294,7 +294,7 @@ export default function AIChat() {
           />
 
           {/* Chat Window */}
-          <div className="flex flex-1 flex-col overflow-hidden rounded-[30px] border border-[#D4AF37]/20 bg-white shadow-[0_20px_70px_rgba(10,59,46,.08)]">
+          <div className="flex flex-1 flex-col overflow-hidden rounded-[30px] border border-amber/20 bg-panel shadow-[0_20px_70px_rgba(10,59,46,.08)]">
             {/* Header */}
             <ChatHeader />
 

@@ -43,21 +43,21 @@ export default function ForgotPasswordForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F8FAF8] px-6">
+    <div className="flex min-h-screen items-center justify-center bg-ink px-6">
 
-      <div className="w-full max-w-md rounded-3xl border border-[#D4AF37]/20 bg-white p-8 shadow-2xl">
+      <div className="w-full max-w-md rounded-3xl border border-amber/20 bg-panel p-8 shadow-2xl">
 
         <div className="mb-8 text-center">
 
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#0A3B2E]/10">
-            <Mail className="h-8 w-8 text-[#0A3B2E]" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber/10">
+            <Mail className="h-8 w-8 text-amber" />
           </div>
 
-          <h1 className="text-3xl font-bold text-[#06281F]">
+          <h1 className="font-display text-3xl font-bold text-bone">
             Forgot Password?
           </h1>
 
-          <p className="mt-3 text-gray-600">
+          <p className="mt-3 text-slate">
             Enter your registered email and we'll send you a password reset
             link.
           </p>
@@ -68,7 +68,7 @@ export default function ForgotPasswordForm() {
 
           <div>
 
-            <label className="mb-2 block font-medium text-[#06281F]">
+            <label className="mb-2 block font-medium text-bone">
               Email Address
             </label>
 
@@ -77,7 +77,7 @@ export default function ForgotPasswordForm() {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/30"
+              className="w-full rounded-xl border border-bone/15 px-4 py-3 outline-none transition focus:border-amber focus:ring-2 focus:ring-amber/30"
             />
 
           </div>
@@ -85,7 +85,7 @@ export default function ForgotPasswordForm() {
           <button
             type="submit"
             disabled={loading}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#D4AF37] py-3 font-semibold text-[#06281F] transition hover:brightness-110 disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber py-3 font-semibold text-bone transition hover:brightness-110 disabled:opacity-60"
           >
             {loading ? (
               <>
@@ -101,7 +101,7 @@ export default function ForgotPasswordForm() {
 
         <Link
           href="/login"
-          className="mt-6 flex items-center justify-center gap-2 text-[#0A3B2E] transition hover:text-[#D4AF37]"
+          className="mt-6 flex items-center justify-center gap-2 text-amber transition hover:text-amber"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Login

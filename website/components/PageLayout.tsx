@@ -13,7 +13,7 @@ export default function PageLayout({
   variant = "light",
 }: PageLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-panel-2">
       <div className="mx-auto max-w-7xl px-8 py-8">
 
         <div className="mb-8">

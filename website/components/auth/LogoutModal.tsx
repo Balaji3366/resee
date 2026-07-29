@@ -25,27 +25,27 @@ export default function LogoutModal({
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-[#D4AF37]/20 bg-white shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-amber/20 bg-panel shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
 
         {/* Header */}
 
-        <div className="bg-gradient-to-r from-[#0A3B2E] to-[#14532D] px-8 py-7 text-center">
+        <div className="bg-gradient-to-r from-amber to-amber-dim px-8 py-7 text-center">
 
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#D4AF37] shadow-lg">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-amber shadow-lg">
 
             <ShieldAlert
               size={38}
-              className="text-[#06281F]"
+              className="text-bone"
             />
 
           </div>
 
-          <h2 className="mt-5 text-3xl font-bold text-white">
+          <h2 className="font-display mt-5 text-3xl font-bold text-white">
             Logout
           </h2>
 
-          <p className="mt-2 text-sm text-gray-200">
-            You're about to sign out of Mentora.
+          <p className="mt-2 text-sm text-bone/70">
+            You're about to sign out of RESEE.
           </p>
 
         </div>
@@ -54,7 +54,7 @@ export default function LogoutModal({
 
         <div className="px-8 py-7">
 
-          <p className="text-center leading-7 text-gray-600">
+          <p className="text-center leading-7 text-slate">
             Are you sure you want to logout?
             <br />
             You can sign in again anytime.
@@ -64,7 +64,7 @@ export default function LogoutModal({
 
             <button
               onClick={onCancel}
-              className="flex-1 rounded-xl border border-gray-300 bg-white py-3 font-semibold text-[#06281F] transition-all hover:border-[#0A3B2E] hover:bg-gray-50"
+              className="flex-1 rounded-xl border border-bone/15 bg-panel py-3 font-semibold text-bone transition-all hover:border-amber hover:bg-panel"
             >
               Cancel
             </button>
