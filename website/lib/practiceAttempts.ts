@@ -25,8 +25,8 @@ interface AttemptRow {
  */
 export async function findOrCreateInProgressAttempt(
   supabase: SupabaseClient,
-  table: "practice_attempts" | "mock_test_attempts",
-  parentIdColumn: "topic_id" | "mock_test_id",
+  table: "practice_attempts" | "mock_test_attempts" | "interview_attempts",
+  parentIdColumn: "topic_id" | "mock_test_id" | "interview_set_id",
   userId: string,
   parentId: string,
   loadQuestionIdsForNewAttempt: () => Promise<string[]>

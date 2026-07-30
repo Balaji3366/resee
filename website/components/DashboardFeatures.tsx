@@ -63,14 +63,15 @@ export default function DashboardFeatures() {
     {
       title: "Mock Interview",
       description:
-        "Practice HR and technical interviews with realistic AI conversations and detailed feedback reports.",
+        "Practice structured mock interviews across HR, Technical, Behavioural, and Scenario-Based formats, and track your progress.",
       icon: Mic,
-      badge: "Coming Soon",
-      badgeColor: "bg-panel-2 text-slate",
-      iconBg: "bg-panel-2",
+      badge: "LIVE",
+      badgeColor: "bg-teal-dim/20 text-teal",
+      iconBg: "bg-panel",
       iconColor: "text-amber",
-      button: "Coming Soon",
-      enabled: false,
+      button: "Start Interview",
+      action: () => router.push("/interviews"),
+      enabled: true,
     },
 
     {

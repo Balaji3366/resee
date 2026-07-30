@@ -28,7 +28,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Progress", icon: TrendingUp, href: "/progress" },
   { label: "My Resumes", icon: Files, href: "/resumes" },
   { label: "Resume", icon: FileText, href: "/resume" },
-  { label: "Mock Interviews", icon: Mic },
+  { label: "Mock Interviews", icon: Mic, href: "/interviews" },
   { label: "Profile", icon: User },
   { label: "Settings", icon: SettingsIcon, href: "/settings" },
 ];
