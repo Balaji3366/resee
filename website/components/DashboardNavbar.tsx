@@ -1,10 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { LogOut, LayoutDashboard, FileText, FolderOpen } from "lucide-react";
+import { LogOut, LayoutDashboard, FileText, FolderOpen, Menu } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
-export default function DashboardNavbar() {
+export default function DashboardNavbar({
+  onMenuClick,
+}: {
+  onMenuClick?: () => void;
+}) {
   const router = useRouter();
 
   async function handleLogout() {
@@ -16,6 +20,18 @@ export default function DashboardNavbar() {
   return (
     <header className="sticky top-0 z-50 mb-8 rounded-3xl border border-amber/20 bg-panel/90 backdrop-blur-xl shadow-lg">
       <div className="flex items-center justify-between px-8 py-5">
+        {/* Mobile sidebar toggle */}
+
+        {onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className="mr-4 flex h-10 w-10 items-center justify-center rounded-xl border border-bone/15 text-bone lg:hidden"
+            aria-label="Open menu"
+          >
+            <Menu size={20} />
+          </button>
+        )}
+
         {/* Logo */}
 
         <div

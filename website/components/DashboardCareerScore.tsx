@@ -10,7 +10,7 @@ import {
   FolderKanban,
   Briefcase,
 } from "lucide-react";
-import { useCareerScore } from "@/hooks/useCareerScore";
+import type { CareerScoreData } from "@/hooks/useCareerScore";
 import type { SubMetricKey } from "@/lib/careerScore";
 import CareerScoreGauge from "@/components/CareerScoreGauge";
 import CareerScoreTimeline from "@/components/CareerScoreTimeline";
@@ -34,8 +34,17 @@ function scoreBarColor(score: number) {
   return "bg-red-500";
 }
 
-export default function DashboardCareerScore() {
-  const { data, loading, error } = useCareerScore();
+interface DashboardCareerScoreProps {
+  data: CareerScoreData | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export default function DashboardCareerScore({
+  data,
+  loading,
+  error,
+}: DashboardCareerScoreProps) {
 
   return (
     <motion.section

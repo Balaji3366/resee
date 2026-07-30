@@ -1,9 +1,15 @@
+import { Suspense } from "react";
 import LoginFeatures from "@/components/auth/LoginFeature";
 import SignupForm from "@/components/auth/SignUpForm";
+import GoalCapture from "@/components/auth/GoalCapture";
 
 export default function SignupPage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-ink">
+
+      <Suspense fallback={null}>
+        <GoalCapture />
+      </Suspense>
 
       {/* Background Glow */}
 

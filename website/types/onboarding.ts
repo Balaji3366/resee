@@ -1,15 +1,14 @@
 export type RoleType = "student" | "professional";
 
+export type OnboardingUserType = "student" | "fresher" | "professional";
+
+export type SkillLevel = "beginner" | "intermediate" | "advanced";
+
 export interface OnboardingAnswers {
-  roleType: RoleType | "";
-  education: string;
-  experience: string;
-  currentSkills: string[];
+  userType: OnboardingUserType | "";
+  goal: string;
   targetCareer: string;
-  dreamCompany: string;
-  dreamSalary: string;
-  studyTime: string;
-  interests: string[];
+  skillLevel: SkillLevel | "";
 }
 
 export interface CareerProfileAI {

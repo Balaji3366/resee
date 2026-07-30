@@ -1,33 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/useUser";
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 import OnboardingProgress from "@/components/onboarding/OnboardingProgress";
-import StepRoleType from "@/components/onboarding/steps/StepRoleType";
-import StepBackground from "@/components/onboarding/steps/StepBackground";
-import StepSkills from "@/components/onboarding/steps/StepSkills";
+import StepWelcome from "@/components/onboarding/steps/StepWelcome";
+import StepUserType from "@/components/onboarding/steps/StepUserType";
+import StepGoal from "@/components/onboarding/steps/StepGoal";
 import StepTargetCareer from "@/components/onboarding/steps/StepTargetCareer";
-import StepPreferences from "@/components/onboarding/steps/StepPreferences";
-import StepSummary from "@/components/onboarding/steps/StepSummary";
+import StepSkillLevel from "@/components/onboarding/steps/StepSkillLevel";
+import StepGenerating from "@/components/onboarding/steps/StepGenerating";
 import type { OnboardingAnswers } from "@/types/onboarding";
 
+const PENDING_GOAL_KEY = "resee:pending-onboarding-goal";
+
 const INITIAL_ANSWERS: OnboardingAnswers = {
-  roleType: "",
-  education: "",
-  experience: "",
-  currentSkills: [],
+  userType: "",
+  goal: "",
   targetCareer: "",
-  dreamCompany: "",
-  dreamSalary: "",
-  studyTime: "",
-  interests: [],
+  skillLevel: "",
 };
 
 export default function OnboardingPage() {
   const { user, loading } = useUser();
   const [step, setStep] = useState(1);
   const [answers, setAnswers] = useState<OnboardingAnswers>(INITIAL_ANSWERS);
+
+  useEffect(() => {
+    const pendingGoal = window.localStorage.getItem(PENDING_GOAL_KEY);
+
+    if (pendingGoal) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setAnswers((prev) => ({ ...prev, goal: pendingGoal }));
+      window.localStorage.removeItem(PENDING_GOAL_KEY);
+    }
+  }, []);
 
   function updateAnswers(patch: Partial<OnboardingAnswers>) {
     setAnswers((prev) => ({ ...prev, ...patch }));
@@ -43,18 +50,12 @@ export default function OnboardingPage() {
 
   return (
     <OnboardingLayout>
-      {step <= 5 && <OnboardingProgress step={step} />}
+      {step >= 2 && step <= 5 && <OnboardingProgress step={step - 1} />}
 
-      {step === 1 && (
-        <StepRoleType
-          answers={answers}
-          onChange={updateAnswers}
-          onNext={() => setStep(2)}
-        />
-      )}
+      {step === 1 && <StepWelcome onNext={() => setStep(2)} />}
 
       {step === 2 && (
-        <StepBackground
+        <StepUserType
           answers={answers}
           onChange={updateAnswers}
           onNext={() => setStep(3)}
@@ -63,7 +64,7 @@ export default function OnboardingPage() {
       )}
 
       {step === 3 && (
-        <StepSkills
+        <StepGoal
           answers={answers}
           onChange={updateAnswers}
           onNext={() => setStep(4)}
@@ -81,7 +82,7 @@ export default function OnboardingPage() {
       )}
 
       {step === 5 && (
-        <StepPreferences
+        <StepSkillLevel
           answers={answers}
           onChange={updateAnswers}
           onNext={() => setStep(6)}
@@ -89,7 +90,7 @@ export default function OnboardingPage() {
         />
       )}
 
-      {step === 6 && <StepSummary userId={user.id} answers={answers} />}
+      {step === 6 && <StepGenerating userId={user.id} answers={answers} />}
     </OnboardingLayout>
   );
 }

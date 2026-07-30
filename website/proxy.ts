@@ -9,6 +9,9 @@ const PROTECTED_ROUTES = [
   "/chat",
   "/quiz",
   "/onboarding",
+  "/settings",
+  "/learning",
+  "/practice",
 ];
 
 export async function proxy(request: NextRequest) {
@@ -66,7 +69,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/onboarding", request.url));
   }
 
-  if (onboardingCompleted && pathname === "/onboarding") {
+  const isEditingOnboarding = request.nextUrl.searchParams.get("edit") === "true";
+
+  if (onboardingCompleted && pathname === "/onboarding" && !isEditingOnboarding) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
@@ -82,5 +87,8 @@ export const config = {
     "/chat/:path*",
     "/quiz/:path*",
     "/onboarding/:path*",
+    "/settings/:path*",
+    "/learning/:path*",
+    "/practice/:path*",
   ],
 };

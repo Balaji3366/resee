@@ -32,15 +32,10 @@ A user just completed onboarding on RESEE, an AI career platform. Analyze their 
 
 User Profile:
 
-Role: ${answers.roleType}
-Education: ${answers.education}
-Experience: ${answers.experience}
-Current Skills: ${answers.currentSkills.join(", ") || "None listed"}
+Role: ${answers.userType}
+Goal: ${answers.goal}
 Target Career: ${answers.targetCareer}
-Dream Company: ${answers.dreamCompany || "Not specified"}
-Dream Salary: ${answers.dreamSalary || "Not specified"}
-Available Study Time: ${answers.studyTime}
-Interests: ${answers.interests.join(", ") || "None listed"}
+Current Skill Level: ${answers.skillLevel}
 
 Return ONLY valid JSON.
 
@@ -111,15 +106,10 @@ Rules:
 
     const { error } = await supabaseAdmin.from("profiles").upsert({
       id: userId,
-      role_type: answers.roleType,
-      education: answers.education,
-      experience: answers.experience,
-      current_skills: answers.currentSkills,
+      role_type: answers.userType,
+      goal: answers.goal,
       target_career: answers.targetCareer,
-      dream_company: answers.dreamCompany,
-      dream_salary: answers.dreamSalary,
-      study_time: answers.studyTime,
-      interests: answers.interests,
+      skill_level: answers.skillLevel,
       ai_summary: aiSummary,
       onboarding_completed: true,
       updated_at: new Date().toISOString(),
