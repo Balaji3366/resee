@@ -24,7 +24,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { label: "Learning", icon: BookOpen, href: "/learning" },
   { label: "Practice", icon: Target, href: "/practice" },
-  { label: "Progress", icon: TrendingUp },
+  { label: "Progress", icon: TrendingUp, href: "/progress" },
   { label: "Resume", icon: FileText, href: "/resume" },
   { label: "Mock Interviews", icon: Mic },
   { label: "Profile", icon: User },

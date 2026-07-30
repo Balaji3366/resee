@@ -12,6 +12,7 @@ const PROTECTED_ROUTES = [
   "/settings",
   "/learning",
   "/practice",
+  "/progress",
 ];
 
 export async function proxy(request: NextRequest) {
@@ -45,6 +46,31 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
+
+  const isAdminPath = pathname === "/admin" || pathname.startsWith("/admin/");
+
+  if (isAdminPath) {
+    if (pathname === "/admin/login" || pathname === "/admin/unauthorized") {
+      return response;
+    }
+
+    if (!user) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+
+    const { data: adminRow } = await supabase
+      .from("admin_users")
+      .select("role")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (!adminRow) {
+      return NextResponse.redirect(new URL("/admin/unauthorized", request.url));
+    }
+
+    return response;
+  }
+
   const isProtected = PROTECTED_ROUTES.some((route) =>
     pathname.startsWith(route)
   );
@@ -90,5 +116,7 @@ export const config = {
     "/settings/:path*",
     "/learning/:path*",
     "/practice/:path*",
+    "/progress/:path*",
+    "/admin/:path*",
   ],
 };

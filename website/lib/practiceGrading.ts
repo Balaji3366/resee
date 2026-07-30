@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { computeStreakUpdate } from "@/lib/learningStreak";
+import { checkAndAwardAchievements } from "@/lib/achievements";
 import type { PracticeAttemptQuestionResult, PracticeAttemptResult } from "@/types/practice";
 
 function sameOptionSet(a: string[], b: string[]): boolean {
@@ -82,4 +83,6 @@ export async function creditPracticeEngagement(userId: string, timeTakenSeconds:
       total_learning_minutes: (profile?.total_learning_minutes ?? 0) + minutesEarned,
     })
     .eq("id", userId);
+
+  await checkAndAwardAchievements(userId);
 }

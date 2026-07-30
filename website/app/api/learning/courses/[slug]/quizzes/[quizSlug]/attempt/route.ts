@@ -2,6 +2,7 @@ import { getServerSupabase } from "@/lib/supabaseServer";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { getModuleUnlockContext, isModuleUnlocked } from "@/lib/learningAccess";
 import { computeStreakUpdate } from "@/lib/learningStreak";
+import { checkAndAwardAchievements } from "@/lib/achievements";
 import type { QuizAttemptQuestionResult } from "@/types/learning";
 
 export const dynamic = "force-dynamic";
@@ -175,6 +176,8 @@ export async function POST(
       },
       { onConflict: "user_id,module_id" }
     );
+
+    await checkAndAwardAchievements(user.id);
 
     if (newlyPassed) {
       const { data: profile } = await supabaseAdmin

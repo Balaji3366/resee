@@ -2,6 +2,7 @@ import { getServerSupabase } from "@/lib/supabaseServer";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { getModuleUnlockContext, isModuleUnlocked } from "@/lib/learningAccess";
 import { computeStreakUpdate } from "@/lib/learningStreak";
+import { checkAndAwardAchievements } from "@/lib/achievements";
 
 export const dynamic = "force-dynamic";
 
@@ -150,6 +151,8 @@ export async function POST(
             (profile?.total_learning_minutes ?? 0) + lesson.estimated_minutes,
         })
         .eq("id", user.id);
+
+      await checkAndAwardAchievements(user.id);
     }
 
     return Response.json({ success: true });
