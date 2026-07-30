@@ -76,14 +76,15 @@ export default function DashboardFeatures() {
     {
       title: "Resume Builder",
       description:
-        "Build modern ATS-friendly resumes using premium templates with AI-powered writing assistance.",
+        "Build, organize and export multiple resumes across professional templates, with autosave and version history.",
       icon: FileText,
-      badge: "Coming Soon",
-      badgeColor: "bg-panel-2 text-slate",
-      iconBg: "bg-panel-2",
-      iconColor: "text-slate",
-      button: "Coming Soon",
-      enabled: false,
+      badge: "LIVE",
+      badgeColor: "bg-teal-dim/20 text-teal",
+      iconBg: "bg-panel",
+      iconColor: "text-amber",
+      button: "Build Resume",
+      action: () => router.push("/resumes"),
+      enabled: true,
     },
 
     {

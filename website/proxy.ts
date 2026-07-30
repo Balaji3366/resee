@@ -13,6 +13,7 @@ const PROTECTED_ROUTES = [
   "/learning",
   "/practice",
   "/progress",
+  "/resumes",
 ];
 
 export async function proxy(request: NextRequest) {
@@ -117,6 +118,7 @@ export const config = {
     "/learning/:path*",
     "/practice/:path*",
     "/progress/:path*",
+    "/resumes/:path*",
     "/admin/:path*",
   ],
 };
