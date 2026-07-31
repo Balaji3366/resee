@@ -1,18 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FileText, Copy, Archive, ArchiveRestore, Trash2 } from "lucide-react";
+import { FileText, Copy, Trash2 } from "lucide-react";
 import type { ResumeSummary } from "@/types/resume-builder";
 
 export default function ResumeCard({
   resume,
   onDuplicate,
-  onArchiveToggle,
   onDelete,
 }: {
   resume: ResumeSummary;
   onDuplicate: () => void;
-  onArchiveToggle: () => void;
   onDelete: () => void;
 }) {
   const router = useRouter();
@@ -38,13 +36,6 @@ export default function ResumeCard({
           className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-slate hover:bg-ink hover:text-bone"
         >
           <Copy size={14} /> Duplicate
-        </button>
-        <button
-          onClick={onArchiveToggle}
-          className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-slate hover:bg-ink hover:text-bone"
-        >
-          {resume.status === "active" ? <Archive size={14} /> : <ArchiveRestore size={14} />}
-          {resume.status === "active" ? "Archive" : "Restore"}
         </button>
         <button
           onClick={onDelete}

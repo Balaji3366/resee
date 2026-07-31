@@ -1,5 +1,6 @@
 import { getServerSupabase } from "@/lib/supabaseServer";
 import { maybeSnapshotVersion } from "@/lib/resumeVersioning";
+import { selectTemplate } from "@/lib/resumeTemplateSelection";
 import type { ResumeContent, ResumeDetail } from "@/types/resume-builder";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +23,7 @@ export async function GET(
 
     const { data, error } = await supabase
       .from("resumes")
-      .select("id, title, template_slug, status, content, updated_at, created_at")
+      .select("id, title, template_slug, content, updated_at, created_at")
       .eq("id", id)
       .eq("user_id", user.id)
       .maybeSingle();
@@ -37,7 +38,6 @@ export async function GET(
       id: data.id,
       title: data.title,
       templateSlug: data.template_slug,
-      status: data.status,
       content: data.content,
       updatedAt: data.updated_at,
       createdAt: data.created_at,
@@ -72,28 +72,22 @@ export async function PATCH(
 
     const body = await request.json().catch(() => ({}));
     const content: ResumeContent | undefined = body?.content;
-    const title: string | undefined = body?.title;
-    const templateSlug: string | undefined = body?.templateSlug;
-    const forceSnapshot: boolean = Boolean(body?.forceSnapshot);
 
-    const updates: Record<string, unknown> = {};
-    if (content !== undefined) updates.content = content;
-    if (title !== undefined) updates.title = title;
-    if (templateSlug !== undefined) updates.template_slug = templateSlug;
-
-    if (Object.keys(updates).length === 0) {
-      return Response.json(
-        { success: false, message: "No fields to update." },
-        { status: 400 }
-      );
+    if (!content) {
+      return Response.json({ success: false, message: "content is required." }, { status: 400 });
     }
+
+    const templateSlug = selectTemplate(content.userType);
+    const title = content.personalInfo?.fullName
+      ? `${content.personalInfo.fullName} Resume`
+      : "My Resume";
 
     const { data, error } = await supabase
       .from("resumes")
-      .update(updates)
+      .update({ content, template_slug: templateSlug, title })
       .eq("id", id)
       .eq("user_id", user.id)
-      .select("id, content")
+      .select("id")
       .maybeSingle();
 
     if (error) throw error;
@@ -102,13 +96,11 @@ export async function PATCH(
       return Response.json({ success: false, message: "Resume not found." }, { status: 404 });
     }
 
-    if (content !== undefined) {
-      await maybeSnapshotVersion(supabase, id, content, forceSnapshot);
-    }
+    await maybeSnapshotVersion(supabase, id, content, true);
 
     return Response.json({ success: true });
   } catch (error) {
-    console.error("Resume autosave error:", error);
+    console.error("Resume update error:", error);
 
     return Response.json(
       { success: false, message: "Failed to save resume." },

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import type { ResumeStatus, ResumeSummary } from "@/types/resume-builder";
+import type { ResumeSummary } from "@/types/resume-builder";
 
-export function useResumes(status: ResumeStatus = "active") {
+export function useResumes() {
   const [data, setData] = useState<ResumeSummary[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -11,7 +11,7 @@ export function useResumes(status: ResumeStatus = "active") {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(`/api/resumes?status=${status}`);
+      const res = await fetch("/api/resumes");
       const json = await res.json();
 
       if (!res.ok || !json.success) {
@@ -24,7 +24,7 @@ export function useResumes(status: ResumeStatus = "active") {
     } finally {
       setLoading(false);
     }
-  }, [status]);
+  }, []);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

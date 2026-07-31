@@ -2,15 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { FileText, Plus, Archive } from "lucide-react";
+import { FileText, Plus } from "lucide-react";
 import { useResumes } from "@/hooks/useResumes";
 import ResumeCard from "@/components/resume-builder/ResumeCard";
 import ConfirmModal from "@/components/ConfirmModal";
 
 export default function ResumesPage() {
   const router = useRouter();
-  const { data: resumes, loading, refetch } = useResumes("active");
+  const { data: resumes, loading, refetch } = useResumes();
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -18,15 +17,6 @@ export default function ResumesPage() {
     const res = await fetch(`/api/resumes/${id}/duplicate`, { method: "POST" });
     const json = await res.json();
     if (json.success) refetch();
-  }
-
-  async function handleArchive(id: string) {
-    await fetch(`/api/resumes/${id}/status`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "archived" }),
-    });
-    refetch();
   }
 
   async function handleDelete() {
@@ -46,23 +36,15 @@ export default function ResumesPage() {
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">My Resumes</h1>
-          <p className="mt-2 text-slate">Create, edit, and manage multiple versions of your resume.</p>
+          <p className="mt-2 text-slate">ReSee builds your resume for you — just answer a few questions.</p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link
-            href="/resumes/archived"
-            className="flex items-center gap-2 rounded-xl border border-bone/15 bg-panel px-4 py-2.5 font-semibold text-bone hover:bg-ink"
-          >
-            <Archive size={18} /> Archived
-          </Link>
-          <button
-            onClick={() => router.push("/resumes/templates")}
-            className="flex items-center gap-2 rounded-xl bg-amber px-4 py-2.5 font-semibold text-white transition hover:bg-amber-dim"
-          >
-            <Plus size={18} /> Create New
-          </button>
-        </div>
+        <button
+          onClick={() => router.push("/resumes/new")}
+          className="flex items-center gap-2 rounded-xl bg-amber px-4 py-2.5 font-semibold text-white transition hover:bg-amber-dim"
+        >
+          <Plus size={18} /> Create Resume
+        </button>
       </div>
 
       {loading ? (
@@ -76,15 +58,16 @@ export default function ResumesPage() {
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-ink text-amber">
             <FileText size={28} />
           </div>
-          <h2 className="mt-4 text-xl font-bold text-bone">No resumes yet</h2>
+          <h2 className="mt-4 text-xl font-bold text-bone">Let&apos;s build your professional resume.</h2>
           <p className="mt-2 max-w-sm text-slate">
-            Build your first resume from a professional template in just a few minutes.
+            Answer a few questions and ReSee will automatically generate a professional, ATS-ready
+            resume for you.
           </p>
           <button
-            onClick={() => router.push("/resumes/templates")}
+            onClick={() => router.push("/resumes/new")}
             className="mt-6 flex items-center gap-2 rounded-xl bg-amber px-6 py-3 font-semibold text-white transition hover:bg-amber-dim"
           >
-            <Plus size={18} /> Create Your First Resume
+            <Plus size={18} /> Create Resume
           </button>
         </div>
       ) : (
@@ -94,7 +77,6 @@ export default function ResumesPage() {
               key={resume.id}
               resume={resume}
               onDuplicate={() => handleDuplicate(resume.id)}
-              onArchiveToggle={() => handleArchive(resume.id)}
               onDelete={() => setDeleteTarget(resume.id)}
             />
           ))}

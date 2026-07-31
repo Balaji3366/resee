@@ -1,5 +1,7 @@
 import { getServerSupabase } from "@/lib/supabaseServer";
 import { maybeSnapshotVersion } from "@/lib/resumeVersioning";
+import { selectTemplate } from "@/lib/resumeTemplateSelection";
+import type { ResumeContent } from "@/types/resume-builder";
 
 export const dynamic = "force-dynamic";
 
@@ -45,9 +47,12 @@ export async function POST(
       return Response.json({ success: false, message: "Version not found." }, { status: 404 });
     }
 
+    const restoredContent = version.content as ResumeContent;
+    const templateSlug = selectTemplate(restoredContent.userType);
+
     const { error: updateError } = await supabase
       .from("resumes")
-      .update({ content: version.content })
+      .update({ content: restoredContent, template_slug: templateSlug })
       .eq("id", id)
       .eq("user_id", user.id);
 
