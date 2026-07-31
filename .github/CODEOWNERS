@@ -1,0 +1,14 @@
+# Default owner for everything until the team grows beyond one contributor.
+* @Balaji3366
+
+# AI orchestration layer
+/website/lib/ai/ @Balaji3366
+
+# Database schema
+/website/supabase/ @Balaji3366
+
+# Documentation
+/docs/ @Balaji3366
+
+# Repository / CI configuration
+/.github/ @Balaji3366
