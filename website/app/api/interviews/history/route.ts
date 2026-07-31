@@ -20,7 +20,7 @@ export async function GET() {
       .select(
         `
         id, total_questions, completed_questions, time_taken_seconds, completed_at,
-        set:interview_sets(slug, title, difficulty, category:interview_categories(name), role:interview_roles(name))
+        set:interview_sets(slug, title, experience_level, category:interview_categories(name), role:interview_roles(name))
       `
       )
       .eq("user_id", user.id)
@@ -32,7 +32,7 @@ export async function GET() {
       const set = attempt.set as unknown as {
         slug: string;
         title: string;
-        difficulty: InterviewHistoryEntry["difficulty"];
+        experience_level: InterviewHistoryEntry["experienceLevel"];
         category: { name: string } | null;
         role: { name: string } | null;
       } | null;
@@ -45,7 +45,7 @@ export async function GET() {
         title: set.title,
         categoryName: set.category?.name ?? "",
         roleName: set.role?.name ?? "",
-        difficulty: set.difficulty,
+        experienceLevel: set.experience_level,
         totalQuestions: attempt.total_questions,
         completedQuestions: attempt.completed_questions ?? 0,
         timeTakenSeconds: attempt.time_taken_seconds ?? 0,

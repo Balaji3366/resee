@@ -23,7 +23,7 @@ export async function GET(
       .from("interview_sets")
       .select(
         `
-        id, slug, title, description, difficulty, is_available, estimated_minutes,
+        id, slug, title, description, experience_level, is_available, estimated_minutes,
         category:interview_categories(id, slug, name, icon, description, is_available),
         role:interview_roles(id, slug, name, icon),
         interview_questions(id)
@@ -56,7 +56,7 @@ export async function GET(
       description: set.description,
       category: set.category as unknown as InterviewCategory,
       role: set.role as unknown as InterviewRole,
-      difficulty: set.difficulty,
+      experienceLevel: set.experience_level,
       estimatedMinutes: set.estimated_minutes,
       isAvailable: set.is_available,
       questionCount: (set.interview_questions ?? []).length,

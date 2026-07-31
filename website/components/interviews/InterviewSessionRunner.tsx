@@ -151,7 +151,7 @@ export default function InterviewSessionRunner({
           </p>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 rounded-xl bg-panel-2 px-4 py-2 text-sm font-semibold text-bone">
+        <div className="flex shrink-0 items-center gap-2 rounded-xl bg-panel-2 px-4 py-2 text-sm font-semibold text-white">
           <Clock size={16} />
           {formatClock(elapsedSeconds)}
         </div>

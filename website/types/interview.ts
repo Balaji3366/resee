@@ -1,5 +1,5 @@
 export type InterviewQuestionType = "short_text" | "long_text";
-export type InterviewDifficulty = "beginner" | "intermediate" | "advanced";
+export type InterviewExperienceLevel = "fresher" | "1-3-years" | "3-5-years" | "5-plus-years";
 export type InterviewAttemptStatus = "in_progress" | "completed";
 
 export interface InterviewCategory {
@@ -25,7 +25,7 @@ export interface InterviewSetSummary {
   description: string;
   category: InterviewCategory;
   role: InterviewRole;
-  difficulty: InterviewDifficulty;
+  experienceLevel: InterviewExperienceLevel;
   estimatedMinutes: number;
   isAvailable: boolean;
   questionCount: number;
@@ -74,7 +74,7 @@ export interface InterviewHistoryEntry {
   title: string;
   categoryName: string;
   roleName: string;
-  difficulty: InterviewDifficulty;
+  experienceLevel: InterviewExperienceLevel;
   totalQuestions: number;
   completedQuestions: number;
   timeTakenSeconds: number;
@@ -95,12 +95,4 @@ export interface InterviewHistoryDetail {
   completedAt: string;
   timeTakenSeconds: number;
   answers: InterviewAnswerReview[];
-}
-
-export interface InterviewPerformanceData {
-  interviewsCompleted: number;
-  totalPracticeSeconds: number;
-  currentStreak: number;
-  categoriesAttempted: number;
-  rolesPractised: number;
 }

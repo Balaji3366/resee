@@ -13,14 +13,14 @@ export default function InterviewQuestionCard({
 
   return (
     <div>
-      <p className="text-lg font-semibold text-bone">{question.question}</p>
+      <p className="text-xl font-semibold text-bone">{question.question}</p>
 
       <textarea
         value={answer}
         onChange={(e) => onChange(e.target.value)}
-        rows={isLong ? 8 : 3}
+        rows={isLong ? 11 : 5}
         placeholder={isLong ? "Take your time and answer in full sentences..." : "Type your answer..."}
-        className="mt-4 w-full rounded-xl border border-bone/15 bg-ink px-4 py-3 text-bone placeholder:text-slate focus:border-amber focus:outline-none"
+        className="mt-5 w-full rounded-xl border border-bone/15 bg-ink px-5 py-4 text-base text-bone placeholder:text-slate focus:border-amber focus:outline-none"
       />
     </div>
   );
