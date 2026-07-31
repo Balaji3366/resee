@@ -1,6 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import type { OnboardingAnswers } from "@/types/onboarding";
+import { validateBody } from "@/lib/validation/validateBody";
+import { onboardingRequestSchema } from "@/lib/validation/schemas/onboarding.schema";
+import { jsonError } from "@/lib/http/responses";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
@@ -8,22 +10,13 @@ const ai = new GoogleGenAI({
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const validation = await validateBody(onboardingRequestSchema, request);
 
-    const userId: string | undefined = body.userId;
-    const answers: OnboardingAnswers | undefined = body.answers;
-
-    if (!userId || !answers) {
-      return Response.json(
-        {
-          success: false,
-          message: "Missing user or onboarding answers.",
-        },
-        {
-          status: 400,
-        }
-      );
+    if (!validation.success) {
+      return jsonError(validation.error);
     }
+
+    const { userId, answers } = validation.data;
 
     const prompt = `
 You are an expert AI career mentor.

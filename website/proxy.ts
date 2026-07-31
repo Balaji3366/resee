@@ -30,9 +30,7 @@ export async function proxy(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
 
           response = NextResponse.next({ request });
 
@@ -44,13 +42,21 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const { pathname } = request.nextUrl;
-
   const isAdminPath = pathname === "/admin" || pathname.startsWith("/admin/");
+
+  // A thrown auth/database error here (network blip, malformed cookie) must
+  // never surface as a raw 500 on every protected route — fail closed to the
+  // relevant login page instead, same outcome as "not authenticated".
+  let user;
+  try {
+    ({
+      data: { user },
+    } = await supabase.auth.getUser());
+  } catch (error) {
+    console.error("proxy: auth.getUser() failed:", error);
+    return NextResponse.redirect(new URL(isAdminPath ? "/admin/login" : "/login", request.url));
+  }
 
   if (isAdminPath) {
     if (pathname === "/admin/login" || pathname === "/admin/unauthorized") {
@@ -61,22 +67,25 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL("/admin/login", request.url));
     }
 
-    const { data: adminRow } = await supabase
-      .from("admin_users")
-      .select("role")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    try {
+      const { data: adminRow } = await supabase
+        .from("admin_users")
+        .select("role")
+        .eq("user_id", user.id)
+        .maybeSingle();
 
-    if (!adminRow) {
+      if (!adminRow) {
+        return NextResponse.redirect(new URL("/admin/unauthorized", request.url));
+      }
+    } catch (error) {
+      console.error("proxy: admin_users lookup failed:", error);
       return NextResponse.redirect(new URL("/admin/unauthorized", request.url));
     }
 
     return response;
   }
 
-  const isProtected = PROTECTED_ROUTES.some((route) =>
-    pathname.startsWith(route)
-  );
+  const isProtected = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
 
   if (!isProtected) {
     return response;
@@ -86,13 +95,24 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("onboarding_completed")
-    .eq("id", user.id)
-    .single();
+  let onboardingCompleted = false;
+  try {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("onboarding_completed")
+      .eq("id", user.id)
+      .single();
 
-  const onboardingCompleted = profile?.onboarding_completed ?? false;
+    onboardingCompleted = profile?.onboarding_completed ?? false;
+  } catch (error) {
+    console.error("proxy: profiles lookup failed:", error);
+    // Fail closed: treat as onboarding-incomplete rather than letting an
+    // unexpected error grant access to a protected route.
+    if (pathname !== "/onboarding") {
+      return NextResponse.redirect(new URL("/onboarding", request.url));
+    }
+    return response;
+  }
 
   if (!onboardingCompleted && pathname !== "/onboarding") {
     return NextResponse.redirect(new URL("/onboarding", request.url));

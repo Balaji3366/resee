@@ -1,8 +1,9 @@
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { limitsConfig } from "@/lib/config/limits.config";
 import type { AIFeature } from "@/types/ai";
 
-const WINDOW_SECONDS = 60;
-const MAX_REQUESTS_PER_WINDOW = 10;
+const WINDOW_SECONDS = limitsConfig.ai.windowSeconds;
+const MAX_REQUESTS_PER_WINDOW = limitsConfig.ai.maxRequestsPerWindow;
 
 export interface RateLimitResult {
   allowed: boolean;

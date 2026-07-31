@@ -54,11 +54,25 @@ export async function GET() {
 
 ## Validation
 
-No schema-validation library is installed today (no Zod, no Yup) — every
-route hand-checks its payload inline. This is a known gap; see
-`docs/architecture/system-architecture.md`'s Security section for the
-proposed Zod-based validation layer, colocated per route as
-`route.schema.ts`.
+`zod` + `lib/validation/validateBody.ts` is the shared validation helper
+(added in Sprint 1 — Foundation Setup). New routes should define a schema
+and call `validateBody(schema, request)` rather than hand-checking
+`request.json()` output. Existing business-module routes
+(Learning/Practice/Resume/Interview/Jobs) were not retrofitted in Sprint 1
+— they keep their current manual `if (!field)` checks until each is
+touched for its own reasons; `app/api/onboarding/route.ts` is the
+reference implementation to copy from.
+
+## CSRF — reviewed, not implemented
+
+No CSRF token system exists, and none was added in Sprint 1. Reviewed and
+assessed low-risk given: `@supabase/ssr`'s cookies default to
+`SameSite=Lax`; no cross-origin CORS is configured on any route; and
+every state-changing endpoint requires a bearer-equivalent Supabase
+session validated via `auth.getUser()`, not just cookie presence. This is
+a documented decision, not an oversight — revisit only if a real
+attack-surface change occurs (e.g. adding a public, unauthenticated,
+state-changing endpoint, or enabling cross-origin CORS).
 
 ## Idempotent writes
 

@@ -1,9 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 
 export async function POST(req: Request) {
   try {
@@ -27,12 +22,10 @@ export async function POST(req: Request) {
 
     const fileName = `${Date.now()}-${file.name}`;
 
-    const { error } = await supabase.storage
-      .from("uploads")
-      .upload(fileName, buffer, {
-        contentType: file.type,
-        upsert: true,
-      });
+    const { error } = await supabase.storage.from("uploads").upload(fileName, buffer, {
+      contentType: file.type,
+      upsert: true,
+    });
 
     if (error) {
       throw error;
@@ -42,13 +35,13 @@ export async function POST(req: Request) {
       success: true,
       filename: fileName,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error(error);
 
     return Response.json(
       {
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error.message : "Something went wrong.",
       },
       { status: 500 }
     );

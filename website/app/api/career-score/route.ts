@@ -1,63 +1,37 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { getServerSupabase } from "@/lib/supabaseServer";
 import { computeCareerScore } from "@/lib/careerScore";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll() {
-            // Session refresh already happens in proxy.ts for every
-            // protected route (including /dashboard), so cookies are
-            // already current by the time this route handler runs.
-          },
-        },
-      }
-    );
+    const supabase = await getServerSupabase();
 
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return Response.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
+      return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    const [profileResult, latestResumeResult, resumeCountResult, historyResult] =
-      await Promise.all([
-        supabase
-          .from("profiles")
-          .select("ai_summary")
-          .eq("id", user.id)
-          .maybeSingle(),
+    const [profileResult, latestResumeResult, resumeCountResult, historyResult] = await Promise.all(
+      [
+        supabase.from("profiles").select("ai_summary").eq("id", user.id).maybeSingle(),
         supabase
           .from("resume_history")
           .select("ats_score")
           .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle(),
-        supabase
-          .from("resume_history")
-          .select("*", { count: "exact", head: true }),
+        supabase.from("resume_history").select("*", { count: "exact", head: true }),
         supabase
           .from("career_score_history")
           .select("overall_score, resume_quality, created_at")
           .order("created_at", { ascending: false })
           .limit(30),
-      ]);
+      ]
+    );
 
     const onboardingScore =
       (profileResult.data?.ai_summary as { careerHealthScore?: number } | null)

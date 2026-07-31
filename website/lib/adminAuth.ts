@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { getServerSupabase } from "@/lib/supabaseServer";
+import { logAdminAction } from "@/lib/logging/auditLogger";
 
 export type AdminRole = "super_admin" | "admin" | "content_manager";
 
@@ -41,9 +42,7 @@ type AuthorizeResult =
  *   if (auth.error) return auth.error;
  *   // use auth.userId / auth.role
  */
-export async function authorizeAdminRequest(
-  allowedRoles?: AdminRole[]
-): Promise<AuthorizeResult> {
+export async function authorizeAdminRequest(allowedRoles?: AdminRole[]): Promise<AuthorizeResult> {
   const supabase = await getServerSupabase();
 
   const {
@@ -63,6 +62,11 @@ export async function authorizeAdminRequest(
       error: Response.json({ success: false, message: "Forbidden" }, { status: 403 }),
     };
   }
+
+  // Coarse-grained audit trail: who accessed a privileged endpoint, and
+  // when. Does not block the request — a logging failure here must never
+  // fail an otherwise-successful admin action.
+  void logAdminAction({ adminUserId: user.id, action: "admin_request_authorized" });
 
   return { userId: user.id, role };
 }

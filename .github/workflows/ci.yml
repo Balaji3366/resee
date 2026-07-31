@@ -23,7 +23,8 @@ jobs:
 
       - run: npm ci
       - run: npm run lint
-      - run: npx tsc --noEmit
+      - run: npm run typecheck
+      - run: npm run format:check
 
       # No automated test suite exists yet (no "test" script in package.json).
       # Add a `npm test` step here once one is introduced — see
