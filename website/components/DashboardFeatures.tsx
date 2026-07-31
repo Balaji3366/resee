@@ -63,7 +63,7 @@ export default function DashboardFeatures() {
     {
       title: "Mock Interview",
       description:
-        "Practice structured mock interviews across HR, Technical, Behavioural, and Scenario-Based formats, and track your progress.",
+        "Step into a focused mock interview tailored to your role and experience level.",
       icon: Mic,
       badge: "LIVE",
       badgeColor: "bg-teal-dim/20 text-teal",
@@ -77,7 +77,7 @@ export default function DashboardFeatures() {
     {
       title: "Resume Builder",
       description:
-        "Build, organize and export multiple resumes across professional templates, with autosave and version history.",
+        "Answer a few guided questions and ReSee automatically generates a professional, ATS-ready resume for you.",
       icon: FileText,
       badge: "LIVE",
       badgeColor: "bg-teal-dim/20 text-teal",
