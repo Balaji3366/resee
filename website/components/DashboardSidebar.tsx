@@ -11,6 +11,7 @@ import {
   FileText,
   Files,
   Mic,
+  Briefcase,
   User,
   Settings as SettingsIcon,
 } from "lucide-react";
@@ -29,6 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "My Resumes", icon: Files, href: "/resumes" },
   { label: "Resume", icon: FileText, href: "/resume" },
   { label: "Mock Interviews", icon: Mic, href: "/interviews" },
+  { label: "Jobs", icon: Briefcase, href: "/jobs" },
   { label: "Profile", icon: User },
   { label: "Settings", icon: SettingsIcon, href: "/settings" },
 ];
