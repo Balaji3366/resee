@@ -5,61 +5,26 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import LogoutModal from "@/components/auth/LogoutModal";
-
+import { useAuthContext } from "@/components/providers/AuthProvider";
 
 export default function Navbar() {
   const router = useRouter();
+  const { user } = useAuthContext();
 
-  const [user, setUser] = useState<any>(null);
   const [open, setOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    async function loadUser() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      setUser(user);
-    }
-
-    loadUser();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") {
-        setUser(null);
-        setOpen(false);
-        router.replace("/");
-        router.refresh();
-        return;
-      }
-
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [router]);
-
-  useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(e.target as Node)
-      ) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     }
 
     document.addEventListener("mousedown", handleClickOutside);
 
-    return () =>
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   async function handleLogout() {
@@ -72,8 +37,6 @@ export default function Navbar() {
       }
 
       setOpen(false);
-      setUser(null);
-
       router.replace("/");
 
       setTimeout(() => {
@@ -84,21 +47,14 @@ export default function Navbar() {
     }
   }
 
-  const fullName =
-    user?.user_metadata?.full_name ||
-    user?.email?.split("@")[0] ||
-    "User";
+  const fullName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-amber/20 bg-ink/95 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
-
         {/* Logo */}
 
-        <button
-          onClick={() => router.push("/")}
-          className="flex items-center gap-3"
-        >
+        <button onClick={() => router.push("/")} className="flex items-center gap-3">
           <Image
             src="/images/resee-logo.png"
             alt="RESEE Logo"
@@ -109,13 +65,9 @@ export default function Navbar() {
           />
 
           <div className="flex flex-col items-start">
-            <h1 className="font-display text-3xl font-extrabold text-amber">
-              RESEE
-            </h1>
+            <h1 className="font-display text-3xl font-extrabold text-amber">RESEE</h1>
 
-            <span className="text-xs uppercase tracking-[0.25em] text-slate">
-              See Your Future
-            </span>
+            <span className="text-xs uppercase tracking-[0.25em] text-slate">See Your Future</span>
           </div>
         </button>
 
@@ -123,22 +75,14 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-10 lg:flex">
           <button
-            onClick={() =>
-              document
-                .getElementById("about")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
+            onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
             className="text-sm font-medium text-slate transition hover:text-bone"
           >
             About
           </button>
 
           <button
-            onClick={() =>
-              document
-                .getElementById("plans")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
+            onClick={() => document.getElementById("plans")?.scrollIntoView({ behavior: "smooth" })}
             className="text-sm font-medium text-slate transition hover:text-bone"
           >
             Pricing
@@ -165,7 +109,6 @@ export default function Navbar() {
           </div>
         ) : (
           <div className="relative" ref={menuRef}>
-
             <button
               onClick={() => setOpen((prev) => !prev)}
               className="flex items-center gap-3 rounded-xl border border-amber/30 bg-amber px-4 py-2 transition hover:border-amber"
@@ -175,19 +118,14 @@ export default function Navbar() {
               </div>
 
               <div className="hidden text-left lg:block">
-                <p className="text-sm font-bold text-white">
-                  {fullName}
-                </p>
+                <p className="text-sm font-bold text-white">{fullName}</p>
 
-                <p className="text-xs text-slate">
-                  Welcome Back
-                </p>
+                <p className="text-xs text-slate">Welcome Back</p>
               </div>
             </button>
 
             {open && (
               <div className="absolute right-0 mt-3 w-60 overflow-hidden rounded-2xl border border-amber/20 bg-panel shadow-2xl">
-
                 <button
                   onClick={() => {
                     setOpen(false);
@@ -229,20 +167,19 @@ export default function Navbar() {
                 >
                   Logout
                 </button>
-
               </div>
             )}
           </div>
         )}
       </div>
       <LogoutModal
-      open={logoutOpen}
-      onCancel={() => setLogoutOpen(false)}
-      onConfirm={async () => {
-        setLogoutOpen(false);
-        await handleLogout();
-      }}
-    />
+        open={logoutOpen}
+        onCancel={() => setLogoutOpen(false)}
+        onConfirm={async () => {
+          setLogoutOpen(false);
+          await handleLogout();
+        }}
+      />
     </header>
   );
 }

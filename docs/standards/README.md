@@ -17,6 +17,7 @@ this codebase — not invented rules waiting to be adopted.
 | [`branch-strategy.md`](./branch-strategy.md) | Branch naming and flow |
 | [`commit-convention.md`](./commit-convention.md) | Commit message format |
 | [`versioning.md`](./versioning.md) | Semantic Versioning application |
+| [`design-system.md`](./design-system.md) | Design tokens, reusable UI component inventory, accessibility/performance/testing checklists |
 
 See `docs/standards/engineering-standards.md` for the one-page index that
 ties all six together, if you want the overview before the detail.

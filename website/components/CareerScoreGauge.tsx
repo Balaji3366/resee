@@ -1,85 +1,46 @@
 "use client";
 
 import type { OverallStatus } from "@/lib/careerScore";
+import ProgressRing from "@/components/ui/ProgressRing";
 
 interface CareerScoreGaugeProps {
   score: number | null;
   status: OverallStatus;
 }
 
-const RADIUS = 70;
-const STROKE_WIDTH = 14;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
+// Semantic score-band colors (good/medium/low) — deliberately kept separate
+// from the coral/violet/yellow brand accents, since this signal needs to
+// stay legible regardless of palette.
 function bandColor(score: number) {
-  if (score >= 75) {
-    return { stroke: "#22c55e", text: "text-green-400" };
-  }
-
-  if (score >= 50) {
-    return { stroke: "#eab308", text: "text-yellow-400" };
-  }
-
-  return { stroke: "#ef4444", text: "text-red-400" };
+  if (score >= 75) return { stroke: "#22c55e", text: "text-green-500" };
+  if (score >= 50) return { stroke: "#eab308", text: "text-yellow-500" };
+  return { stroke: "#ef4444", text: "text-red-500" };
 }
 
-export default function CareerScoreGauge({
-  score,
-  status,
-}: CareerScoreGaugeProps) {
+export default function CareerScoreGauge({ score, status }: CareerScoreGaugeProps) {
   const hasScore = score !== null;
   const colors = hasScore ? bandColor(score) : null;
-  const progress = hasScore ? Math.min(100, Math.max(0, score)) / 100 : 0;
-  const dashOffset = CIRCUMFERENCE * (1 - progress);
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative h-[180px] w-[180px]">
-        <svg
-          width="180"
-          height="180"
-          viewBox="0 0 180 180"
-          className="-rotate-90"
-        >
-          <circle
-            cx="90"
-            cy="90"
-            r={RADIUS}
-            fill="none"
-            stroke="var(--color-panel-2)"
-            strokeWidth={STROKE_WIDTH}
-          />
-
-          {hasScore && (
-            <circle
-              cx="90"
-              cy="90"
-              r={RADIUS}
-              fill="none"
-              stroke={colors!.stroke}
-              strokeWidth={STROKE_WIDTH}
-              strokeLinecap="round"
-              strokeDasharray={CIRCUMFERENCE}
-              strokeDashoffset={dashOffset}
-              className="transition-[stroke-dashoffset] duration-700 ease-out"
-            />
-          )}
-        </svg>
-
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <ProgressRing
+        value={hasScore ? score : 0}
+        size={160}
+        strokeWidth={12}
+        color={hasScore ? colors!.stroke : "transparent"}
+      >
+        <div className="flex flex-col items-center">
           <span
-            className={`font-display text-5xl font-extrabold ${
-              hasScore ? colors!.text : "text-slate"
-            }`}
+            className={`font-display text-4xl font-extrabold ${hasScore ? colors!.text : "text-bone/40"}`}
           >
             {hasScore ? score : "—"}
           </span>
 
-          <span className="mt-1 text-sm text-slate">/ 100</span>
+          <span className="mt-1 text-xs text-bone/50">/ 100</span>
         </div>
-      </div>
+      </ProgressRing>
 
-      <div className="mt-4 max-w-[220px] text-center text-sm text-slate">
+      <div className="mt-4 max-w-[220px] text-center text-sm text-bone/60">
         {status === "baseline" && "(estimated at onboarding)"}
         {status === "insufficient_data" &&
           "Not enough data yet — complete onboarding or analyze a resume"}

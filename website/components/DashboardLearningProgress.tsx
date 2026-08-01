@@ -1,4 +1,3 @@
-import { TrendingUp } from "lucide-react";
 import type { SubMetric } from "@/lib/careerScore";
 
 export default function DashboardLearningProgress({
@@ -11,22 +10,14 @@ export default function DashboardLearningProgress({
   const isReady = subMetric?.status === "ready" && subMetric.score !== null;
 
   return (
-    <div className="rounded-3xl border border-amber/20 bg-panel p-7 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-panel-2">
-        <TrendingUp size={24} className="text-amber" />
-      </div>
-
-      <h3 className="mt-6 text-lg font-semibold text-slate">
-        Learning Progress
-      </h3>
+    <div className="rounded-[20px] border-2 border-bone bg-panel p-6">
+      <p className="text-sm font-bold text-bone/50">Learning Progress</p>
 
       {loading ? (
-        <div className="mt-3 h-6 w-1/2 animate-pulse rounded bg-panel-2" />
+        <div className="mt-2 h-6 w-1/2 animate-pulse rounded bg-panel-2" />
       ) : isReady ? (
         <>
-          <p className="mt-1 text-2xl font-bold text-bone">
-            {subMetric!.score}%
-          </p>
+          <p className="font-display mt-2 text-2xl font-extrabold text-bone">{subMetric!.score}%</p>
 
           <div className="mt-3 h-2 rounded-full bg-panel-2">
             <div
@@ -37,9 +28,9 @@ export default function DashboardLearningProgress({
         </>
       ) : (
         <>
-          <p className="mt-1 text-sm text-slate">Not started</p>
+          <p className="mt-2 text-sm text-bone/60">Not started</p>
 
-          <span className="mt-3 inline-block rounded-full bg-panel-2 px-3 py-1 text-xs font-bold text-slate">
+          <span className="mt-2 inline-block rounded-full bg-panel-2 px-3 py-1 text-xs font-bold text-slate">
             Coming Soon
           </span>
         </>

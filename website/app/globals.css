@@ -1,26 +1,62 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/*
+ * ReSee v5 "Campus-to-Career" redesign palette. Token NAMES are kept
+ * (per the design handoff's lower-diff option) even though a couple no
+ * longer literally match their old meaning — see the role notes below.
+ * Source: Design baseline recreation priority/design_handoff_v5_redesign/README.md
+ */
 @theme {
-  --color-ink: #f7f9fc;
-  --color-panel: #eef2f9;
-  --color-panel-2: #0f1b2e;
-  --color-amber: #2f8fef;
-  --color-amber-dim: #1b3a63;
-  --color-teal: #1f9d92;
-  --color-teal-dim: #15706a;
-  --color-bone: #101826;
-  --color-slate: #6b7280;
-  --font-display: var(--font-space-grotesk);
+  --color-ink: #fff8f0; /* role: page background (cream) — name kept from the old light-blue bg token */
+  --color-panel: #ffffff; /* role: card surface (white) */
+  --color-panel-2: #f4ece2; /* role: badge/pill/track background — was dark navy, now a light warm tint */
+  --color-amber: #ff6b4a; /* role: primary accent/CTA/active state (coral) */
+  --color-amber-dim: #5b3df6; /* role: gradient partner / secondary accent (violet) */
+  --color-teal: #ffd166; /* role: tertiary accent (yellow) */
+  --color-teal-dim: #e0a936; /* role: darker tertiary-accent partner (deep gold) */
+  --color-bone: #231a14; /* role: primary text/border (ink-black) — this IS the design system's literal "ink" hex */
+  --color-slate: #6b6058; /* role: muted/secondary text (warm gray) */
+  --font-display: var(--font-schibsted-grotesk);
+
+  /*
+   * Sprint 2 — Enterprise Design System. Radius/shadow/duration tokens
+   * name the scale already in de facto use across the redesign rather
+   * than inventing a parallel one. See docs/standards/design-system.md.
+   */
+  --radius-sm: 12px; /* inputs, small controls */
+  --radius-md: 16px; /* small cards, menus, popovers */
+  --radius-lg: 20px; /* stat tiles */
+  --radius-xl: 24px; /* cards */
+  --radius-2xl: 32px; /* hero panels */
+  --radius-full: 9999px; /* pills, buttons, chips */
+
+  /* The design language is deliberately flat (ink-border cards, no drop
+     shadow) — these two exist only for surfaces that must float above
+     content (dropdowns/tooltips vs. dialogs/drawers), not a general
+     elevation scale nobody here uses. */
+  --shadow-sm: 0 4px 16px rgba(35, 26, 20, 0.12);
+  --shadow-lg: 0 20px 60px rgba(35, 26, 20, 0.25);
+
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 400ms;
 }
+
+/*
+ * Dark mode — future-ready, not implemented. A future dark theme would
+ * redefine these same @theme token names under a `:root[data-theme="dark"]`
+ * selector (see the artifact-design convention this project has already
+ * used elsewhere) rather than inventing new token names. No dark palette
+ * is designed here — this comment is the only seam left for it.
+ */
 
 :root {
   --background: var(--color-ink);
   --foreground: var(--color-bone);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-manrope);
-  --font-mono: var(--font-ibm-plex-mono);
+  --font-sans: var(--font-hanken-grotesk);
 }
 
 html {
@@ -103,21 +139,126 @@ body {
   animation: pulse-soft 2.5s ease-in-out infinite;
 }
 /* ========================= */
-/* Scrollbar */
+/* Load-in animation (Dashboard v3.dc.html and others) */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeUp 0.6s ease both;
+}
+
+/* ========================= */
+/* Radix overlay mount/unmount transitions — driven by the `data-state`
+   attribute Radix sets on Dialog/Tooltip/Select/Popover content, per
+   https://www.radix-ui.com animation guidance. */
+
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes contentHide {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+}
+
+.radix-overlay[data-state="open"] {
+  animation: overlayShow var(--duration-base) ease-out;
+}
+
+.radix-content[data-state="open"] {
+  animation: contentShow var(--duration-base) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.radix-content[data-state="closed"] {
+  animation: contentHide var(--duration-fast) ease-in;
+}
+
+/* Accordion expand/collapse — height-based, NOT the centered-popup
+   transform above. Driven by Radix's own --radix-accordion-content-height
+   custom property. */
+
+@keyframes accordionDown {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordionUp {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+
+  to {
+    height: 0;
+  }
+}
+
+.radix-accordion-content[data-state="open"] {
+  animation: accordionDown var(--duration-base) ease-out;
+}
+
+.radix-accordion-content[data-state="closed"] {
+  animation: accordionUp var(--duration-fast) ease-in;
+}
+
+/* ========================= */
+/* Scrollbar — coral-to-violet gradient thumb on a cream track, per every
+   screen in the design handoff */
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--color-ink);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-amber-dim);
+  background: linear-gradient(180deg, var(--color-amber), var(--color-amber-dim));
   border-radius: 9999px;
+  border: 2px solid var(--color-ink);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-amber);
+  background: linear-gradient(180deg, var(--color-amber-dim), var(--color-amber));
 }

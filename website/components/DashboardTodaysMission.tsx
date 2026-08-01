@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { CheckCircle2, Circle, PartyPopper } from "lucide-react";
+import { PartyPopper } from "lucide-react";
 import type { ProfileData } from "@/hooks/useProfile";
 import type { CareerScoreData } from "@/hooks/useCareerScore";
 
@@ -26,9 +25,7 @@ export default function DashboardTodaysMission({
   const loading = profileLoading || careerScoreLoading || statsLoading;
 
   if (loading) {
-    return (
-      <div className="mb-8 h-32 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
-    );
+    return <div className="mb-7 h-32 animate-pulse rounded-3xl border-2 border-bone/10 bg-panel" />;
   }
 
   const items = [
@@ -53,11 +50,9 @@ export default function DashboardTodaysMission({
   const allDone = items.every((item) => item.done);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="mb-8 rounded-3xl border border-amber/20 bg-panel p-7 shadow-md"
+    <div
+      className="animate-fade-up mb-7 rounded-3xl border-2 border-bone bg-panel p-6"
+      style={{ animationDelay: "0.05s" }}
     >
       {allDone ? (
         <div className="flex items-center gap-4">
@@ -66,33 +61,27 @@ export default function DashboardTodaysMission({
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-bone">
-              You&apos;re all caught up for today
-            </h3>
+            <h3 className="text-lg font-bold text-bone">You&apos;re all caught up for today</h3>
 
-            <p className="mt-1 text-sm text-slate">
+            <p className="mt-1 text-sm text-bone/60">
               Nice work — come back tomorrow for your next set of tasks.
             </p>
           </div>
         </div>
       ) : (
         <>
-          <h3 className="text-lg font-bold text-bone">
-            Today&apos;s Mission
-          </h3>
+          <h3 className="font-display text-[17px] font-bold text-bone">Today&apos;s Mission</h3>
 
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 flex flex-col gap-3">
             {items.map((item) => (
               <div key={item.key} className="flex items-center gap-3">
-                {item.done ? (
-                  <CheckCircle2 className="shrink-0 text-amber" size={20} />
-                ) : (
-                  <Circle className="shrink-0 text-slate" size={20} />
-                )}
+                <span className={`text-lg ${item.done ? "text-amber-dim" : "text-bone/25"}`}>
+                  {item.done ? "●" : "○"}
+                </span>
 
                 <span
                   className={`flex-1 ${
-                    item.done ? "text-slate line-through" : "text-bone"
+                    item.done ? "text-bone/40 line-through" : "font-semibold text-bone"
                   }`}
                 >
                   {item.label}
@@ -101,7 +90,7 @@ export default function DashboardTodaysMission({
                 {!item.done && item.cta && (
                   <Link
                     href={item.cta.href}
-                    className="text-sm font-semibold text-amber hover:underline"
+                    className="text-sm font-bold text-amber hover:underline"
                   >
                     {item.cta.label} →
                   </Link>
@@ -111,6 +100,6 @@ export default function DashboardTodaysMission({
           </div>
         </>
       )}
-    </motion.div>
+    </div>
   );
 }

@@ -30,37 +30,37 @@ export default function DashboardAchievements({
     },
   ];
 
-  return (
-    <div className="rounded-3xl border border-amber/20 bg-panel p-7 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-panel-2">
-        <Award size={24} className="text-amber" />
-      </div>
+  const earnedCount = badges.filter((b) => b.earned).length;
 
-      <h3 className="mt-6 text-lg font-semibold text-slate">
-        Achievements
-      </h3>
+  return (
+    <div className="rounded-[20px] border-2 border-bone bg-panel p-6">
+      <p className="text-sm font-bold text-bone/50">Achievements</p>
 
       {loading ? (
-        <div className="mt-3 h-16 animate-pulse rounded bg-panel-2" />
+        <div className="mt-2 h-6 w-1/2 animate-pulse rounded bg-panel-2" />
       ) : (
-        <div className="mt-3 space-y-2">
-          {badges.map((badge) => (
-            <div
-              key={badge.label}
-              className={`flex items-center gap-2 text-sm ${
-                badge.earned ? "text-bone" : "text-slate"
-              }`}
-            >
-              {badge.earned ? (
-                <Award size={16} className="shrink-0 text-amber" />
-              ) : (
-                <Lock size={16} className="shrink-0 text-slate" />
-              )}
+        <>
+          <p className="mt-2 text-sm text-bone">
+            {earnedCount} of {badges.length} earned
+          </p>
 
-              {badge.label}
-            </div>
-          ))}
-        </div>
+          <div className="mt-3 flex flex-col gap-1.5">
+            {badges.map((badge) => (
+              <div
+                key={badge.label}
+                className={`flex items-center gap-2 text-xs ${badge.earned ? "text-bone" : "text-bone/40"}`}
+              >
+                {badge.earned ? (
+                  <Award size={14} className="shrink-0 text-amber" />
+                ) : (
+                  <Lock size={14} className="shrink-0 text-bone/40" />
+                )}
+
+                {badge.label}
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

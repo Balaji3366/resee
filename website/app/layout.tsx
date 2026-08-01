@@ -1,22 +1,23 @@
 import type { Metadata } from "next";
-import { Manrope, IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import { Hanken_Grotesk, Schibsted_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { TooltipProvider } from "@/components/ui/Tooltip";
+import { AuthProvider } from "@/components/providers/AuthProvider";
+import { FeatureFlagsProvider } from "@/components/providers/FeatureFlagsProvider";
+import { LoadingProvider } from "@/components/providers/LoadingProvider";
 
-
-const manrope = Manrope({
-  variable: "--font-manrope",
+// ReSee v5 "Campus-to-Career" redesign fonts — see
+// Design baseline recreation priority/design_handoff_v5_redesign/README.md
+const hankenGrotesk = Hanken_Grotesk({
+  variable: "--font-hanken-grotesk",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const schibstedGrotesk = Schibsted_Grotesk({
+  variable: "--font-schibsted-grotesk",
+  weight: ["500", "600", "700", "800"],
   subsets: ["latin"],
 });
 
@@ -33,19 +34,33 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      className={`${hankenGrotesk.variable} ${schibstedGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-      {children}
+        <AuthProvider>
+          <FeatureFlagsProvider>
+            <LoadingProvider>
+              <TooltipProvider>{children}</TooltipProvider>
+            </LoadingProvider>
+          </FeatureFlagsProvider>
+        </AuthProvider>
 
-      <Toaster
-        richColors
-        position="top-center"
-        closeButton
-        duration={2200}
-        offset={24}
-      />
-    </body>
+        <Toaster
+          richColors
+          position="top-center"
+          closeButton
+          duration={2200}
+          offset={24}
+          toastOptions={{
+            classNames: {
+              toast: "!rounded-2xl !border-2 !border-bone !bg-panel !text-bone !font-sans",
+              title: "!font-bold",
+              actionButton: "!rounded-full !bg-amber !text-ink",
+              cancelButton: "!rounded-full !bg-panel-2 !text-bone",
+            },
+          }}
+        />
+      </body>
     </html>
   );
 }

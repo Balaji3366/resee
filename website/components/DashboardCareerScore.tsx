@@ -1,15 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import {
-  FileText,
-  Code2,
-  Mic,
-  BookOpen,
-  FolderKanban,
-  Briefcase,
-} from "lucide-react";
+import { FileText, Code2, Mic, BookOpen, FolderKanban, Briefcase } from "lucide-react";
 import type { CareerScoreData } from "@/hooks/useCareerScore";
 import type { SubMetricKey } from "@/lib/careerScore";
 import CareerScoreGauge from "@/components/CareerScoreGauge";
@@ -34,79 +26,66 @@ function scoreBarColor(score: number) {
   return "bg-red-500";
 }
 
+// Alternates the mockup's violet/coral tinted sub-metric cards.
+const TINT_CLASSES = ["bg-amber-dim/[0.06]", "bg-amber/[0.06]"];
+
 interface DashboardCareerScoreProps {
   data: CareerScoreData | null;
   loading: boolean;
   error: string | null;
 }
 
-export default function DashboardCareerScore({
-  data,
-  loading,
-  error,
-}: DashboardCareerScoreProps) {
-
+export default function DashboardCareerScore({ data, loading, error }: DashboardCareerScoreProps) {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="mt-12"
-    >
-      <div className="mb-6 flex items-center gap-3">
-        <span className="h-10 w-1 rounded-full bg-amber" />
-        <h2 className="font-display text-3xl font-bold text-bone">
-          Career Health Score
-        </h2>
-      </div>
+    <section className="mt-12">
+      <h2 className="font-display mb-6 text-2xl font-extrabold text-bone">Career Health Score</h2>
 
       {loading && (
-        <div className="rounded-3xl border border-amber/20 bg-panel p-8 text-center text-slate shadow-md">
+        <div className="rounded-3xl border-2 border-bone bg-panel p-8 text-center text-bone/60">
           Loading your career health score...
         </div>
       )}
 
       {!loading && error && (
-        <div className="rounded-3xl border border-red-500/20 bg-panel p-8 text-center text-slate shadow-md">
+        <div className="rounded-3xl border-2 border-bone bg-panel p-8 text-center text-bone/60">
           Couldn&apos;t load your career health score. Try refreshing the page.
         </div>
       )}
 
       {!loading && !error && data && (
-        <div className="rounded-3xl border border-amber/20 bg-panel p-8 shadow-md">
-          <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
+        <div className="rounded-3xl border-2 border-bone bg-panel p-8">
+          <div className="grid gap-10 lg:grid-cols-[200px_1fr]">
             <CareerScoreGauge score={data.overall} status={data.overallStatus} />
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {SUB_METRICS.map(({ key, label, icon: Icon }) => {
+              {SUB_METRICS.map(({ key, label, icon: Icon }, index) => {
                 const metric = data.subMetrics[key];
                 const isReady = metric.status === "ready" && metric.score !== null;
+                const tint = TINT_CLASSES[index % TINT_CLASSES.length];
 
                 return (
                   <div
                     key={key}
                     className={
                       isReady
-                        ? "rounded-2xl border border-amber/20 bg-panel p-5"
-                        : "rounded-2xl border border-dashed border-bone/15 bg-panel p-5"
+                        ? `rounded-2xl ${tint} p-4`
+                        : "rounded-2xl border-2 border-dashed border-bone/15 p-4"
                     }
                   >
                     <div className="flex items-center gap-2">
-                      <Icon className="h-5 w-5 text-amber" />
-                      <span className="text-sm font-semibold text-bone">
-                        {label}
-                      </span>
+                      <Icon className="h-4 w-4 text-bone/70" />
+                      <span className="text-sm font-bold text-bone">{label}</span>
                     </div>
 
                     {isReady ? (
                       <>
-                        <p className="mt-3 text-2xl font-bold text-bone">
+                        <p className="font-display mt-2 text-xl font-extrabold text-bone">
                           {metric.score}%
                         </p>
 
-                        <div className="mt-2 h-2 rounded-full bg-panel-2">
+                        <div className="mt-2 h-1.5 rounded-full bg-bone/10">
                           <div
-                            className={`h-2 rounded-full ${scoreBarColor(
+                            className={`h-1.5 rounded-full ${scoreBarColor(
                               metric.score as number
                             )} transition-all duration-700`}
                             style={{ width: `${metric.score}%` }}
@@ -115,23 +94,17 @@ export default function DashboardCareerScore({
                       </>
                     ) : metric.cta ? (
                       <>
-                        <p className="mt-3 text-sm text-slate">Not started</p>
+                        <p className="mt-2 text-xs text-bone/45">Not started</p>
 
                         <Link
                           href={metric.cta.href}
-                          className="mt-3 inline-block text-sm font-semibold text-amber hover:underline"
+                          className="mt-2 inline-block text-sm font-bold text-amber hover:underline"
                         >
                           {metric.cta.label} →
                         </Link>
                       </>
                     ) : (
-                      <>
-                        <p className="mt-3 text-sm text-slate">Not started</p>
-
-                        <span className="mt-3 inline-block rounded-full bg-panel-2 px-3 py-1 text-xs font-bold text-slate">
-                          Coming Soon
-                        </span>
-                      </>
+                      <p className="mt-2 text-xs text-bone/45">Not started</p>
                     )}
                   </div>
                 );
@@ -140,14 +113,12 @@ export default function DashboardCareerScore({
           </div>
 
           <div className="mt-10">
-            <h3 className="mb-4 text-sm font-semibold text-slate">
-              Score History
-            </h3>
+            <h3 className="mb-4 text-sm font-bold text-bone/60">Score History</h3>
 
             <CareerScoreTimeline history={data.history} />
           </div>
         </div>
       )}
-    </motion.section>
+    </section>
   );
 }
