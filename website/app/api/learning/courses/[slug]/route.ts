@@ -1,5 +1,6 @@
 import { getServerSupabase } from "@/lib/supabaseServer";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { isCourseComplete } from "@/lib/certificates";
 import type {
   CourseDetail,
   LessonSummary,
@@ -9,10 +10,7 @@ import type {
 
 export const dynamic = "force-dynamic";
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ slug: string }> }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params;
     const supabase = await getServerSupabase();
@@ -22,10 +20,7 @@ export async function GET(
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return Response.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
+      return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
     const { data: course } = await supabase
@@ -35,10 +30,7 @@ export async function GET(
       .maybeSingle();
 
     if (!course) {
-      return Response.json(
-        { success: false, message: "Course not found." },
-        { status: 404 }
-      );
+      return Response.json({ success: false, message: "Course not found." }, { status: 404 });
     }
 
     const { data: enrollment } = await supabase
@@ -55,7 +47,7 @@ export async function GET(
       .select(
         `
         id, title, description, sort_order,
-        lessons(id, slug, title, content, key_takeaways, estimated_minutes, sort_order),
+        lessons(id, slug, title, content, key_takeaways, estimated_minutes, sort_order, video_url),
         quizzes(id, slug, title, passing_score, estimated_minutes)
       `
       )
@@ -64,21 +56,20 @@ export async function GET(
 
     const moduleIds = (modules ?? []).map((m) => m.id);
 
-    const [{ data: moduleProgressRows }, { data: lessonProgressRows }] =
-      await Promise.all([
-        moduleIds.length
-          ? supabase
-              .from("module_progress")
-              .select("module_id, quiz_passed, quiz_best_score")
-              .eq("user_id", user.id)
-              .in("module_id", moduleIds)
-          : Promise.resolve({ data: [] }),
-        supabase
-          .from("lesson_progress")
-          .select("lesson_id")
-          .eq("user_id", user.id)
-          .eq("course_id", course.id),
-      ]);
+    const [{ data: moduleProgressRows }, { data: lessonProgressRows }] = await Promise.all([
+      moduleIds.length
+        ? supabase
+            .from("module_progress")
+            .select("module_id, quiz_passed, quiz_best_score")
+            .eq("user_id", user.id)
+            .in("module_id", moduleIds)
+        : Promise.resolve({ data: [] }),
+      supabase
+        .from("lesson_progress")
+        .select("lesson_id")
+        .eq("user_id", user.id)
+        .eq("course_id", course.id),
+    ]);
 
     const passedModuleIds = new Set(
       (moduleProgressRows ?? []).filter((m) => m.quiz_passed).map((m) => m.module_id)
@@ -106,6 +97,7 @@ export async function GET(
         key_takeaways: string[];
         estimated_minutes: number;
         sort_order: number;
+        video_url: string | null;
       }[];
 
       rawLessons.sort((a, b) => a.sort_order - b.sort_order);
@@ -125,6 +117,7 @@ export async function GET(
           completed,
           content: unlocked ? lesson.content : null,
           keyTakeaways: unlocked ? lesson.key_takeaways : null,
+          videoUrl: unlocked ? lesson.video_url : null,
         };
       });
 
@@ -142,8 +135,8 @@ export async function GET(
 
       const quizField = mod.quizzes as unknown as RawQuiz | RawQuiz[] | null;
       const rawQuiz: RawQuiz | null = Array.isArray(quizField)
-        ? quizField[0] ?? null
-        : quizField ?? null;
+        ? (quizField[0] ?? null)
+        : (quizField ?? null);
 
       let quiz: ModuleSummary["quiz"] = null;
 
@@ -190,6 +183,55 @@ export async function GET(
       });
     }
 
+    let exam: CourseDetail["exam"] = null;
+    let isComplete = false;
+    let certificate: CourseDetail["certificate"] = null;
+
+    if (isEnrolled) {
+      const { data: examRow } = await supabase
+        .from("course_exams")
+        .select("id, slug, title, passing_score, estimated_minutes")
+        .eq("course_id", course.id)
+        .maybeSingle();
+
+      if (examRow) {
+        const { data: passedAttempt } = await supabase
+          .from("course_exam_attempts")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("exam_id", examRow.id)
+          .eq("passed", true)
+          .limit(1)
+          .maybeSingle();
+
+        exam = {
+          id: examRow.id,
+          slug: examRow.slug,
+          title: examRow.title,
+          passingScore: examRow.passing_score,
+          estimatedMinutes: examRow.estimated_minutes,
+          passed: !!passedAttempt,
+          questions: null,
+        };
+      }
+
+      isComplete = await isCourseComplete(supabase, user.id, course.id);
+
+      const { data: certificateRow } = await supabase
+        .from("course_certificates")
+        .select("certificate_number, issued_at")
+        .eq("user_id", user.id)
+        .eq("course_id", course.id)
+        .maybeSingle();
+
+      if (certificateRow) {
+        certificate = {
+          certificateNumber: certificateRow.certificate_number,
+          issuedAt: certificateRow.issued_at,
+        };
+      }
+    }
+
     const detail: CourseDetail = {
       id: course.id,
       slug: course.slug,
@@ -203,19 +245,17 @@ export async function GET(
       totalMinutes,
       isEnrolled,
       progressPercent:
-        isEnrolled && totalLessons > 0
-          ? Math.round((completedCount / totalLessons) * 100)
-          : 0,
+        isEnrolled && totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0,
       modules: moduleSummaries,
+      exam,
+      isComplete,
+      certificate,
     };
 
     return Response.json({ success: true, course: detail });
   } catch (error) {
     console.error("Course detail error:", error);
 
-    return Response.json(
-      { success: false, message: "Failed to load course." },
-      { status: 500 }
-    );
+    return Response.json({ success: false, message: "Failed to load course." }, { status: 500 });
   }
 }

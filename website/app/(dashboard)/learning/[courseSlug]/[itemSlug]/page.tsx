@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowLeft, CheckCircle2, Lock } from "lucide-react";
 import QuizRunner from "@/components/learning/QuizRunner";
+import LessonVideoPlayer from "@/components/learning/LessonVideoPlayer";
 import { useCourse } from "@/hooks/useCourse";
 import type { LessonSummary, QuizSummary } from "@/types/learning";
 
@@ -50,9 +51,7 @@ export default function LessonOrQuizPage({
   const current = currentIndex >= 0 ? flatItems[currentIndex] : null;
   const previous = currentIndex > 0 ? flatItems[currentIndex - 1] : null;
   const next =
-    currentIndex >= 0 && currentIndex < flatItems.length - 1
-      ? flatItems[currentIndex + 1]
-      : null;
+    currentIndex >= 0 && currentIndex < flatItems.length - 1 ? flatItems[currentIndex + 1] : null;
 
   function slugOf(item: FlatItem) {
     return item.kind === "lesson" ? item.lesson.slug : item.quiz.slug;
@@ -83,104 +82,102 @@ export default function LessonOrQuizPage({
 
   return (
     <div className="mx-auto max-w-3xl">
+      <Link
+        href={`/learning/${courseSlug}`}
+        className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-amber hover:underline"
+      >
+        <ArrowLeft size={16} />
+        Back to course
+      </Link>
+
+      {!current ? (
+        <>
+          {loading && (
+            <div className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
+          )}
+
+          {!loading && (error || !course) && (
+            <div className="rounded-3xl border border-amber/20 bg-panel p-8 text-center text-slate shadow-md">
+              Couldn&apos;t find this lesson.
+            </div>
+          )}
+        </>
+      ) : null}
+
+      {current && !current.moduleUnlocked && (
+        <div className="rounded-3xl border border-amber/20 bg-panel p-8 text-center shadow-md">
+          <Lock className="mx-auto mb-4 text-slate" size={32} />
+
+          <h2 className="font-display text-2xl font-bold text-bone">This module is locked</h2>
+
+          <p className="mt-2 text-slate">
+            Complete the previous module&apos;s quiz to unlock this content.
+          </p>
+        </div>
+      )}
+
+      {current && current.moduleUnlocked && current.kind === "lesson" && (
+        <div className="rounded-3xl border border-amber/20 bg-panel p-8 shadow-md">
+          <h1 className="font-display text-3xl font-extrabold text-bone">{current.lesson.title}</h1>
+
+          {current.lesson.videoUrl && (
+            <div className="mt-6">
+              <LessonVideoPlayer url={current.lesson.videoUrl} />
+            </div>
+          )}
+
+          <div className="prose prose-neutral mt-6 max-w-none text-bone prose-headings:font-display prose-headings:text-bone prose-a:text-amber prose-code:text-amber prose-pre:bg-panel-2">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {current.lesson.content ?? ""}
+            </ReactMarkdown>
+          </div>
+
+          {current.lesson.keyTakeaways && current.lesson.keyTakeaways.length > 0 && (
+            <div className="mt-8 rounded-2xl border border-amber/20 bg-panel-2/40 p-6">
+              <h3 className="font-semibold text-bone">Key Takeaways</h3>
+
+              <ul className="mt-3 list-disc space-y-2 pl-5 text-slate">
+                {current.lesson.keyTakeaways.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="mt-10 flex items-center justify-between gap-4">
+            {previous ? (
               <Link
-                href={`/learning/${courseSlug}`}
-                className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-amber hover:underline"
+                href={`/learning/${courseSlug}/${slugOf(previous)}`}
+                className="flex items-center gap-2 rounded-xl border border-bone/15 px-5 py-3 font-semibold text-bone transition hover:border-amber"
               >
-                <ArrowLeft size={16} />
-                Back to course
+                <ArrowLeft size={18} />
+                Previous
               </Link>
+            ) : (
+              <span />
+            )}
 
-              {!current ? (
-                <>
-                  {loading && (
-                    <div className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
-                  )}
+            <button
+              onClick={handleMarkComplete}
+              disabled={marking}
+              className="flex items-center gap-2 rounded-xl bg-amber px-6 py-3 font-bold text-white transition hover:bg-amber-dim disabled:opacity-60"
+            >
+              <CheckCircle2 size={18} />
+              {current.lesson.completed
+                ? next
+                  ? "Next Lesson"
+                  : "Completed"
+                : marking
+                  ? "Saving..."
+                  : "Mark as Complete"}
+            </button>
+          </div>
+        </div>
+      )}
 
-                  {!loading && (error || !course) && (
-                    <div className="rounded-3xl border border-amber/20 bg-panel p-8 text-center text-slate shadow-md">
-                      Couldn&apos;t find this lesson.
-                    </div>
-                  )}
-                </>
-              ) : null}
-
-              {current && !current.moduleUnlocked && (
-                <div className="rounded-3xl border border-amber/20 bg-panel p-8 text-center shadow-md">
-                  <Lock className="mx-auto mb-4 text-slate" size={32} />
-
-                  <h2 className="font-display text-2xl font-bold text-bone">
-                    This module is locked
-                  </h2>
-
-                  <p className="mt-2 text-slate">
-                    Complete the previous module&apos;s quiz to unlock this content.
-                  </p>
-                </div>
-              )}
-
-              {current && current.moduleUnlocked && current.kind === "lesson" && (
-                <div className="rounded-3xl border border-amber/20 bg-panel p-8 shadow-md">
-                  <h1 className="font-display text-3xl font-extrabold text-bone">
-                    {current.lesson.title}
-                  </h1>
-
-                  <div className="prose prose-neutral mt-6 max-w-none text-bone prose-headings:font-display prose-headings:text-bone prose-a:text-amber prose-code:text-amber prose-pre:bg-panel-2">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {current.lesson.content ?? ""}
-                    </ReactMarkdown>
-                  </div>
-
-                  {current.lesson.keyTakeaways && current.lesson.keyTakeaways.length > 0 && (
-                    <div className="mt-8 rounded-2xl border border-amber/20 bg-panel-2/40 p-6">
-                      <h3 className="font-semibold text-bone">Key Takeaways</h3>
-
-                      <ul className="mt-3 list-disc space-y-2 pl-5 text-slate">
-                        {current.lesson.keyTakeaways.map((point) => (
-                          <li key={point}>{point}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <div className="mt-10 flex items-center justify-between gap-4">
-                    {previous ? (
-                      <Link
-                        href={`/learning/${courseSlug}/${slugOf(previous)}`}
-                        className="flex items-center gap-2 rounded-xl border border-bone/15 px-5 py-3 font-semibold text-bone transition hover:border-amber"
-                      >
-                        <ArrowLeft size={18} />
-                        Previous
-                      </Link>
-                    ) : (
-                      <span />
-                    )}
-
-                    <button
-                      onClick={handleMarkComplete}
-                      disabled={marking}
-                      className="flex items-center gap-2 rounded-xl bg-amber px-6 py-3 font-bold text-white transition hover:bg-amber-dim disabled:opacity-60"
-                    >
-                      <CheckCircle2 size={18} />
-                      {current.lesson.completed
-                        ? next
-                          ? "Next Lesson"
-                          : "Completed"
-                        : marking
-                        ? "Saving..."
-                        : "Mark as Complete"}
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {current && current.moduleUnlocked && current.kind === "quiz" && (
-                <QuizRunner
-                  courseSlug={courseSlug}
-                  quiz={current.quiz}
-                  onPassed={() => refetch()}
-                />
-              )}
+      {current && current.moduleUnlocked && current.kind === "quiz" && (
+        <QuizRunner courseSlug={courseSlug} quiz={current.quiz} onPassed={() => refetch()} />
+      )}
     </div>
   );
 }

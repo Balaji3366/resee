@@ -3,15 +3,10 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 import { getModuleUnlockContext, isModuleUnlocked } from "@/lib/learningAccess";
 import { computeStreakUpdate } from "@/lib/learningStreak";
 import { checkAndAwardAchievements } from "@/lib/achievements";
+import { isAnswerCorrect } from "@/lib/questionGrading";
 import type { QuizAttemptQuestionResult } from "@/types/learning";
 
 export const dynamic = "force-dynamic";
-
-function sameOptionSet(a: string[], b: string[]): boolean {
-  if (a.length !== b.length) return false;
-  const setB = new Set(b);
-  return a.every((id) => setB.has(id));
-}
 
 export async function POST(
   request: Request,
@@ -29,10 +24,7 @@ export async function POST(
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return Response.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
+      return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
     const { data: course } = await supabase
@@ -42,10 +34,7 @@ export async function POST(
       .maybeSingle();
 
     if (!course) {
-      return Response.json(
-        { success: false, message: "Course not found." },
-        { status: 404 }
-      );
+      return Response.json({ success: false, message: "Course not found." }, { status: 404 });
     }
 
     const { data: enrollment } = await supabase
@@ -70,23 +59,13 @@ export async function POST(
       .maybeSingle();
 
     if (!quiz) {
-      return Response.json(
-        { success: false, message: "Quiz not found." },
-        { status: 404 }
-      );
+      return Response.json({ success: false, message: "Quiz not found." }, { status: 404 });
     }
 
-    const { modules, passedModuleIds } = await getModuleUnlockContext(
-      supabase,
-      course.id,
-      user.id
-    );
+    const { modules, passedModuleIds } = await getModuleUnlockContext(supabase, course.id, user.id);
 
     if (!isModuleUnlocked(quiz.module_id, modules, passedModuleIds, true)) {
-      return Response.json(
-        { success: false, message: "This module is locked." },
-        { status: 403 }
-      );
+      return Response.json({ success: false, message: "This module is locked." }, { status: 403 });
     }
 
     const { data: moduleLessons } = await supabase
@@ -116,7 +95,7 @@ export async function POST(
 
     const { data: questions } = await supabaseAdmin
       .from("quiz_questions")
-      .select("id, correct_option_ids, explanation")
+      .select("id, question_type, correct_option_ids, explanation")
       .eq("quiz_id", quiz.id);
 
     if (!questions || questions.length === 0) {
@@ -132,7 +111,7 @@ export async function POST(
 
       return {
         questionId: q.id,
-        correct: sameOptionSet(submitted, correctOptionIds),
+        correct: isAnswerCorrect(q.question_type, submitted, correctOptionIds),
         correctOptionIds,
         explanation: q.explanation,
       };
@@ -171,8 +150,7 @@ export async function POST(
         course_id: course.id,
         quiz_passed: wasAlreadyPassed || passed,
         quiz_best_score: Math.max(existingProgress?.quiz_best_score ?? 0, score),
-        completed_at:
-          wasAlreadyPassed || passed ? new Date().toISOString() : null,
+        completed_at: wasAlreadyPassed || passed ? new Date().toISOString() : null,
       },
       { onConflict: "user_id,module_id" }
     );
@@ -198,8 +176,7 @@ export async function POST(
           current_streak: streak.currentStreak,
           longest_streak: streak.longestStreak,
           last_activity_date: streak.lastActivityDate,
-          total_learning_minutes:
-            (profile?.total_learning_minutes ?? 0) + quiz.estimated_minutes,
+          total_learning_minutes: (profile?.total_learning_minutes ?? 0) + quiz.estimated_minutes,
         })
         .eq("id", user.id);
     }

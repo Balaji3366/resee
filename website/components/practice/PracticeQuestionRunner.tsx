@@ -40,10 +40,7 @@ export default function PracticeQuestionRunner({
   const hasAutoSubmitted = useRef(false);
 
   const { data: bookmarks, refetch: refetchBookmarks } = usePracticeBookmarks();
-  const bookmarkedIds = useMemo(
-    () => new Set((bookmarks ?? []).map((b) => b.id)),
-    [bookmarks]
-  );
+  const bookmarkedIds = useMemo(() => new Set((bookmarks ?? []).map((b) => b.id)), [bookmarks]);
 
   const startSession = useCallback(async () => {
     setLoading(true);
@@ -112,9 +109,7 @@ export default function PracticeQuestionRunner({
   }, [session, submitting, attemptsBase, elapsedSeconds, onSessionEnd]);
 
   const remainingSeconds =
-    timerVariant === "countdown" && durationMinutes
-      ? durationMinutes * 60 - elapsedSeconds
-      : null;
+    timerVariant === "countdown" && durationMinutes ? durationMinutes * 60 - elapsedSeconds : null;
 
   useEffect(() => {
     if (
@@ -129,16 +124,7 @@ export default function PracticeQuestionRunner({
     }
   }, [timerVariant, remainingSeconds, result, handleSubmit]);
 
-  async function toggleOption(questionId: string, optionId: string, questionType: string) {
-    const current = answers[questionId] ?? [];
-
-    const next =
-      questionType === "multiple_select"
-        ? current.includes(optionId)
-          ? current.filter((id) => id !== optionId)
-          : [...current, optionId]
-        : [optionId];
-
+  function saveAnswer(questionId: string, next: string[]) {
     setAnswers((prev) => ({ ...prev, [questionId]: next }));
 
     if (!session) return;
@@ -148,6 +134,23 @@ export default function PracticeQuestionRunner({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ questionId, optionIds: next }),
     }).catch(() => {});
+  }
+
+  function toggleOption(questionId: string, optionId: string, questionType: string) {
+    const current = answers[questionId] ?? [];
+
+    const next =
+      questionType === "multiple_select"
+        ? current.includes(optionId)
+          ? current.filter((id) => id !== optionId)
+          : [...current, optionId]
+        : [optionId];
+
+    saveAnswer(questionId, next);
+  }
+
+  function setTextAnswer(questionId: string, text: string) {
+    saveAnswer(questionId, [text]);
   }
 
   async function toggleBookmark(questionId: string) {
@@ -167,9 +170,7 @@ export default function PracticeQuestionRunner({
   }
 
   if (loading) {
-    return (
-      <div className="h-96 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
-    );
+    return <div className="h-96 animate-pulse rounded-3xl border border-amber/20 bg-panel" />;
   }
 
   if (error || !session) {
@@ -230,6 +231,7 @@ export default function PracticeQuestionRunner({
           question={question}
           selectedOptionIds={answers[question.id] ?? []}
           onToggle={(optionId) => toggleOption(question.id, optionId, question.questionType)}
+          onTextChange={(text) => setTextAnswer(question.id, text)}
         />
       </div>
 

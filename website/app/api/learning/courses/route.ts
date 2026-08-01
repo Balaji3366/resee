@@ -3,8 +3,11 @@ import type { CourseSummary, LearningCategory } from "@/types/learning";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get("q")?.trim();
+
     const supabase = await getServerSupabase();
 
     const {
@@ -12,10 +15,7 @@ export async function GET() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return Response.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
+      return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
     const { data: categories } = await supabase
@@ -23,7 +23,7 @@ export async function GET() {
       .select("id, slug, name, icon")
       .order("sort_order");
 
-    const { data: courses, error: coursesError } = await supabase
+    let coursesQuery = supabase
       .from("courses")
       .select(
         `
@@ -34,6 +34,22 @@ export async function GET() {
       `
       )
       .order("sort_order");
+
+    if (query) {
+      // Strip characters that are syntactically meaningful to
+      // PostgREST's `.or()` filter DSL (comma separates conditions,
+      // parentheses group them) so a search term containing them can't
+      // produce a malformed filter.
+      const safeQuery = query.replace(/[,()]/g, " ").trim();
+
+      if (safeQuery) {
+        coursesQuery = coursesQuery.or(
+          `title.ilike.%${safeQuery}%,description.ilike.%${safeQuery}%`
+        );
+      }
+    }
+
+    const { data: courses, error: coursesError } = await coursesQuery;
 
     if (coursesError) throw coursesError;
 
@@ -46,10 +62,7 @@ export async function GET() {
 
     const completedByCourseId = new Map<string, number>();
     for (const row of progressRows ?? []) {
-      completedByCourseId.set(
-        row.course_id,
-        (completedByCourseId.get(row.course_id) ?? 0) + 1
-      );
+      completedByCourseId.set(row.course_id, (completedByCourseId.get(row.course_id) ?? 0) + 1);
     }
 
     const summaries: CourseSummary[] = (courses ?? []).map((course) => {
@@ -74,9 +87,7 @@ export async function GET() {
         totalMinutes,
         isEnrolled,
         progressPercent:
-          isEnrolled && lessonCount > 0
-            ? Math.round((completed / lessonCount) * 100)
-            : 0,
+          isEnrolled && lessonCount > 0 ? Math.round((completed / lessonCount) * 100) : 0,
       };
     });
 

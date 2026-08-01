@@ -8,6 +8,8 @@ import {
   Users,
   BookOpen,
   FolderTree,
+  ListChecks,
+  ClipboardList,
   Mic,
   FileBadge,
   FolderOpen,
@@ -28,6 +30,8 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Users", icon: Users },
   { label: "Learning Paths", icon: BookOpen, href: "/admin/learning-paths" },
   { label: "Categories", icon: FolderTree, href: "/admin/categories" },
+  { label: "Practice Topics", icon: ListChecks, href: "/admin/practice" },
+  { label: "Mock Tests", icon: ClipboardList, href: "/admin/practice/mock-tests" },
   { label: "Mock Interviews", icon: Mic },
   { label: "Resume Templates", icon: FileBadge },
   { label: "Documents", icon: FolderOpen },
@@ -37,13 +41,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Settings", icon: SettingsIcon },
 ];
 
-function NavList({
-  pathname,
-  onNavigate,
-}: {
-  pathname: string;
-  onNavigate?: () => void;
-}) {
+function NavList({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
     <nav className="space-y-2">
       {NAV_ITEMS.map((item) => {
@@ -67,8 +65,7 @@ function NavList({
           );
         }
 
-        const isActive =
-          pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
         return (
           <Link
@@ -76,9 +73,7 @@ function NavList({
             href={item.href}
             onClick={onNavigate}
             className={`flex items-center gap-3 rounded-xl px-4 py-3 font-medium transition ${
-              isActive
-                ? "bg-amber text-white"
-                : "text-bone hover:bg-panel-2/40"
+              isActive ? "bg-amber text-white" : "text-bone hover:bg-panel-2/40"
             }`}
           >
             <Icon size={18} />

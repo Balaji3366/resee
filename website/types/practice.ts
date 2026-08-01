@@ -1,6 +1,7 @@
 import type { Difficulty } from "@/types/learning";
 
-export type PracticeQuestionType = "single_choice" | "multiple_select" | "true_false";
+export type PracticeQuestionType =
+  "single_choice" | "multiple_select" | "true_false" | "fill_blank";
 export type AttemptStatus = "in_progress" | "completed";
 export type PracticeKind = "topic" | "mock_test";
 
@@ -122,6 +123,16 @@ export interface PracticeAnalyticsData {
   strongTopics: TopicAccuracy[];
   weekly: PracticeTrendPoint[];
   monthly: PracticeTrendPoint[];
+}
+
+/** Today's shared Daily Challenge — same question set for every user on
+ *  a given date (see supabase/migrations/0014_learning_ecosystem_gaps.sql). */
+export interface DailyChallengeSummary {
+  challengeDate: string;
+  totalQuestions: number;
+  status: AttemptStatus | null;
+  score: number | null;
+  inProgressAttemptId: string | null;
 }
 
 export interface BookmarkedQuestion {

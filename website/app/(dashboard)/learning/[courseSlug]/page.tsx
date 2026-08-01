@@ -5,11 +5,7 @@ import Link from "next/link";
 import ModuleLessonTree from "@/components/learning/ModuleLessonTree";
 import { useCourse } from "@/hooks/useCourse";
 
-export default function CoursePage({
-  params,
-}: {
-  params: Promise<{ courseSlug: string }>;
-}) {
+export default function CoursePage({ params }: { params: Promise<{ courseSlug: string }> }) {
   const { courseSlug } = use(params);
 
   const [enrolling, setEnrolling] = useState(false);
@@ -55,105 +51,155 @@ export default function CoursePage({
 
   return (
     <div className="mx-auto max-w-4xl">
-              {loading && (
-                <div className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
-              )}
+      {loading && (
+        <div className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
+      )}
 
-              {!loading && (error || !course) && (
-                <div className="rounded-3xl border border-amber/20 bg-panel p-8 text-center text-slate shadow-md">
-                  Couldn&apos;t load this course.
+      {!loading && (error || !course) && (
+        <div className="rounded-3xl border border-amber/20 bg-panel p-8 text-center text-slate shadow-md">
+          Couldn&apos;t load this course.
+        </div>
+      )}
+
+      {!loading && course && (
+        <>
+          <div className="rounded-3xl border border-amber/20 bg-panel p-8 shadow-md">
+            <div className="flex items-start justify-between gap-6">
+              <div>
+                <span className="text-4xl">{course.icon}</span>
+
+                <h1 className="font-display mt-4 text-3xl font-extrabold text-bone">
+                  {course.title}
+                </h1>
+
+                <p className="mt-2 text-slate">{course.tagline}</p>
+              </div>
+
+              {!course.isAvailable && (
+                <span className="shrink-0 rounded-full bg-panel-2 px-3 py-1 text-xs font-bold text-slate">
+                  Coming Soon
+                </span>
+              )}
+            </div>
+
+            <p className="mt-6 leading-7 text-bone">{course.description}</p>
+
+            <div className="mt-6 flex flex-wrap gap-3 text-sm">
+              <span className="rounded-full bg-panel-2 px-4 py-2 capitalize text-slate">
+                {course.difficulty}
+              </span>
+
+              <span className="rounded-full bg-panel-2 px-4 py-2 text-slate">
+                ~{course.totalMinutes} min
+              </span>
+
+              <span className="rounded-full bg-panel-2 px-4 py-2 text-slate">
+                {course.totalLessons} lessons
+              </span>
+            </div>
+
+            {course.isEnrolled && (
+              <div className="mt-6">
+                <div className="mb-2 flex justify-between text-sm text-slate">
+                  <span>Progress</span>
+                  <span className="font-semibold text-bone">{course.progressPercent}%</span>
                 </div>
+
+                <div className="h-2 rounded-full bg-panel-2">
+                  <div
+                    className="h-2 rounded-full bg-amber transition-all duration-700"
+                    style={{ width: `${course.progressPercent}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="mt-8">
+              {!course.isAvailable ? (
+                <button
+                  disabled
+                  className="w-full cursor-not-allowed rounded-xl bg-panel-2 py-4 text-lg font-bold text-slate"
+                >
+                  Coming Soon
+                </button>
+              ) : course.isEnrolled ? (
+                <Link
+                  href={`/learning/${courseSlug}/${findResumeSlug() ?? ""}`}
+                  className="flex w-full items-center justify-center rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim"
+                >
+                  Continue
+                </Link>
+              ) : (
+                <button
+                  onClick={handleEnroll}
+                  disabled={enrolling}
+                  className="w-full rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim disabled:opacity-60"
+                >
+                  {enrolling ? "Enrolling..." : "Enroll"}
+                </button>
               )}
+            </div>
+          </div>
 
-              {!loading && course && (
-                <>
-                  <div className="rounded-3xl border border-amber/20 bg-panel p-8 shadow-md">
-                    <div className="flex items-start justify-between gap-6">
-                      <div>
-                        <span className="text-4xl">{course.icon}</span>
+          {course.isEnrolled && (
+            <div className="mt-8">
+              <ModuleLessonTree modules={course.modules} courseSlug={courseSlug} />
+            </div>
+          )}
 
-                        <h1 className="font-display mt-4 text-3xl font-extrabold text-bone">
-                          {course.title}
-                        </h1>
+          {course.isEnrolled && course.certificate && (
+            <div className="mt-8 rounded-3xl border border-amber/20 bg-panel-2/40 p-7 shadow-md">
+              <h2 className="font-display text-xl font-bold text-bone">🎓 Course completed</h2>
+              <p className="mt-2 text-sm text-slate">
+                Certificate No. {course.certificate.certificateNumber}
+              </p>
+              <Link
+                href={`/learning/${courseSlug}/certificate`}
+                className="mt-4 inline-flex items-center rounded-xl bg-amber px-6 py-3 font-bold text-white transition hover:bg-amber-dim"
+              >
+                View Certificate
+              </Link>
+            </div>
+          )}
 
-                        <p className="mt-2 text-slate">{course.tagline}</p>
-                      </div>
+          {course.isEnrolled &&
+            !course.certificate &&
+            course.isComplete &&
+            course.exam &&
+            !course.exam.passed && (
+              <div className="mt-8 rounded-3xl border border-amber/20 bg-panel p-7 shadow-md">
+                <h2 className="font-display text-xl font-bold text-bone">
+                  Ready for your final exam
+                </h2>
+                <p className="mt-2 text-sm text-slate">
+                  You&apos;ve completed every module. Pass the final exam to earn your course
+                  certificate.
+                </p>
+                <Link
+                  href={`/learning/${courseSlug}/exam`}
+                  className="mt-4 inline-flex items-center rounded-xl bg-amber px-6 py-3 font-bold text-white transition hover:bg-amber-dim"
+                >
+                  Take Final Exam
+                </Link>
+              </div>
+            )}
 
-                      {!course.isAvailable && (
-                        <span className="shrink-0 rounded-full bg-panel-2 px-3 py-1 text-xs font-bold text-slate">
-                          Coming Soon
-                        </span>
-                      )}
-                    </div>
-
-                    <p className="mt-6 leading-7 text-bone">{course.description}</p>
-
-                    <div className="mt-6 flex flex-wrap gap-3 text-sm">
-                      <span className="rounded-full bg-panel-2 px-4 py-2 capitalize text-slate">
-                        {course.difficulty}
-                      </span>
-
-                      <span className="rounded-full bg-panel-2 px-4 py-2 text-slate">
-                        ~{course.totalMinutes} min
-                      </span>
-
-                      <span className="rounded-full bg-panel-2 px-4 py-2 text-slate">
-                        {course.totalLessons} lessons
-                      </span>
-                    </div>
-
-                    {course.isEnrolled && (
-                      <div className="mt-6">
-                        <div className="mb-2 flex justify-between text-sm text-slate">
-                          <span>Progress</span>
-                          <span className="font-semibold text-bone">
-                            {course.progressPercent}%
-                          </span>
-                        </div>
-
-                        <div className="h-2 rounded-full bg-panel-2">
-                          <div
-                            className="h-2 rounded-full bg-amber transition-all duration-700"
-                            style={{ width: `${course.progressPercent}%` }}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="mt-8">
-                      {!course.isAvailable ? (
-                        <button
-                          disabled
-                          className="w-full cursor-not-allowed rounded-xl bg-panel-2 py-4 text-lg font-bold text-slate"
-                        >
-                          Coming Soon
-                        </button>
-                      ) : course.isEnrolled ? (
-                        <Link
-                          href={`/learning/${courseSlug}/${findResumeSlug() ?? ""}`}
-                          className="flex w-full items-center justify-center rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim"
-                        >
-                          Continue
-                        </Link>
-                      ) : (
-                        <button
-                          onClick={handleEnroll}
-                          disabled={enrolling}
-                          className="w-full rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim disabled:opacity-60"
-                        >
-                          {enrolling ? "Enrolling..." : "Enroll"}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {course.isEnrolled && (
-                    <div className="mt-8">
-                      <ModuleLessonTree modules={course.modules} courseSlug={courseSlug} />
-                    </div>
-                  )}
-                </>
-              )}
+          {course.isEnrolled && !course.certificate && course.isComplete && !course.exam && (
+            <div className="mt-8 rounded-3xl border border-amber/20 bg-panel p-7 shadow-md">
+              <h2 className="font-display text-xl font-bold text-bone">
+                🎉 You&apos;ve completed this course
+              </h2>
+              <p className="mt-2 text-sm text-slate">Claim your completion certificate.</p>
+              <Link
+                href={`/learning/${courseSlug}/certificate`}
+                className="mt-4 inline-flex items-center rounded-xl bg-amber px-6 py-3 font-bold text-white transition hover:bg-amber-dim"
+              >
+                Claim Certificate
+              </Link>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

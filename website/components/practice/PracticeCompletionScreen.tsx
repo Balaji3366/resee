@@ -1,4 +1,5 @@
 import QuizOptionButton from "@/components/learning/QuizOptionButton";
+import FillBlankInput from "@/components/learning/FillBlankInput";
 import type { PracticeAttemptResult, PracticeQuestionPublic } from "@/types/practice";
 
 function formatTime(seconds: number): string {
@@ -58,22 +59,32 @@ export default function PracticeCompletionScreen({
               <p className="font-semibold text-bone">{q.question}</p>
 
               <div className="mt-3 space-y-2">
-                {q.options.map((opt) => (
-                  <QuizOptionButton
-                    key={opt.id}
-                    label={opt.text}
-                    selected={submitted.includes(opt.id)}
-                    state={
-                      qResult?.correctOptionIds.includes(opt.id)
-                        ? "correct"
-                        : submitted.includes(opt.id)
-                        ? "incorrect"
-                        : "default"
-                    }
-                    onClick={() => {}}
+                {q.questionType === "fill_blank" ? (
+                  <FillBlankInput
+                    value={submitted[0] ?? ""}
+                    onChange={() => {}}
                     disabled
+                    state={qResult?.correct ? "correct" : "incorrect"}
+                    acceptedAnswer={qResult?.correctOptionIds[0]}
                   />
-                ))}
+                ) : (
+                  q.options.map((opt) => (
+                    <QuizOptionButton
+                      key={opt.id}
+                      label={opt.text}
+                      selected={submitted.includes(opt.id)}
+                      state={
+                        qResult?.correctOptionIds.includes(opt.id)
+                          ? "correct"
+                          : submitted.includes(opt.id)
+                            ? "incorrect"
+                            : "default"
+                      }
+                      onClick={() => {}}
+                      disabled
+                    />
+                  ))
+                )}
               </div>
 
               {qResult?.explanation && (

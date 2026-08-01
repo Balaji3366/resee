@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import QuizOptionButton from "./QuizOptionButton";
+import FillBlankInput from "./FillBlankInput";
 import type { QuizSummary, QuizAttemptResult } from "@/types/learning";
 
 interface QuizRunnerProps {
@@ -34,18 +35,19 @@ export default function QuizRunner({ courseSlug, quiz, onPassed }: QuizRunnerPro
     });
   }
 
+  function setTextAnswer(questionId: string, text: string) {
+    setAnswers((prev) => ({ ...prev, [questionId]: [text] }));
+  }
+
   async function handleSubmit() {
     setSubmitting(true);
 
     try {
-      const res = await fetch(
-        `/api/learning/courses/${courseSlug}/quizzes/${quiz.slug}/attempt`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ answers }),
-        }
-      );
+      const res = await fetch(`/api/learning/courses/${courseSlug}/quizzes/${quiz.slug}/attempt`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers }),
+      });
 
       const json = await res.json();
 
@@ -63,7 +65,10 @@ export default function QuizRunner({ courseSlug, quiz, onPassed }: QuizRunnerPro
     setAnswers({});
   }
 
-  const allAnswered = questions.every((q) => (answers[q.id] ?? []).length > 0);
+  const allAnswered = questions.every((q) => {
+    const given = answers[q.id] ?? [];
+    return q.questionType === "fill_blank" ? (given[0] ?? "").trim().length > 0 : given.length > 0;
+  });
 
   if (result) {
     return (
@@ -86,22 +91,32 @@ export default function QuizRunner({ courseSlug, quiz, onPassed }: QuizRunnerPro
                 <p className="font-semibold text-bone">{q.question}</p>
 
                 <div className="mt-3 space-y-2">
-                  {q.options.map((opt) => (
-                    <QuizOptionButton
-                      key={opt.id}
-                      label={opt.text}
-                      selected={submitted.includes(opt.id)}
-                      state={
-                        qResult?.correctOptionIds.includes(opt.id)
-                          ? "correct"
-                          : submitted.includes(opt.id)
-                          ? "incorrect"
-                          : "default"
-                      }
-                      onClick={() => {}}
+                  {q.questionType === "fill_blank" ? (
+                    <FillBlankInput
+                      value={submitted[0] ?? ""}
+                      onChange={() => {}}
                       disabled
+                      state={qResult?.correct ? "correct" : "incorrect"}
+                      acceptedAnswer={qResult?.correctOptionIds[0]}
                     />
-                  ))}
+                  ) : (
+                    q.options.map((opt) => (
+                      <QuizOptionButton
+                        key={opt.id}
+                        label={opt.text}
+                        selected={submitted.includes(opt.id)}
+                        state={
+                          qResult?.correctOptionIds.includes(opt.id)
+                            ? "correct"
+                            : submitted.includes(opt.id)
+                              ? "incorrect"
+                              : "default"
+                        }
+                        onClick={() => {}}
+                        disabled
+                      />
+                    ))
+                  )}
                 </div>
 
                 <p className="mt-3 text-sm text-slate">{qResult?.explanation}</p>
@@ -138,14 +153,21 @@ export default function QuizRunner({ courseSlug, quiz, onPassed }: QuizRunnerPro
             </p>
 
             <div className="mt-3 space-y-2">
-              {q.options.map((opt) => (
-                <QuizOptionButton
-                  key={opt.id}
-                  label={opt.text}
-                  selected={(answers[q.id] ?? []).includes(opt.id)}
-                  onClick={() => toggleOption(q.id, opt.id, q.questionType)}
+              {q.questionType === "fill_blank" ? (
+                <FillBlankInput
+                  value={(answers[q.id] ?? [])[0] ?? ""}
+                  onChange={(text) => setTextAnswer(q.id, text)}
                 />
-              ))}
+              ) : (
+                q.options.map((opt) => (
+                  <QuizOptionButton
+                    key={opt.id}
+                    label={opt.text}
+                    selected={(answers[q.id] ?? []).includes(opt.id)}
+                    onClick={() => toggleOption(q.id, opt.id, q.questionType)}
+                  />
+                ))
+              )}
             </div>
           </div>
         ))}

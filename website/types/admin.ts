@@ -45,10 +45,14 @@ export interface AdminLessonDetail {
   attachments: AdminAttachment[];
 }
 
+export type AdminQuestionType = "single_choice" | "multiple_select" | "true_false" | "fill_blank";
+
 export interface AdminQuizQuestionDetail {
   id: string;
   question: string;
-  questionType: "single_choice" | "multiple_select";
+  questionType: AdminQuestionType;
+  /** Acceptable-answers list when questionType is "fill_blank"; option
+   *  choices otherwise — see AdminQuestionEditor.tsx. */
   options: { id: string; text: string }[];
   correctOptionIds: string[];
   explanation: string;
@@ -91,6 +95,97 @@ export interface AdminCourseDetail {
   tags: string[];
   category: AdminCategory | null;
   modules: AdminModuleDetail[];
+}
+
+// ============================================================
+// Admin CMS — Practice & Assessment (extends the Learning CMS pattern
+// above to the previously-unmanaged practice_categories/practice_topics/
+// practice_questions/mock_tests/mock_test_questions tables — see
+// docs/standards/design-system.md).
+// ============================================================
+
+export interface AdminPracticeCategory {
+  id: string;
+  slug: string;
+  name: string;
+  icon: string;
+  sortOrder: number;
+}
+
+export interface AdminPracticeTopicSummary {
+  id: string;
+  slug: string;
+  title: string;
+  difficulty: Difficulty;
+  isAvailable: boolean;
+  category: AdminPracticeCategory | null;
+  questionCount: number;
+  updatedAt: string;
+}
+
+export interface AdminPracticeQuestionDetail {
+  id: string;
+  question: string;
+  questionType: AdminQuestionType;
+  options: { id: string; text: string }[];
+  correctOptionIds: string[];
+  explanation: string;
+  sortOrder: number;
+}
+
+export interface AdminPracticeTopicDetail {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  difficulty: Difficulty;
+  icon: string;
+  isAvailable: boolean;
+  estimatedMinutes: number;
+  category: AdminPracticeCategory | null;
+  questions: AdminPracticeQuestionDetail[];
+}
+
+export interface AdminMockTestSummary {
+  id: string;
+  slug: string;
+  title: string;
+  difficulty: Difficulty;
+  isAvailable: boolean;
+  durationMinutes: number;
+  questionCount: number;
+}
+
+export interface AdminMockTestQuestionLink {
+  linkId: string;
+  questionId: string;
+  question: string;
+  topicTitle: string;
+  sortOrder: number;
+}
+
+export interface AdminMockTestDetail {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  difficulty: Difficulty;
+  durationMinutes: number;
+  isAvailable: boolean;
+  questions: AdminMockTestQuestionLink[];
+}
+
+// ============================================================
+// Admin CMS — Course-level final exams
+// ============================================================
+
+export interface AdminCourseExamDetail {
+  id: string;
+  slug: string;
+  title: string;
+  passingScore: number;
+  estimatedMinutes: number;
+  questions: AdminQuizQuestionDetail[];
 }
 
 export interface AdminTrendPoint {

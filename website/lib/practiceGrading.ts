@@ -1,13 +1,8 @@
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { computeStreakUpdate } from "@/lib/learningStreak";
 import { checkAndAwardAchievements } from "@/lib/achievements";
+import { isAnswerCorrect } from "@/lib/questionGrading";
 import type { PracticeAttemptQuestionResult, PracticeAttemptResult } from "@/types/practice";
-
-function sameOptionSet(a: string[], b: string[]): boolean {
-  if (a.length !== b.length) return false;
-  const setB = new Set(b);
-  return a.every((id) => setB.has(id));
-}
 
 /**
  * Grades a completed attempt against practice_questions via the
@@ -21,7 +16,7 @@ export async function gradeAttempt(
 ): Promise<PracticeAttemptResult> {
   const { data: questions } = await supabaseAdmin
     .from("practice_questions")
-    .select("id, correct_option_ids, explanation")
+    .select("id, question_type, correct_option_ids, explanation")
     .in("id", questionIds);
 
   const byId = new Map((questions ?? []).map((q) => [q.id, q]));
@@ -33,7 +28,7 @@ export async function gradeAttempt(
 
     return {
       questionId: id,
-      correct: sameOptionSet(submitted, correctOptionIds),
+      correct: isAnswerCorrect(q?.question_type ?? "single_choice", submitted, correctOptionIds),
       correctOptionIds,
       explanation: q?.explanation ?? "",
     };

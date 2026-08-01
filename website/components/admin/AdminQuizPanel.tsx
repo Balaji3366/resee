@@ -9,7 +9,11 @@ import AdminQuestionEditor, { type QuestionFormValues } from "./AdminQuestionEdi
 import type { AdminQuizDetail } from "@/types/admin";
 
 function slugify(value: string) {
-  return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 export default function AdminQuizPanel({
@@ -198,6 +202,7 @@ export default function AdminQuizPanel({
               editingQuestionId === q.id ? (
                 <AdminQuestionEditor
                   initial={q}
+                  allowedTypes={["single_choice", "multiple_select", "fill_blank"]}
                   saving={saving}
                   onCancel={() => setEditingQuestionId(null)}
                   onSave={(values) => handleEditQuestion(q.id, values)}
@@ -229,6 +234,7 @@ export default function AdminQuizPanel({
       {addingQuestion ? (
         <div className="mt-4">
           <AdminQuestionEditor
+            allowedTypes={["single_choice", "multiple_select", "fill_blank"]}
             saving={saving}
             onCancel={() => setAddingQuestion(false)}
             onSave={handleAddQuestion}
