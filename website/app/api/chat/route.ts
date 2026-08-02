@@ -1,5 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getServerSupabase } from "@/lib/supabaseServer";
+import { checkRateLimit } from "@/lib/ai/rateLimiter";
+import { logAIRequest } from "@/lib/ai/logger";
+import { toRedactedParams } from "@/lib/ai/security";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
@@ -7,18 +10,37 @@ const ai = new GoogleGenAI({
 
 export async function POST(req: Request) {
   try {
+    const supabase = await getServerSupabase();
+
     const {
-      message,
-      history = [],
-      sessionId,
-    } = await req.json();
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return Response.json({ reply: "Unauthorized." }, { status: 401 });
+    }
+
+    const { message, history = [], sessionId } = await req.json();
 
     let currentSessionId = sessionId;
 
-    if (!currentSessionId) {
-      const { data, error } = await supabaseAdmin
+    if (currentSessionId) {
+      // Only reuse a session that actually belongs to the caller.
+      const { data: existing } = await supabase
+        .from("chat_sessions")
+        .select("id")
+        .eq("id", currentSessionId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!existing) {
+        return Response.json({ reply: "Chat session not found." }, { status: 404 });
+      }
+    } else {
+      const { data, error } = await supabase
         .from("chat_sessions")
         .insert({
+          user_id: user.id,
           title: message.slice(0, 40),
         })
         .select("id")
@@ -30,6 +52,25 @@ export async function POST(req: Request) {
 
       currentSessionId = data.id;
     }
+
+    const rateLimit = await checkRateLimit(user.id, "legacy_chat_assistant");
+    if (!rateLimit.allowed) {
+      await logAIRequest({
+        userId: user.id,
+        feature: "legacy_chat_assistant",
+        provider: "gemini",
+        model: "models/gemini-3-flash-preview",
+        status: "rate_limited",
+        paramsRedacted: toRedactedParams({ sessionId: currentSessionId }),
+      });
+
+      return Response.json(
+        { reply: `Too many requests. Try again in ${rateLimit.resetInSeconds} seconds.` },
+        { status: 429 }
+      );
+    }
+
+    const startedAt = Date.now();
 
     const response = await ai.models.generateContent({
       model: "models/gemini-3-flash-preview",
@@ -63,12 +104,23 @@ ${message}
 `,
     });
 
-    await supabaseAdmin.from("chat_history").insert({
+    await logAIRequest({
+      userId: user.id,
+      feature: "legacy_chat_assistant",
+      provider: "gemini",
+      model: "models/gemini-3-flash-preview",
+      status: "success",
+      latencyMs: Date.now() - startedAt,
+      paramsRedacted: toRedactedParams({ sessionId: currentSessionId }),
+    });
+
+    await supabase.from("chat_history").insert({
+      user_id: user.id,
       user_message: message,
       ai_response: response.text,
     });
 
-    await supabaseAdmin.from("chat_messages").insert([
+    await supabase.from("chat_messages").insert([
       {
         session_id: currentSessionId,
         sender: "You",

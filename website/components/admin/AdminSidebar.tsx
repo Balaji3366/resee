@@ -18,6 +18,7 @@ import {
   BarChart3,
   ShieldCheck,
   Settings as SettingsIcon,
+  Sparkles,
 } from "lucide-react";
 
 interface NavItem {
@@ -35,6 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Mock Tests", icon: ClipboardList, href: "/admin/practice/mock-tests" },
   { label: "Mock Interviews", icon: Mic, href: "/admin/interviews" },
   { label: "Jobs", icon: Briefcase, href: "/admin/jobs" },
+  { label: "AI Platform", icon: Sparkles, href: "/admin/ai" },
   { label: "Resume Templates", icon: FileBadge },
   { label: "Documents", icon: FolderOpen },
   { label: "Notifications", icon: Bell },

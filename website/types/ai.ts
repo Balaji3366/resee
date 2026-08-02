@@ -7,17 +7,24 @@ export type AIFeature =
   | "skill_gap"
   | "career_coaching"
   | "learning_recommendation"
-  | "daily_recommendation";
+  | "daily_recommendation"
+  // Legacy, freeform (non-orchestrator) routes — distinct from the typed
+  // feature set above so future Phase 1+ features never get confused with
+  // the disconnected legacy tools they'll eventually replace.
+  | "legacy_resume_analyzer"
+  | "legacy_resume_rewrite"
+  | "legacy_onboarding_summary"
+  | "legacy_interview_questions"
+  | "legacy_quiz_generator"
+  | "legacy_quiz_file_generator"
+  | "legacy_pdf_summarizer"
+  | "legacy_pdf_chat"
+  | "legacy_chat_assistant";
 
 export type AIRequestStatus = "success" | "error" | "rate_limited" | "cached";
 
 export type AIErrorCode =
-  | "rate_limited"
-  | "invalid_request"
-  | "provider_error"
-  | "parse_error"
-  | "no_credits"
-  | "unknown";
+  "rate_limited" | "invalid_request" | "provider_error" | "parse_error" | "no_credits" | "unknown";
 
 export interface AIError {
   code: AIErrorCode;

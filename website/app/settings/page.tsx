@@ -4,19 +4,22 @@ import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 export default function SettingsPage() {
   return (
     <OnboardingLayout>
-      <h2 className="font-display text-3xl font-extrabold text-bone">
-        Settings
-      </h2>
+      <h2 className="font-display text-3xl font-extrabold text-bone">Settings</h2>
 
-      <p className="mt-3 text-slate">
-        Manage your career profile.
-      </p>
+      <p className="mt-3 text-slate">Manage your career profile.</p>
 
       <Link
         href="/onboarding?edit=true"
         className="mt-8 flex w-full items-center justify-center rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim"
       >
         Edit Career Profile
+      </Link>
+
+      <Link
+        href="/settings/privacy"
+        className="mt-3 flex w-full items-center justify-center rounded-xl border-2 border-bone/20 py-4 text-lg font-bold text-bone transition hover:border-bone"
+      >
+        Privacy
       </Link>
     </OnboardingLayout>
   );

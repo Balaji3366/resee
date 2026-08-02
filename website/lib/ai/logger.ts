@@ -12,6 +12,11 @@ export interface LogAIRequestParams {
   totalTokens?: number | null;
   latencyMs?: number | null;
   errorMessage?: string | null;
+  /** The feature's raw request params, already redacted by the caller
+   *  via redactSensitiveFields() — never pass unredacted params here.
+   *  Stored for admin observability ("what was actually requested" when
+   *  debugging an error), not persisted anywhere before this. */
+  paramsRedacted?: Record<string, unknown> | null;
 }
 
 /** Writes one row to ai_requests — the AI Logging component. */
@@ -27,6 +32,7 @@ export async function logAIRequest(params: LogAIRequestParams): Promise<void> {
     total_tokens: params.totalTokens ?? null,
     latency_ms: params.latencyMs ?? null,
     error_message: params.errorMessage ?? null,
+    params_redacted: params.paramsRedacted ?? null,
   });
 
   if (error) {

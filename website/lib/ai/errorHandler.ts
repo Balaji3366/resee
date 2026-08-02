@@ -1,5 +1,21 @@
 import type { AIError, AIErrorCode } from "@/types/ai";
 
+/** HTTP status a legacy route should return for a given AIError code —
+ *  keeps rate-limit/credit failures distinguishable from a generic 500
+ *  without every route hand-rolling the same switch. */
+export function aiErrorStatus(code: AIErrorCode): number {
+  switch (code) {
+    case "rate_limited":
+      return 429;
+    case "no_credits":
+      return 402;
+    case "invalid_request":
+      return 400;
+    default:
+      return 500;
+  }
+}
+
 /**
  * Generalizes the 429-handling idiom already proven in
  * app/api/interview/route.ts and app/api/quiz/route.ts (the only 2 of 8

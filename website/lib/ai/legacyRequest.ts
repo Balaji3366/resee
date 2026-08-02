@@ -1,66 +1,68 @@
 import { createHash, randomUUID } from "crypto";
 import { getProvider } from "./providers";
-import { buildMessages } from "./promptBuilder";
-import type { PromptResult } from "./promptBuilder";
-import { safeJsonParse } from "./responseParser";
+import type { AIProviderAttachment, AIProviderMessage } from "./providers/types";
 import { normalizeAIError } from "./errorHandler";
 import { logAIRequest } from "./logger";
 import { checkRateLimit } from "./rateLimiter";
-import { getCachedResponse, setCachedResponse, buildCacheKey } from "./cache";
+import { getCachedResponse, setCachedResponse } from "./cache";
 import { hasCredits, deductCredits } from "./credits";
-import { validatePromptInput, toRedactedParams } from "./security";
-import type { AIFeature, AIResponse, UserContext } from "@/types/ai";
+import { toRedactedParams } from "./security";
+import type { AIFeature, AIResponse } from "@/types/ai";
 
-export interface RunAIRequestOptions {
+const DEFAULT_MODEL = "gemini-3-flash-preview";
+
+export interface RunLegacyAIRequestOptions {
   userId: string;
   feature: AIFeature;
-  context: UserContext;
-  prompt: PromptResult;
+  messages: AIProviderMessage[];
+  attachment?: AIProviderAttachment;
+  model?: string;
+  /** Raw request params — redacted before ever being logged. Also the
+   *  cache-key material when cacheTtlSeconds > 0. */
   params: unknown;
   creditCost?: number;
+  /** 0 (default) disables caching — correct for routes whose output must
+   *  always reflect the exact submitted input (e.g. a resume rewrite). */
   cacheTtlSeconds?: number;
   /** Stable key identifying this logical request for credit-deduction
-   *  idempotency — pass one through if the caller has a way to generate
-   *  the same key across its own retries; otherwise a fresh one is
-   *  generated per call, which still protects against this single
-   *  execution accidentally deducting twice. */
+   *  idempotency — defaults to a fresh UUID per call, which still
+   *  protects against this single execution deducting twice. */
   idempotencyKey?: string;
 }
 
-function contextHash(context: UserContext): string {
-  // Only fields relevant to prompt content, not builtAt (which changes
-  // every call and would defeat caching entirely).
-  const { userId, careerGoal, targetCareer, skillLevel, skills } = context;
+function buildLegacyCacheKey(feature: AIFeature, userId: string, params: unknown): string {
   return createHash("sha256")
-    .update(JSON.stringify({ userId, careerGoal, targetCareer, skillLevel, skills }))
+    .update(`${feature}:${userId}:${JSON.stringify(params)}`)
     .digest("hex");
 }
 
 /**
- * The single entry point every future AI feature route calls — nothing
- * in the running app calls this yet. Orchestrates: input validation →
- * rate limit → credits → cache → provider call → parse → log → deduct.
+ * The legacy-route counterpart to requestManager.ts's runAIRequest(). The
+ * 8 single-shot legacy AI routes (resume, resume/improve, onboarding,
+ * interview, quiz, quiz/file, summarize, pdf-chat) use freeform prompts,
+ * not the typed prompt-builder/UserContext machinery runAIRequest()
+ * requires — this wrapper reuses the same rate-limit/credit/cache/log
+ * infrastructure without forcing those routes into the Phase 1+ feature
+ * model. Returns the provider's raw text; JSON parsing (where relevant)
+ * stays the caller route's responsibility, since not every legacy route
+ * produces JSON.
  */
-export async function runAIRequest<T>(options: RunAIRequestOptions): Promise<AIResponse<T>> {
+export async function runLegacyAIRequest(
+  options: RunLegacyAIRequestOptions
+): Promise<AIResponse<string>> {
   const {
     userId,
     feature,
-    context,
-    prompt,
+    messages,
+    attachment,
+    model,
     params,
     creditCost = 1,
     cacheTtlSeconds = 0,
     idempotencyKey = randomUUID(),
   } = options;
   const paramsRedacted = toRedactedParams(params);
-
-  const validation = validatePromptInput(prompt.user);
-  if (!validation.valid) {
-    return {
-      success: false,
-      error: { code: "invalid_request", message: validation.reason!, retryable: false },
-    };
-  }
+  const loggedModel = model ?? DEFAULT_MODEL;
 
   const rateLimit = await checkRateLimit(userId, feature);
   if (!rateLimit.allowed) {
@@ -68,7 +70,7 @@ export async function runAIRequest<T>(options: RunAIRequestOptions): Promise<AIR
       userId,
       feature,
       provider: "gemini",
-      model: "gemini-3-flash-preview",
+      model: loggedModel,
       status: "rate_limited",
       paramsRedacted,
     });
@@ -94,17 +96,16 @@ export async function runAIRequest<T>(options: RunAIRequestOptions): Promise<AIR
     };
   }
 
-  const cacheKey =
-    cacheTtlSeconds > 0 ? buildCacheKey(feature, contextHash(context), params) : null;
+  const cacheKey = cacheTtlSeconds > 0 ? buildLegacyCacheKey(feature, userId, params) : null;
 
   if (cacheKey) {
-    const cached = await getCachedResponse<T>(cacheKey);
-    if (cached) {
+    const cached = await getCachedResponse<string>(cacheKey);
+    if (cached !== null) {
       await logAIRequest({
         userId,
         feature,
         provider: "gemini",
-        model: "gemini-3-flash-preview",
+        model: loggedModel,
         status: "cached",
         paramsRedacted,
       });
@@ -116,27 +117,8 @@ export async function runAIRequest<T>(options: RunAIRequestOptions): Promise<AIR
   const startedAt = Date.now();
 
   try {
-    const result = await provider.generate({ messages: buildMessages(prompt) });
+    const result = await provider.generate({ messages, attachment, model });
     const latencyMs = Date.now() - startedAt;
-
-    const parsed = safeJsonParse<T>(result.text);
-
-    if (!parsed.success) {
-      await logAIRequest({
-        userId,
-        feature,
-        provider: provider.name,
-        model: result.model,
-        status: "error",
-        latencyMs,
-        errorMessage: parsed.error,
-        paramsRedacted,
-      });
-      return {
-        success: false,
-        error: { code: "parse_error", message: parsed.error, retryable: false },
-      };
-    }
 
     await logAIRequest({
       userId,
@@ -154,13 +136,13 @@ export async function runAIRequest<T>(options: RunAIRequestOptions): Promise<AIR
     await deductCredits(userId, creditCost, `AI feature: ${feature}`, feature, idempotencyKey);
 
     if (cacheKey) {
-      await setCachedResponse(cacheKey, feature, parsed.data, cacheTtlSeconds, userId);
+      await setCachedResponse(cacheKey, feature, result.text, cacheTtlSeconds, userId);
     }
 
     const requestId =
       cacheKey ?? createHash("sha256").update(`${userId}:${feature}:${startedAt}`).digest("hex");
 
-    return { success: true, data: parsed.data, requestId };
+    return { success: true, data: result.text, requestId };
   } catch (error) {
     const latencyMs = Date.now() - startedAt;
     const normalized = normalizeAIError(error);
@@ -169,7 +151,7 @@ export async function runAIRequest<T>(options: RunAIRequestOptions): Promise<AIR
       userId,
       feature,
       provider: "gemini",
-      model: "gemini-3-flash-preview",
+      model: loggedModel,
       status: normalized.code === "rate_limited" ? "rate_limited" : "error",
       latencyMs,
       errorMessage: normalized.message,

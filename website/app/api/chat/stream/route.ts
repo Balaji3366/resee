@@ -1,11 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getServerSupabase } from "@/lib/supabaseServer";
 import { needsLiveSearch } from "@/lib/utils/classifyQuery";
 import { liveSearch } from "@/lib/search/liveSearch";
+import { checkRateLimit } from "@/lib/ai/rateLimiter";
+import { logAIRequest } from "@/lib/ai/logger";
+import { toRedactedParams } from "@/lib/ai/security";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
 });
+
+const STREAM_MODEL = "models/gemini-3-flash-preview";
+
 function getCurrentDateContext() {
   const now = new Date();
 
@@ -24,28 +30,88 @@ function getCurrentDateContext() {
     }),
   };
 }
+
+/** Pre-stream failures (auth, ownership, rate limit) still need to reach
+ *  the frontend through the same SSE event contract the real stream
+ *  uses, since AIChat.tsx starts reading res.body unconditionally rather
+ *  than checking res.ok first. */
+function sseErrorStream(message: string): Response {
+  const encoder = new TextEncoder();
+
+  const readable = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(`event: error\ndata: ${JSON.stringify({ message })}\n\n`));
+      controller.enqueue(encoder.encode(`event: done\ndata: {}\n\n`));
+      controller.close();
+    },
+  });
+
+  return new Response(readable, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    },
+  });
+}
+
 export async function POST(req: Request) {
   try {
+    const supabase = await getServerSupabase();
+
     const {
-      message,
-      history = [],
-      sessionId,
-      attachment,
-    } = await req.json();
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return sseErrorStream("Unauthorized.");
+    }
+
+    const { message, history = [], sessionId, attachment } = await req.json();
 
     let currentSessionId = sessionId;
+
+    if (currentSessionId) {
+      // Only reuse a session that actually belongs to the caller.
+      const { data: existing } = await supabase
+        .from("chat_sessions")
+        .select("id")
+        .eq("id", currentSessionId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!existing) {
+        return sseErrorStream("Chat session not found.");
+      }
+    }
+
+    const rateLimit = await checkRateLimit(user.id, "legacy_chat_assistant");
+    if (!rateLimit.allowed) {
+      await logAIRequest({
+        userId: user.id,
+        feature: "legacy_chat_assistant",
+        provider: "gemini",
+        model: STREAM_MODEL,
+        status: "rate_limited",
+        paramsRedacted: toRedactedParams({ sessionId: currentSessionId }),
+      });
+
+      return sseErrorStream(`Too many requests. Try again in ${rateLimit.resetInSeconds} seconds.`);
+    }
+
     const current = getCurrentDateContext();
     let searchResults = "";
 
-if (needsLiveSearch(message)) {
-  searchResults = await liveSearch(message);
-}
+    if (needsLiveSearch(message)) {
+      searchResults = await liveSearch(message);
+    }
 
     // Create session if needed
     if (!currentSessionId) {
-      const { data, error } = await supabaseAdmin
+      const { data, error } = await supabase
         .from("chat_sessions")
         .insert({
+          user_id: user.id,
           title: message.slice(0, 40),
         })
         .select("id")
@@ -55,7 +121,7 @@ if (needsLiveSearch(message)) {
 
       currentSessionId = data.id;
     }
-const prompt = `
+    const prompt = `
 You are **RESEE AI**, a professional AI Career Assistant.
 
 ==================================================
@@ -130,10 +196,7 @@ CONVERSATION HISTORY
 
 ${history
   .slice(-8)
-  .map(
-    (msg: { sender: string; text: string }) =>
-      `${msg.sender}: ${msg.text}`
-  )
+  .map((msg: { sender: string; text: string }) => `${msg.sender}: ${msg.text}`)
   .join("\n")}
 
 ${
@@ -166,8 +229,9 @@ USER QUESTION
 
 ${message}
 `;
+    const startedAt = Date.now();
     const stream = await ai.models.generateContentStream({
-      model: "models/gemini-3-flash-preview",
+      model: STREAM_MODEL,
       contents: prompt,
     });
 
@@ -202,39 +266,54 @@ ${message}
           }
 
           // Save messages after streaming completes
-          const { error } = await supabaseAdmin
-            .from("chat_messages")
-            .insert([
-              {
-                session_id: currentSessionId,
-                sender: "You",
-                message,
+          const { error } = await supabase.from("chat_messages").insert([
+            {
+              session_id: currentSessionId,
+              sender: "You",
+              message,
 
-                attachment_name: attachment?.name ?? null,
-                attachment_url: attachment?.url ?? null,
-                attachment_type: attachment?.type ?? null,
-                attachment_size: attachment?.size ?? null,
-              },
-              {
-                session_id: currentSessionId,
-                sender: "AI",
-                message: fullResponse,
-              },
-            ]);
+              attachment_name: attachment?.name ?? null,
+              attachment_url: attachment?.url ?? null,
+              attachment_type: attachment?.type ?? null,
+              attachment_size: attachment?.size ?? null,
+            },
+            {
+              session_id: currentSessionId,
+              sender: "AI",
+              message: fullResponse,
+            },
+          ]);
 
-            if (error) {
+          if (error) {
             console.error("Failed to save messages:", error);
-            }
+          }
 
-          controller.enqueue(
-            encoder.encode(
-              `event: done\ndata: {}\n\n`
-            )
-          );
+          await logAIRequest({
+            userId: user.id,
+            feature: "legacy_chat_assistant",
+            provider: "gemini",
+            model: STREAM_MODEL,
+            status: "success",
+            latencyMs: Date.now() - startedAt,
+            paramsRedacted: toRedactedParams({ sessionId: currentSessionId }),
+          });
+
+          controller.enqueue(encoder.encode(`event: done\ndata: {}\n\n`));
 
           controller.close();
         } catch (err) {
           console.error(err);
+
+          await logAIRequest({
+            userId: user.id,
+            feature: "legacy_chat_assistant",
+            provider: "gemini",
+            model: STREAM_MODEL,
+            status: "error",
+            latencyMs: Date.now() - startedAt,
+            errorMessage: err instanceof Error ? err.message : "Streaming failed",
+            paramsRedacted: toRedactedParams({ sessionId: currentSessionId }),
+          });
 
           controller.enqueue(
             encoder.encode(

@@ -33,19 +33,28 @@ export class GeminiProvider implements AIProvider {
 
   async generate(request: AIProviderRequest): Promise<AIProviderResult> {
     const combinedText = request.messages.map((m) => m.text).join("\n\n");
+    const model = request.model ?? MODEL;
+
+    const parts: Array<{ text: string } | { inlineData: { mimeType: string; data: string } }> = [];
+    if (request.attachment) {
+      parts.push({
+        inlineData: { mimeType: request.attachment.mimeType, data: request.attachment.data },
+      });
+    }
+    parts.push({ text: combinedText });
 
     let lastError: unknown;
 
     for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
       try {
         const response = await this.client.models.generateContent({
-          model: MODEL,
-          contents: [{ role: "user", parts: [{ text: combinedText }] }],
+          model,
+          contents: [{ role: "user", parts }],
         });
 
         return {
           text: response.text ?? "",
-          model: MODEL,
+          model,
           promptTokens: response.usageMetadata?.promptTokenCount ?? null,
           completionTokens: response.usageMetadata?.candidatesTokenCount ?? null,
           totalTokens: response.usageMetadata?.totalTokenCount ?? null,

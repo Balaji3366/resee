@@ -8,7 +8,7 @@
  */
 export const subscriptionConfig = {
   plans: {
-    free: { slug: "free", name: "Free", monthlyCredits: 20 },
+    free: { slug: "free", name: "Free", monthlyCredits: 15 },
     pro: { slug: "pro", name: "Pro", monthlyCredits: 300 },
     enterprise: { slug: "enterprise", name: "Enterprise", monthlyCredits: null },
   },

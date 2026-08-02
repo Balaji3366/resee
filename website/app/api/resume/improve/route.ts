@@ -1,11 +1,20 @@
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY!,
-});
+import { getServerSupabase } from "@/lib/supabaseServer";
+import { runLegacyAIRequest } from "@/lib/ai/legacyRequest";
+import { safeJsonParse } from "@/lib/ai/responseParser";
+import { aiErrorStatus } from "@/lib/ai/errorHandler";
 
 export async function POST(request: Request) {
   try {
+    const supabase = await getServerSupabase();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
     const { resumeText, analysis } = await request.json();
 
     if (!resumeText) {
@@ -73,27 +82,23 @@ Do not use markdown.
 Do not explain anything.
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: prompt,
-            },
-          ],
-        },
-      ],
+    const result = await runLegacyAIRequest({
+      userId: user.id,
+      feature: "legacy_resume_rewrite",
+      messages: [{ role: "user", text: prompt }],
+      params: { resumeTextLength: resumeText.length },
     });
 
-    const text = response.text?.trim() || "";
+    if (!result.success) {
+      return Response.json(
+        { success: false, message: result.error.message },
+        { status: aiErrorStatus(result.error.code) }
+      );
+    }
 
-    let improvedResume;
+    const parsed = safeJsonParse<Record<string, unknown>>(result.data);
 
-    try {
-      improvedResume = JSON.parse(text);
-    } catch {
+    if (!parsed.success) {
       return Response.json(
         {
           success: false,
@@ -105,15 +110,15 @@ Do not explain anything.
 
     return Response.json({
       success: true,
-      data: improvedResume,
+      data: parsed.data,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
 
     return Response.json(
       {
         success: false,
-        message: error.message || "Failed to improve resume.",
+        message: error instanceof Error ? error.message : "Failed to improve resume.",
       },
       { status: 500 }
     );

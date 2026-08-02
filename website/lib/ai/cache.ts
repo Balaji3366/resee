@@ -29,12 +29,17 @@ export async function setCachedResponse(
   cacheKey: string,
   feature: AIFeature,
   response: unknown,
-  ttlSeconds: number
+  ttlSeconds: number,
+  userId?: string
 ): Promise<void> {
   await supabaseAdmin.from("ai_response_cache").upsert({
     cache_key: cacheKey,
     feature,
     response,
     expires_at: new Date(Date.now() + ttlSeconds * 1000).toISOString(),
+    // Nullable — lets a user's own cached responses be found and removed
+    // via the "Delete my AI history" privacy action. Historical rows
+    // predating this column stay unattributed and simply expire on TTL.
+    user_id: userId ?? null,
   });
 }

@@ -54,3 +54,13 @@ export function redactSensitiveFields<T extends Record<string, unknown>>(obj: T)
 
   return redacted;
 }
+
+/** Shared by requestManager.ts and legacyRequest.ts — params must never
+ *  reach ai_requests unredacted. Non-object params (or none) log as null
+ *  rather than attempting to redact a primitive. */
+export function toRedactedParams(params: unknown): Record<string, unknown> | null {
+  if (params && typeof params === "object" && !Array.isArray(params)) {
+    return redactSensitiveFields(params as Record<string, unknown>);
+  }
+  return null;
+}

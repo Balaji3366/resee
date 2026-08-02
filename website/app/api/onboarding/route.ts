@@ -1,22 +1,35 @@
-import { GoogleGenAI } from "@google/genai";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getServerSupabase } from "@/lib/supabaseServer";
 import { validateBody } from "@/lib/validation/validateBody";
 import { onboardingRequestSchema } from "@/lib/validation/schemas/onboarding.schema";
 import { jsonError } from "@/lib/http/responses";
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY!,
-});
+import { runLegacyAIRequest } from "@/lib/ai/legacyRequest";
+import { safeJsonParse } from "@/lib/ai/responseParser";
+import { aiErrorStatus } from "@/lib/ai/errorHandler";
 
 export async function POST(request: Request) {
   try {
+    const supabase = await getServerSupabase();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
     const validation = await validateBody(onboardingRequestSchema, request);
 
     if (!validation.success) {
       return jsonError(validation.error);
     }
 
-    const { userId, answers } = validation.data;
+    // The request body's userId is never trusted for authorization — the
+    // profile written to is always the authenticated caller's own, taken
+    // from the verified session instead of client input.
+    const { answers } = validation.data;
+    const userId = user.id;
 
     const prompt = `
 You are an expert AI career mentor.
@@ -70,32 +83,35 @@ Rules:
 - Each point must be under 20 words.
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: prompt,
-            },
-          ],
-        },
-      ],
+    const result = await runLegacyAIRequest({
+      userId,
+      feature: "legacy_onboarding_summary",
+      messages: [{ role: "user", text: prompt }],
+      params: {
+        userType: answers.userType,
+        goal: answers.goal,
+        targetCareer: answers.targetCareer,
+      },
     });
 
-    const text = response.text?.trim() || "";
+    if (!result.success) {
+      return Response.json(
+        { success: false, message: result.error.message },
+        { status: aiErrorStatus(result.error.code) }
+      );
+    }
 
-    if (!text) {
+    if (!result.data.trim()) {
       throw new Error("Empty response from Gemini.");
     }
 
-    const cleanText = text
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
+    const parsed = safeJsonParse<Record<string, unknown>>(result.data);
 
-    const aiSummary = JSON.parse(cleanText);
+    if (!parsed.success) {
+      throw new Error(parsed.error);
+    }
+
+    const aiSummary = parsed.data;
 
     const { error } = await supabaseAdmin.from("profiles").upsert({
       id: userId,
@@ -119,15 +135,13 @@ Rules:
   } catch (error) {
     console.error("Onboarding Error:", error);
 
-    const message =
-      error instanceof Error
-        ? error.message
-        : "Something went wrong while generating your career profile.";
-
     return Response.json(
       {
         success: false,
-        message,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong while generating your career profile.",
       },
       {
         status: 500,

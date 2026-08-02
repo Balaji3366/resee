@@ -1,12 +1,21 @@
-import { GoogleGenAI } from "@google/genai";
 import { extractText, getDocumentProxy } from "unpdf";
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY!,
-});
+import { getServerSupabase } from "@/lib/supabaseServer";
+import { runLegacyAIRequest } from "@/lib/ai/legacyRequest";
+import { safeJsonParse } from "@/lib/ai/responseParser";
+import { aiErrorStatus } from "@/lib/ai/errorHandler";
 
 export async function POST(request: Request) {
   try {
+    const supabase = await getServerSupabase();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
     const formData = await request.formData();
 
     const file = formData.get("resume") as File | null;
@@ -30,8 +39,6 @@ export async function POST(request: Request) {
     const { text: resumeText } = await extractText(pdf, {
       mergePages: true,
     });
-
-    console.log("✅ PDF extracted");
 
     const prompt = `
 You are an expert ATS Resume Analyzer.
@@ -87,52 +94,45 @@ Rules:
 - Give a realistic ATS score.
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: prompt,
-            },
-          ],
-        },
-      ],
+    const result = await runLegacyAIRequest({
+      userId: user.id,
+      feature: "legacy_resume_analyzer",
+      messages: [{ role: "user", text: prompt }],
+      params: { fileName: file.name, fileSize: file.size },
     });
 
-    console.log("✅ Gemini response received");
+    if (!result.success) {
+      return Response.json(
+        { success: false, message: result.error.message },
+        { status: aiErrorStatus(result.error.code) }
+      );
+    }
 
-    const text = response.text?.trim() || "";
-
-    if (!text) {
+    if (!result.data.trim()) {
       throw new Error("Empty response from Gemini.");
     }
 
-    console.log("Gemini Raw Response:");
-    console.log(text);
+    const parsed = safeJsonParse<Record<string, unknown>>(result.data);
 
-    const cleanText = text
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
-
-    const result = JSON.parse(cleanText);
+    if (!parsed.success) {
+      throw new Error(parsed.error);
+    }
 
     return Response.json({
       success: true,
       resumeText,
-      data: result,
+      data: parsed.data,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Resume Analyzer Error:", error);
 
     return Response.json(
       {
         success: false,
         message:
-          error?.message ||
-          "Something went wrong while analyzing the resume.",
+          error instanceof Error
+            ? error.message
+            : "Something went wrong while analyzing the resume.",
       },
       {
         status: 500,

@@ -282,6 +282,59 @@ export interface AdminJobDetail {
   isAvailable: boolean;
 }
 
+// ============================================================
+// Admin AI Dashboard (AI Phase 0 — platform foundation, no AI feature
+// UI yet; this observes the orchestration layer itself)
+// ============================================================
+
+export interface AdminAIStatusBreakdown {
+  success: number;
+  error: number;
+  rate_limited: number;
+  cached: number;
+}
+
+export interface AdminAIFeatureCount {
+  feature: string;
+  count: number;
+}
+
+export interface AdminAIPlanCount {
+  plan: string;
+  count: number;
+}
+
+export interface AdminAIStats {
+  totalRequests: number;
+  requestsToday: number;
+  requestsThisWeek: number;
+  statusBreakdown: AdminAIStatusBreakdown;
+  totalTokens: number;
+  avgLatencyMs: number | null;
+  requestsByFeature: AdminAIFeatureCount[];
+  requestsTrend: AdminTrendPoint[];
+  errorTrend: AdminTrendPoint[];
+  creditsGranted: number;
+  creditsSpent: number;
+  usersByPlan: AdminAIPlanCount[];
+}
+
+export interface AdminAIRequestLogEntry {
+  id: string;
+  userId: string;
+  feature: string;
+  provider: string;
+  model: string;
+  status: string;
+  promptTokens: number | null;
+  completionTokens: number | null;
+  totalTokens: number | null;
+  latencyMs: number | null;
+  errorMessage: string | null;
+  paramsRedacted: Record<string, unknown> | null;
+  createdAt: string;
+}
+
 export interface AdminTrendPoint {
   periodStart: string;
   count: number;

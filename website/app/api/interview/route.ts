@@ -1,12 +1,20 @@
-import { GoogleGenAI } from "@google/genai";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY!,
-});
+import { getServerSupabase } from "@/lib/supabaseServer";
+import { runLegacyAIRequest } from "@/lib/ai/legacyRequest";
+import { aiErrorStatus } from "@/lib/ai/errorHandler";
 
 export async function POST(req: Request) {
   try {
+    const supabase = await getServerSupabase();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return Response.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     const { fileName } = await req.json();
 
     if (!fileName) {
@@ -20,9 +28,7 @@ export async function POST(req: Request) {
     }
 
     // Download PDF from Supabase Storage
-    const { data, error } = await supabaseAdmin.storage
-      .from("uploads")
-      .download(fileName);
+    const { data, error } = await supabaseAdmin.storage.from("uploads").download(fileName);
 
     if (error || !data) {
       throw new Error("Unable to download PDF.");
@@ -30,24 +36,13 @@ export async function POST(req: Request) {
 
     const buffer = Buffer.from(await data.arrayBuffer());
 
-    let response;
-
-    for (let i = 0; i < 3; i++) {
-      try {
-        response = await ai.models.generateContent({
-          model: "gemini-3-flash-preview",
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  inlineData: {
-                    mimeType: "application/pdf",
-                    data: buffer.toString("base64"),
-                  },
-                },
-                {
-                  text: `
+    const result = await runLegacyAIRequest({
+      userId: user.id,
+      feature: "legacy_interview_questions",
+      messages: [
+        {
+          role: "user",
+          text: `
 Generate 10 interview questions from this PDF.
 
 Requirements:
@@ -59,38 +54,34 @@ Requirements:
 - Keep questions professional.
 - Return only the interview questions.
 `,
-                },
-              ],
-            },
-          ],
-        });
+        },
+      ],
+      attachment: {
+        mimeType: "application/pdf",
+        data: buffer.toString("base64"),
+      },
+      params: { fileName },
+      cacheTtlSeconds: 300,
+    });
 
-        break;
-      } catch (err: any) {
-        if (i === 2) throw err;
-
-        // Wait 3 seconds and retry
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-      }
+    if (!result.success) {
+      return Response.json(
+        { success: false, error: result.error.message },
+        { status: aiErrorStatus(result.error.code) }
+      );
     }
 
     return Response.json({
       success: true,
-      interview: response?.text,
+      interview: result.data,
     });
-
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("INTERVIEW ERROR:", error);
-
-    const message =
-      error?.status === 429
-        ? "AI service is busy right now. Please try again in a minute."
-        : error?.message || "Failed to generate interview questions.";
 
     return Response.json(
       {
         success: false,
-        error: message,
+        error: error instanceof Error ? error.message : "Failed to generate interview questions.",
       },
       { status: 500 }
     );

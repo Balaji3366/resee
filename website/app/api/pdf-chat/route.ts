@@ -1,12 +1,20 @@
-import { GoogleGenAI } from "@google/genai";
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY!,
-});
+import { getServerSupabase } from "@/lib/supabaseServer";
+import { runLegacyAIRequest } from "@/lib/ai/legacyRequest";
+import { aiErrorStatus } from "@/lib/ai/errorHandler";
 
 export async function POST(req: Request) {
   try {
+    const sessionSupabase = await getServerSupabase();
+
+    const {
+      data: { user },
+    } = await sessionSupabase.auth.getUser();
+
+    if (!user) {
+      return Response.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     const { fileName, question } = await req.json();
 
     if (!fileName || !question) {
@@ -27,29 +35,38 @@ export async function POST(req: Request) {
 
     const buffer = Buffer.from(await data.arrayBuffer());
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: [
+    const result = await runLegacyAIRequest({
+      userId: user.id,
+      feature: "legacy_pdf_chat",
+      messages: [
         {
-          inlineData: {
-            mimeType: "application/pdf",
-            data: buffer.toString("base64"),
-          },
-        },
-        {
+          role: "user",
           text: `Answer this question only using the uploaded PDF.
 
 Question:
 ${question}`,
         },
       ],
+      attachment: {
+        mimeType: "application/pdf",
+        data: buffer.toString("base64"),
+      },
+      params: { fileName, question },
+      cacheTtlSeconds: 300,
     });
+
+    if (!result.success) {
+      return Response.json(
+        { success: false, error: result.error.message },
+        { status: aiErrorStatus(result.error.code) }
+      );
+    }
 
     return Response.json({
       success: true,
-      answer: response.text,
+      answer: result.data,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(error);
 
     return Response.json(
