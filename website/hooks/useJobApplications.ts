@@ -31,11 +31,11 @@ export function useJobApplications() {
     load();
   }, [load]);
 
-  async function apply(jobId: string) {
+  async function apply(jobId: string, resumeId?: string) {
     await fetch("/api/jobs/applications", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jobId }),
+      body: JSON.stringify({ jobId, resumeId }),
     });
     await load();
   }

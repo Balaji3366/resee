@@ -7,6 +7,8 @@ export interface JobsFilters {
   workMode?: JobWorkMode[];
   jobType?: JobType[];
   salaryBand?: string[];
+  page?: number;
+  pageSize?: number;
 }
 
 function buildQuery(filters: JobsFilters): string {
@@ -16,11 +18,15 @@ function buildQuery(filters: JobsFilters): string {
   if (filters.workMode?.length) params.set("workMode", filters.workMode.join(","));
   if (filters.jobType?.length) params.set("jobType", filters.jobType.join(","));
   if (filters.salaryBand?.length) params.set("salaryBand", filters.salaryBand.join(","));
+  if (filters.page) params.set("page", String(filters.page));
+  if (filters.pageSize) params.set("pageSize", String(filters.pageSize));
   return params.toString();
 }
 
 export function useJobs(filters: JobsFilters) {
   const [data, setData] = useState<JobSummary[] | null>(null);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,6 +45,8 @@ export function useJobs(filters: JobsFilters) {
       }
 
       setData(json.jobs);
+      setTotal(json.total ?? json.jobs.length);
+      setTotalPages(json.totalPages ?? 1);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load jobs.");
     } finally {
@@ -51,5 +59,5 @@ export function useJobs(filters: JobsFilters) {
     load();
   }, [load]);
 
-  return { data, loading, error, refetch: load };
+  return { data, total, totalPages, loading, error, refetch: load };
 }

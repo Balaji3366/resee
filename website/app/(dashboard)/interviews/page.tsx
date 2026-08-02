@@ -24,9 +24,20 @@ export default function InterviewsLandingPage() {
         Start Interview <ArrowRight size={20} />
       </button>
 
-      <Link href="/interviews/history" className="mt-6 text-sm font-semibold text-slate hover:text-bone">
-        View Interview History
-      </Link>
+      <div className="mt-6 flex items-center gap-6">
+        <Link
+          href="/interviews/history"
+          className="text-sm font-semibold text-slate hover:text-bone"
+        >
+          View Interview History
+        </Link>
+        <Link
+          href="/interviews/bookmarks"
+          className="text-sm font-semibold text-slate hover:text-bone"
+        >
+          Bookmarked Questions
+        </Link>
+      </div>
     </div>
   );
 }

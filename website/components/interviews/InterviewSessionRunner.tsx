@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import InterviewQuestionCard from "./InterviewQuestionCard";
 import InterviewCompletionScreen from "./InterviewCompletionScreen";
+import BookmarkButton from "@/components/practice/BookmarkButton";
+import { useInterviewBookmarks } from "@/hooks/useInterviewBookmarks";
 import type { InterviewAttemptResult, InterviewAttemptSession } from "@/types/interview";
 
 function formatClock(totalSeconds: number): string {
@@ -15,9 +17,14 @@ function formatClock(totalSeconds: number): string {
 
 export default function InterviewSessionRunner({
   startEndpoint,
+  durationMinutes,
   onSessionEnd,
 }: {
   startEndpoint: string;
+  /** When provided, the session counts down from this duration and
+   *  auto-submits at zero — otherwise it's a plain count-up stopwatch
+   *  with no time limit (the original v1 behavior). */
+  durationMinutes?: number;
   onSessionEnd?: () => void;
 }) {
   const [session, setSession] = useState<InterviewAttemptSession | null>(null);
@@ -29,6 +36,9 @@ export default function InterviewSessionRunner({
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<InterviewAttemptResult | null>(null);
   const hasAutoSubmitted = useRef(false);
+
+  const { data: bookmarks, refetch: refetchBookmarks } = useInterviewBookmarks();
+  const bookmarkedIds = useMemo(() => new Set((bookmarks ?? []).map((b) => b.id)), [bookmarks]);
 
   const startSession = useCallback(async () => {
     setLoading(true);
@@ -96,6 +106,37 @@ export default function InterviewSessionRunner({
     }
   }, [session, submitting, elapsedSeconds, onSessionEnd]);
 
+  const remainingSeconds = durationMinutes ? durationMinutes * 60 - elapsedSeconds : null;
+
+  useEffect(() => {
+    if (
+      durationMinutes &&
+      remainingSeconds !== null &&
+      remainingSeconds <= 0 &&
+      !hasAutoSubmitted.current &&
+      !result
+    ) {
+      hasAutoSubmitted.current = true;
+      handleSubmit();
+    }
+  }, [durationMinutes, remainingSeconds, result, handleSubmit]);
+
+  async function toggleBookmark(questionId: string) {
+    const isBookmarked = bookmarkedIds.has(questionId);
+
+    if (isBookmarked) {
+      await fetch(`/api/interviews/bookmarks/${questionId}`, { method: "DELETE" });
+    } else {
+      await fetch("/api/interviews/bookmarks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ questionId }),
+      });
+    }
+
+    refetchBookmarks();
+  }
+
   function updateAnswer(questionId: string, value: string) {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
 
@@ -151,9 +192,15 @@ export default function InterviewSessionRunner({
           </p>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 rounded-xl bg-panel-2 px-4 py-2 text-sm font-semibold text-white">
+        <div
+          className={`flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold ${
+            durationMinutes && (remainingSeconds ?? 0) <= 60
+              ? "bg-red-400/10 text-red-400"
+              : "bg-panel-2 text-white"
+          }`}
+        >
           <Clock size={16} />
-          {formatClock(elapsedSeconds)}
+          {durationMinutes ? formatClock(remainingSeconds ?? 0) : formatClock(elapsedSeconds)}
         </div>
       </div>
 
@@ -162,6 +209,13 @@ export default function InterviewSessionRunner({
           question={question}
           answer={answers[question.id] ?? ""}
           onChange={(value) => updateAnswer(question.id, value)}
+        />
+      </div>
+
+      <div className="mt-6">
+        <BookmarkButton
+          bookmarked={bookmarkedIds.has(question.id)}
+          onToggle={() => toggleBookmark(question.id)}
         />
       </div>
 

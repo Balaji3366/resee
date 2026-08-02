@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Settings2 } from "lucide-react";
+import { Settings2, X } from "lucide-react";
 import PickerChipGrid from "@/components/interviews/PickerChipGrid";
 import MultiSelectChips from "./MultiSelectChips";
 import { useInterviewRoles } from "@/hooks/useInterviewRoles";
@@ -20,6 +20,8 @@ export default function JobPreferencesCard() {
 
   const [editing, setEditing] = useState(false);
   const [preferredRoles, setPreferredRoles] = useState<string[]>([]);
+  const [preferredLocations, setPreferredLocations] = useState<string[]>([]);
+  const [locationInput, setLocationInput] = useState("");
   const [preferredWorkMode, setPreferredWorkMode] = useState<JobWorkMode | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -27,9 +29,24 @@ export default function JobPreferencesCard() {
     if (preferences) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreferredRoles(preferences.preferredRoles);
+      setPreferredLocations(preferences.preferredLocations);
       setPreferredWorkMode(preferences.preferredWorkMode);
     }
   }, [preferences]);
+
+  function addLocation() {
+    const value = locationInput.trim();
+    if (!value || preferredLocations.includes(value)) {
+      setLocationInput("");
+      return;
+    }
+    setPreferredLocations((prev) => [...prev, value]);
+    setLocationInput("");
+  }
+
+  function removeLocation(value: string) {
+    setPreferredLocations((prev) => prev.filter((loc) => loc !== value));
+  }
 
   useEffect(() => {
     if (!loading && !hasPreferences) {
@@ -43,7 +60,7 @@ export default function JobPreferencesCard() {
     try {
       await update({
         preferredRoles,
-        preferredLocations: preferences?.preferredLocations ?? [],
+        preferredLocations,
         preferredWorkMode,
       });
       setEditing(false);
@@ -69,6 +86,7 @@ export default function JobPreferencesCard() {
             <p className="mt-1 text-bone">
               {roleLabels.length > 0 ? roleLabels.join(", ") : "Any role"}
               {preferredWorkMode ? ` · ${preferredWorkMode}` : ""}
+              {preferredLocations.length > 0 ? ` · ${preferredLocations.join(", ")}` : ""}
             </p>
           </div>
           <button
@@ -107,6 +125,53 @@ export default function JobPreferencesCard() {
           selectedSlug={preferredWorkMode}
           onSelect={(slug) => setPreferredWorkMode(slug as JobWorkMode)}
         />
+
+        <div>
+          <p className="mb-2 text-sm font-semibold text-slate">Preferred Locations</p>
+
+          <div className="flex gap-2">
+            <input
+              value={locationInput}
+              onChange={(e) => setLocationInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addLocation();
+                }
+              }}
+              placeholder="e.g. Bengaluru"
+              className="w-full rounded-xl border border-bone/15 bg-panel px-4 py-2.5 text-bone outline-none focus:border-amber"
+            />
+            <button
+              type="button"
+              onClick={addLocation}
+              className="shrink-0 rounded-xl border border-bone/15 px-4 py-2.5 text-sm font-semibold text-bone transition hover:border-amber"
+            >
+              Add
+            </button>
+          </div>
+
+          {preferredLocations.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {preferredLocations.map((location) => (
+                <span
+                  key={location}
+                  className="flex items-center gap-1.5 rounded-full border-2 border-bone/15 bg-panel px-3 py-1.5 text-sm font-semibold text-bone"
+                >
+                  {location}
+                  <button
+                    type="button"
+                    onClick={() => removeLocation(location)}
+                    aria-label={`Remove ${location}`}
+                    className="text-slate hover:text-red-500"
+                  >
+                    <X size={14} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <button

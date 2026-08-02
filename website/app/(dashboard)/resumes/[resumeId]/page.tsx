@@ -8,14 +8,11 @@ import { useResumeDetail } from "@/hooks/useResumeDetail";
 import ModernTemplate from "@/components/resume-builder/templates/ModernTemplate";
 import AtsFriendlyTemplate from "@/components/resume-builder/templates/AtsFriendlyTemplate";
 import VersionHistoryDrawer from "@/components/resume-builder/VersionHistoryDrawer";
+import ResumeCompletenessCard from "@/components/resume-builder/ResumeCompletenessCard";
 import ConfirmModal from "@/components/ConfirmModal";
 import { downloadResumePdf } from "@/lib/resume-pdf";
 
-export default function ResumePreviewPage({
-  params,
-}: {
-  params: Promise<{ resumeId: string }>;
-}) {
+export default function ResumePreviewPage({ params }: { params: Promise<{ resumeId: string }> }) {
   const { resumeId } = use(params);
   const router = useRouter();
 
@@ -53,7 +50,8 @@ export default function ResumePreviewPage({
     );
   }
 
-  const TemplateComponent = resume.templateSlug === "ats-friendly" ? AtsFriendlyTemplate : ModernTemplate;
+  const TemplateComponent =
+    resume.templateSlug === "ats-friendly" ? AtsFriendlyTemplate : ModernTemplate;
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -98,6 +96,10 @@ export default function ResumePreviewPage({
             <Trash2 size={16} />
           </button>
         </div>
+      </div>
+
+      <div className="mb-6">
+        <ResumeCompletenessCard content={resume.content} />
       </div>
 
       <div className="overflow-auto rounded-2xl border border-bone/10 bg-slate/10 p-6">

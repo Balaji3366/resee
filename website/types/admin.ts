@@ -188,6 +188,100 @@ export interface AdminCourseExamDetail {
   questions: AdminQuizQuestionDetail[];
 }
 
+// ============================================================
+// Admin CMS — Mock Interview content (previously seed-SQL only, same
+// gap Practice had before its CMS was built — see docs/standards/design-system.md)
+// ============================================================
+
+export interface AdminInterviewCategory {
+  id: string;
+  slug: string;
+  name: string;
+  icon: string;
+  description: string;
+  isAvailable: boolean;
+  sortOrder: number;
+}
+
+export interface AdminInterviewRole {
+  id: string;
+  slug: string;
+  name: string;
+  icon: string;
+  sortOrder: number;
+}
+
+export interface AdminInterviewSetSummary {
+  id: string;
+  slug: string;
+  title: string;
+  experienceLevel: string;
+  isAvailable: boolean;
+  category: AdminInterviewCategory | null;
+  role: AdminInterviewRole | null;
+  questionCount: number;
+}
+
+export interface AdminInterviewQuestionDetail {
+  id: string;
+  question: string;
+  questionType: "short_text" | "long_text";
+  sortOrder: number;
+}
+
+export interface AdminInterviewSetDetail {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  experienceLevel: string;
+  isAvailable: boolean;
+  estimatedMinutes: number;
+  category: AdminInterviewCategory | null;
+  role: AdminInterviewRole | null;
+  questions: AdminInterviewQuestionDetail[];
+}
+
+// ============================================================
+// Admin CMS — Jobs (previously seed-SQL only — flat catalog, no
+// nested categories/modules like Learning/Practice/Interviews have)
+// ============================================================
+
+export interface AdminJobSummary {
+  id: string;
+  slug: string;
+  title: string;
+  company: string;
+  location: string;
+  workMode: string;
+  jobType: string;
+  experienceLevel: string;
+  isAvailable: boolean;
+  postedAt: string;
+}
+
+export interface AdminJobDetail {
+  id: string;
+  slug: string;
+  title: string;
+  company: string;
+  location: string;
+  roleSlug: string | null;
+  workMode: string;
+  jobType: string;
+  experienceLevel: string;
+  experienceMinYears: number | null;
+  experienceMaxYears: number | null;
+  salaryMin: number | null;
+  salaryMax: number | null;
+  skills: string[];
+  description: string;
+  responsibilities: string[];
+  eligibility: string[];
+  applyUrl: string | null;
+  isAvailable: boolean;
+}
+
 export interface AdminTrendPoint {
   periodStart: string;
   count: number;

@@ -46,6 +46,8 @@ export async function GET(request: Request) {
     const workMode = url.searchParams.get("workMode")?.split(",").filter(Boolean) ?? [];
     const jobType = url.searchParams.get("jobType")?.split(",").filter(Boolean) ?? [];
     const salaryBands = url.searchParams.get("salaryBand")?.split(",").filter(Boolean) ?? [];
+    const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
+    const pageSize = Math.min(50, Math.max(1, Number(url.searchParams.get("pageSize")) || 12));
 
     let query = supabase.from("jobs").select("*").eq("is_available", true);
 
@@ -84,7 +86,18 @@ export async function GET(request: Request) {
       });
     }
 
-    return Response.json({ success: true, jobs });
+    // q/salaryBand are filtered in-memory above (skills-substring and
+    // salary-range overlap aren't expressible as simple PostgREST
+    // filters without losing exactness), so pagination is applied to
+    // the final filtered array here rather than via a DB .range() —
+    // that keeps filter correctness across pages instead of slicing
+    // before the in-memory filters have run.
+    const total = jobs.length;
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    const start = (page - 1) * pageSize;
+    const paginated = jobs.slice(start, start + pageSize);
+
+    return Response.json({ success: true, jobs: paginated, total, page, pageSize, totalPages });
   } catch (error) {
     console.error("Jobs list error:", error);
 

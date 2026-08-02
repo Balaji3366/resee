@@ -96,3 +96,12 @@ export interface InterviewHistoryDetail {
   timeTakenSeconds: number;
   answers: InterviewAnswerReview[];
 }
+
+export interface BookmarkedInterviewQuestion {
+  id: string;
+  question: string;
+  questionType: InterviewQuestionType;
+  setTitle: string;
+  setSlug: string;
+  createdAt: string;
+}

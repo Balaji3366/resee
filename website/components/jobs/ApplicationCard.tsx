@@ -25,6 +25,7 @@ export default function ApplicationCard({
 
       <p className="mt-2 text-xs text-slate">
         Applied {new Date(application.appliedAt).toLocaleDateString()}
+        {application.resumeTitle ? ` · ${application.resumeTitle}` : ""}
       </p>
 
       <select

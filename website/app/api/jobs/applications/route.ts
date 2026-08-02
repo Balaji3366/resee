@@ -39,7 +39,7 @@ export async function GET(request: Request) {
 
     let query = supabase
       .from("job_applications")
-      .select("id, status, applied_at, updated_at, job:jobs(*)")
+      .select("id, status, applied_at, updated_at, resume_id, job:jobs(*), resume:resumes(title)")
       .eq("user_id", user.id);
 
     if (status) query = query.eq("status", status);
@@ -56,6 +56,8 @@ export async function GET(request: Request) {
         appliedAt: row.applied_at,
         updatedAt: row.updated_at,
         job: toSummary(row.job as unknown as Record<string, unknown>),
+        resumeId: row.resume_id,
+        resumeTitle: (row.resume as unknown as { title: string } | null)?.title ?? null,
       }));
 
     if (q) {
@@ -89,15 +91,18 @@ export async function POST(request: Request) {
 
     const body = await request.json().catch(() => ({}));
     const jobId: string | undefined = body?.jobId;
+    const resumeId: string | undefined = body?.resumeId;
 
     if (!jobId) {
       return Response.json({ success: false, message: "jobId is required." }, { status: 400 });
     }
 
-    const { error } = await supabase.from("job_applications").upsert(
-      { user_id: user.id, job_id: jobId, status: "applied" },
-      { onConflict: "user_id,job_id", ignoreDuplicates: true }
-    );
+    const { error } = await supabase
+      .from("job_applications")
+      .upsert(
+        { user_id: user.id, job_id: jobId, status: "applied", resume_id: resumeId ?? null },
+        { onConflict: "user_id,job_id", ignoreDuplicates: true }
+      );
 
     if (error) throw error;
 

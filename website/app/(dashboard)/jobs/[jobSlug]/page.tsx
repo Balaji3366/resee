@@ -7,6 +7,7 @@ import BookmarkButton from "@/components/practice/BookmarkButton";
 import { useJob } from "@/hooks/useJob";
 import { useSavedJobs } from "@/hooks/useSavedJobs";
 import { useJobApplications } from "@/hooks/useJobApplications";
+import { useResumes } from "@/hooks/useResumes";
 
 function formatSalary(min: number | null, max: number | null): string | null {
   if (min === null && max === null) return null;
@@ -14,16 +15,14 @@ function formatSalary(min: number | null, max: number | null): string | null {
   return `₹${min ?? max} LPA`;
 }
 
-export default function JobDetailsPage({
-  params,
-}: {
-  params: Promise<{ jobSlug: string }>;
-}) {
+export default function JobDetailsPage({ params }: { params: Promise<{ jobSlug: string }> }) {
   const { jobSlug } = use(params);
   const { data: job, loading } = useJob(jobSlug);
   const { data: saved, save, unsave } = useSavedJobs();
   const { data: applications, apply } = useJobApplications();
+  const { data: resumes } = useResumes();
   const [applying, setApplying] = useState(false);
+  const [selectedResumeId, setSelectedResumeId] = useState("");
 
   const isSaved = useMemo(
     () => (saved ?? []).some((s) => s.job.slug === jobSlug),
@@ -46,7 +45,7 @@ export default function JobDetailsPage({
     setApplying(true);
     try {
       if (job.applyUrl) window.open(job.applyUrl, "_blank", "noopener,noreferrer");
-      await apply(job.id);
+      await apply(job.id, selectedResumeId || undefined);
     } finally {
       setApplying(false);
     }
@@ -64,7 +63,10 @@ export default function JobDetailsPage({
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Link href="/jobs/search" className="flex items-center gap-1.5 text-sm font-semibold text-slate hover:text-bone">
+      <Link
+        href="/jobs/search"
+        className="flex items-center gap-1.5 text-sm font-semibold text-slate hover:text-bone"
+      >
         <ArrowLeft size={16} /> Back to Search
       </Link>
 
@@ -128,7 +130,27 @@ export default function JobDetailsPage({
           </div>
         )}
 
-        <div className="mt-8 flex flex-wrap items-center gap-3">
+        {!applicationStatus && resumes && resumes.length > 0 && (
+          <div className="mt-8">
+            <label className="mb-1.5 block text-sm font-semibold text-slate">
+              Apply with resume (optional)
+            </label>
+            <select
+              value={selectedResumeId}
+              onChange={(e) => setSelectedResumeId(e.target.value)}
+              className="w-full max-w-xs rounded-xl border border-bone/15 bg-panel px-4 py-2.5 text-bone outline-none focus:border-amber"
+            >
+              <option value="">No resume attached</option>
+              {resumes.map((resume) => (
+                <option key={resume.id} value={resume.id}>
+                  {resume.title}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             onClick={handleApply}
             disabled={applying || applicationStatus !== null}

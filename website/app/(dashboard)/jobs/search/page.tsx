@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import JobCard from "@/components/jobs/JobCard";
 import MultiSelectChips from "@/components/jobs/MultiSelectChips";
 import JobEmptyState from "@/components/jobs/JobEmptyState";
+import Pagination from "@/components/ui/Pagination";
 import { useJobs } from "@/hooks/useJobs";
 import { useSavedJobs } from "@/hooks/useSavedJobs";
 import { useJobApplications } from "@/hooks/useJobApplications";
@@ -47,8 +48,28 @@ export default function JobSearchPage() {
   const [workMode, setWorkMode] = useState<JobWorkMode[]>([]);
   const [jobType, setJobType] = useState<JobType[]>([]);
   const [salaryBand, setSalaryBand] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
 
-  const { data: jobs, loading } = useJobs({ q, experience, workMode, jobType, salaryBand });
+  const {
+    data: jobs,
+    totalPages,
+    loading,
+  } = useJobs({
+    q,
+    experience,
+    workMode,
+    jobType,
+    salaryBand,
+    page,
+    pageSize: 12,
+  });
+
+  // Any filter change invalidates the current page — jump back to page 1
+  // rather than risk landing on a now-out-of-range page.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPage(1);
+  }, [q, experience, workMode, jobType, salaryBand]);
   const { data: saved, save, unsave } = useSavedJobs();
   const { data: applications } = useJobApplications();
 
@@ -112,23 +133,30 @@ export default function JobSearchPage() {
       {loading ? (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {[0, 1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
+            <div
+              key={i}
+              className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel"
+            />
           ))}
         </div>
       ) : !jobs || jobs.length === 0 ? (
         <JobEmptyState message="No jobs match your filters yet. Try broadening your search." />
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {jobs.map((job) => (
-            <JobCard
-              key={job.id}
-              job={job}
-              saved={savedIds.has(job.id)}
-              onToggleSave={() => toggleSave(job.id)}
-              applicationStatus={statusByJobId.get(job.id) ?? null}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {jobs.map((job) => (
+              <JobCard
+                key={job.id}
+                job={job}
+                saved={savedIds.has(job.id)}
+                onToggleSave={() => toggleSave(job.id)}
+                applicationStatus={statusByJobId.get(job.id) ?? null}
+              />
+            ))}
+          </div>
+
+          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} className="mt-8" />
+        </>
       )}
     </div>
   );

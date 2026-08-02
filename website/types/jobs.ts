@@ -2,11 +2,7 @@ export type JobWorkMode = "remote" | "hybrid" | "onsite";
 export type JobType = "full-time" | "part-time" | "internship" | "contract";
 export type JobExperienceLevel = "fresher" | "1-3-years" | "3-5-years" | "5-plus-years";
 export type ApplicationStatus =
-  | "applied"
-  | "interview_scheduled"
-  | "offer_received"
-  | "rejected"
-  | "archived";
+  "applied" | "interview_scheduled" | "offer_received" | "rejected" | "archived";
 
 export interface JobSummary {
   id: string;
@@ -53,6 +49,8 @@ export interface JobApplication {
   appliedAt: string;
   updatedAt: string;
   job: JobSummary;
+  resumeId: string | null;
+  resumeTitle: string | null;
 }
 
 export interface JobPreferences {
