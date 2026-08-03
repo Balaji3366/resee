@@ -12,21 +12,36 @@ export default function ModernTemplate({ content }: { content: ResumeContent }) 
   return (
     <div className="min-h-[11in] w-[8.5in] bg-white p-12 text-[#1a1a2e]" id="resume-print-root">
       <header className="border-b-4 border-sky-600 pb-4">
-        <h1 className="text-4xl font-bold tracking-tight">{personalInfo.fullName || "Your Name"}</h1>
+        <h1 className="text-4xl font-bold tracking-tight">
+          {personalInfo.fullName || "Your Name"}
+        </h1>
         <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
           {personalInfo.email ? <span>{personalInfo.email}</span> : null}
           {personalInfo.phone ? <span>{personalInfo.phone}</span> : null}
           {personalInfo.address ? <span>{personalInfo.address}</span> : null}
           {links.map((link) => (
-            <span key={link.url}>{link.label}: {link.url}</span>
+            <span key={link.url}>
+              {link.label}: {link.url}
+            </span>
           ))}
         </div>
       </header>
 
       <div className="mt-6 space-y-6">
+        {personalInfo.summary && (
+          <section>
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">
+              Summary
+            </h2>
+            <p className="text-sm text-gray-800">{personalInfo.summary}</p>
+          </section>
+        )}
+
         {education.length > 0 && (
           <section>
-            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">Education</h2>
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">
+              Education
+            </h2>
             <div className="space-y-3">
               {education.map((item) => (
                 <div key={item.id}>
@@ -40,7 +55,9 @@ export default function ModernTemplate({ content }: { content: ResumeContent }) 
                     {item.degree}
                     {item.field ? `, ${item.field}` : ""}
                   </p>
-                  {item.description ? <p className="text-sm text-gray-700">{item.description}</p> : null}
+                  {item.description ? (
+                    <p className="text-sm text-gray-700">{item.description}</p>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -49,7 +66,9 @@ export default function ModernTemplate({ content }: { content: ResumeContent }) 
 
         {experience.length > 0 && (
           <section>
-            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">Experience</h2>
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">
+              Experience
+            </h2>
             <div className="space-y-4">
               {experience.map((item) => (
                 <div key={item.id}>
@@ -73,7 +92,9 @@ export default function ModernTemplate({ content }: { content: ResumeContent }) 
 
         {projects.length > 0 && (
           <section>
-            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">Projects</h2>
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">
+              Projects
+            </h2>
             <div className="space-y-3">
               {projects.map((item) => (
                 <div key={item.id}>
@@ -91,10 +112,15 @@ export default function ModernTemplate({ content }: { content: ResumeContent }) 
 
         {skills.length > 0 && (
           <section>
-            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">Skills</h2>
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">
+              Skills
+            </h2>
             <div className="flex flex-wrap gap-2">
               {skills.map((skill, i) => (
-                <span key={i} className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700">
+                <span
+                  key={i}
+                  className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700"
+                >
                   {skill}
                 </span>
               ))}
@@ -104,7 +130,9 @@ export default function ModernTemplate({ content }: { content: ResumeContent }) 
 
         {certifications.length > 0 && (
           <section>
-            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">Certifications</h2>
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-sky-700">
+              Certifications
+            </h2>
             <div className="space-y-2">
               {certifications.map((item) => (
                 <div key={item.id} className="flex items-baseline justify-between text-sm">

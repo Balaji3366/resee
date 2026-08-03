@@ -18,12 +18,21 @@ export default function AtsFriendlyTemplate({ content }: { content: ResumeConten
       <header>
         <h1 className="text-2xl font-bold">{personalInfo.fullName || "Your Name"}</h1>
         <p className="mt-1 text-sm">
-          {[personalInfo.email, personalInfo.phone, personalInfo.address].filter(Boolean).join(" | ")}
+          {[personalInfo.email, personalInfo.phone, personalInfo.address]
+            .filter(Boolean)
+            .join(" | ")}
         </p>
         {links.length > 0 ? <p className="text-sm">{links.join(" | ")}</p> : null}
       </header>
 
       <div className="mt-5 space-y-5">
+        {personalInfo.summary && (
+          <section>
+            <h2 className="border-b border-black pb-1 text-sm font-bold uppercase">Summary</h2>
+            <p className="mt-2 text-sm leading-relaxed">{personalInfo.summary}</p>
+          </section>
+        )}
+
         {education.length > 0 && (
           <section>
             <h2 className="border-b border-black pb-1 text-sm font-bold uppercase">Education</h2>
@@ -92,7 +101,9 @@ export default function AtsFriendlyTemplate({ content }: { content: ResumeConten
 
         {certifications.length > 0 && (
           <section>
-            <h2 className="border-b border-black pb-1 text-sm font-bold uppercase">Certifications</h2>
+            <h2 className="border-b border-black pb-1 text-sm font-bold uppercase">
+              Certifications
+            </h2>
             <div className="mt-2 text-sm leading-relaxed">
               {certifications.map((item) => (
                 <p key={item.id}>

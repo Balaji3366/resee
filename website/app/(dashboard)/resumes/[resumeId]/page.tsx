@@ -9,6 +9,9 @@ import ModernTemplate from "@/components/resume-builder/templates/ModernTemplate
 import AtsFriendlyTemplate from "@/components/resume-builder/templates/AtsFriendlyTemplate";
 import VersionHistoryDrawer from "@/components/resume-builder/VersionHistoryDrawer";
 import ResumeCompletenessCard from "@/components/resume-builder/ResumeCompletenessCard";
+import ResumeAnalysisPanel from "@/components/resume-builder/ai/ResumeAnalysisPanel";
+import ResumeRewritePanel from "@/components/resume-builder/ai/ResumeRewritePanel";
+import ResumeAnalysisHistory from "@/components/resume-builder/ai/ResumeAnalysisHistory";
 import ConfirmModal from "@/components/ConfirmModal";
 import { downloadResumePdf } from "@/lib/resume-pdf";
 
@@ -104,6 +107,12 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ resume
 
       <div className="overflow-auto rounded-2xl border border-bone/10 bg-slate/10 p-6">
         <TemplateComponent content={resume.content} />
+      </div>
+
+      <div className="mt-6 space-y-6">
+        <ResumeAnalysisPanel resumeId={resumeId} resumeTitle={resume.title} />
+        <ResumeRewritePanel resumeId={resumeId} content={resume.content} onApplied={refetch} />
+        <ResumeAnalysisHistory resumeId={resumeId} />
       </div>
 
       <VersionHistoryDrawer

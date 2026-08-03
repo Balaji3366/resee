@@ -23,6 +23,12 @@ export function downloadAtsFriendlyTemplatePdf(content: ResumeContent, fileName:
 
   cursor.space(5);
 
+  if (personalInfo.summary) {
+    cursor.text("SUMMARY", { size: 11, bold: true, lineHeight: 6 });
+    cursor.text(personalInfo.summary, { size: 10 });
+    cursor.space(3);
+  }
+
   if (education.length > 0) {
     cursor.text("EDUCATION", { size: 11, bold: true, lineHeight: 6 });
     education.forEach((item) => {

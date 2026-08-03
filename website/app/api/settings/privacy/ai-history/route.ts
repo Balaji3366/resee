@@ -30,22 +30,27 @@ export async function DELETE() {
 
     const userId = user.id;
 
-    const [aiRequests, cacheEntries, memory, chatSessions, chatHistory] = await Promise.all([
-      supabaseAdmin.from("ai_requests").delete({ count: "exact" }).eq("user_id", userId),
-      supabaseAdmin.from("ai_response_cache").delete({ count: "exact" }).eq("user_id", userId),
-      supabaseAdmin.from("ai_user_memory").delete({ count: "exact" }).eq("user_id", userId),
-      // chat_messages cascades via its session_id FK (on delete cascade),
-      // so deleting chat_sessions is sufficient for both tables.
-      supabaseAdmin.from("chat_sessions").delete({ count: "exact" }).eq("user_id", userId),
-      supabaseAdmin.from("chat_history").delete({ count: "exact" }).eq("user_id", userId),
-    ]);
+    const [aiRequests, cacheEntries, memory, chatSessions, chatHistory, resumeAnalyses] =
+      await Promise.all([
+        supabaseAdmin.from("ai_requests").delete({ count: "exact" }).eq("user_id", userId),
+        supabaseAdmin.from("ai_response_cache").delete({ count: "exact" }).eq("user_id", userId),
+        supabaseAdmin.from("ai_user_memory").delete({ count: "exact" }).eq("user_id", userId),
+        // chat_messages cascades via its session_id FK (on delete cascade),
+        // so deleting chat_sessions is sufficient for both tables.
+        supabaseAdmin.from("chat_sessions").delete({ count: "exact" }).eq("user_id", userId),
+        supabaseAdmin.from("chat_history").delete({ count: "exact" }).eq("user_id", userId),
+        // Resume Intelligence's analysis/rewrite/comparison history (AI
+        // Phase 1) — same class of AI-history data as everything else here.
+        supabaseAdmin.from("resume_analyses").delete({ count: "exact" }).eq("user_id", userId),
+      ]);
 
     const firstError =
       aiRequests.error ??
       cacheEntries.error ??
       memory.error ??
       chatSessions.error ??
-      chatHistory.error;
+      chatHistory.error ??
+      resumeAnalyses.error;
 
     if (firstError) throw firstError;
 
@@ -54,6 +59,7 @@ export async function DELETE() {
       deleted: {
         aiRequests: aiRequests.count ?? 0,
         cacheEntries: cacheEntries.count ?? 0,
+        resumeAnalyses: resumeAnalyses.count ?? 0,
         memory: memory.count ?? 0,
         chatSessions: chatSessions.count ?? 0,
         chatHistory: chatHistory.count ?? 0,

@@ -19,7 +19,12 @@ export type AIFeature =
   | "legacy_quiz_file_generator"
   | "legacy_pdf_summarizer"
   | "legacy_pdf_chat"
-  | "legacy_chat_assistant";
+  | "legacy_chat_assistant"
+  // Resume Intelligence (AI Phase 1) — granular capabilities beyond the
+  // original resume_analysis/resume_rewrite pair, all flowing through the
+  // same runAIRequest() orchestrator, never a second orchestration path.
+  | "resume_bullet_improvement"
+  | "resume_version_comparison";
 
 export type AIRequestStatus = "success" | "error" | "rate_limited" | "cached";
 

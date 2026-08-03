@@ -8,6 +8,10 @@ export interface ResumePersonalInfo {
   github: string;
   portfolio: string;
   address?: string;
+  /** Optional professional summary — populated only via AI Resume Rewrite
+   *  (lib/ai/prompts/resumeRewrite.ts) today; absent on resumes that have
+   *  never used it, which templates/exporters simply omit. */
+  summary?: string;
 }
 
 export interface EducationItem {
@@ -96,7 +100,15 @@ export function createEmptyEducationItem(): EducationItem {
 }
 
 export function createEmptyExperienceItem(): ExperienceItem {
-  return { id: genId(), company: "", role: "", startDate: "", endDate: "", current: false, bullets: [] };
+  return {
+    id: genId(),
+    company: "",
+    role: "",
+    startDate: "",
+    endDate: "",
+    current: false,
+    bullets: [],
+  };
 }
 
 export function createEmptyProjectItem(): ProjectItem {

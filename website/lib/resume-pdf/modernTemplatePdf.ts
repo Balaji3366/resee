@@ -23,6 +23,12 @@ export function downloadModernTemplatePdf(content: ResumeContent, fileName: stri
 
   cursor.divider();
 
+  if (personalInfo.summary) {
+    cursor.text("SUMMARY", { size: 11, bold: true, lineHeight: 7 });
+    cursor.text(personalInfo.summary, { size: 10 });
+    cursor.space(3);
+  }
+
   if (education.length > 0) {
     cursor.text("EDUCATION", { size: 11, bold: true, lineHeight: 7 });
     education.forEach((item) => {
@@ -37,9 +43,13 @@ export function downloadModernTemplatePdf(content: ResumeContent, fileName: stri
   if (experience.length > 0) {
     cursor.text("EXPERIENCE", { size: 11, bold: true, lineHeight: 7 });
     experience.forEach((item) => {
-      cursor.twoColumn(item.role, `${item.startDate} - ${item.current ? "Present" : item.endDate}`, {
-        bold: true,
-      });
+      cursor.twoColumn(
+        item.role,
+        `${item.startDate} - ${item.current ? "Present" : item.endDate}`,
+        {
+          bold: true,
+        }
+      );
       cursor.text(item.company, { size: 10 });
       item.bullets.forEach((bullet) => cursor.text(`•  ${bullet}`, { size: 10 }));
       cursor.space();
