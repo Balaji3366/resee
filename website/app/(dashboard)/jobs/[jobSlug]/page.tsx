@@ -8,6 +8,7 @@ import { useJob } from "@/hooks/useJob";
 import { useSavedJobs } from "@/hooks/useSavedJobs";
 import { useJobApplications } from "@/hooks/useJobApplications";
 import { useResumes } from "@/hooks/useResumes";
+import JobMatchPanel from "@/components/jobs/ai/JobMatchPanel";
 
 function formatSalary(min: number | null, max: number | null): string | null {
   if (min === null && max === null) return null;
@@ -163,6 +164,8 @@ export default function JobDetailsPage({ params }: { params: Promise<{ jobSlug: 
           <BookmarkButton bookmarked={isSaved} onToggle={toggleSave} />
         </div>
       </div>
+
+      <JobMatchPanel jobSlug={jobSlug} />
     </div>
   );
 }

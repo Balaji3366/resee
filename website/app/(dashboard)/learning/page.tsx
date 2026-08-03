@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 import { useLearningCatalog } from "@/hooks/useLearningCatalog";
 import { useContinueLearning } from "@/hooks/useContinueLearning";
 import { useDebounce } from "@/hooks/useDebounce";
+import LearningRecommendationCard from "@/components/learning/ai/LearningRecommendationCard";
 
 export default function LearningDashboardPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -28,6 +29,8 @@ export default function LearningDashboardPage() {
 
         <p className="mt-2 text-slate">Structured paths to build real, career-ready skills.</p>
       </div>
+
+      <LearningRecommendationCard />
 
       {/* Continue Learning */}
 

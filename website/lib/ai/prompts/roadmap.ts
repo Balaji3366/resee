@@ -7,17 +7,39 @@ export interface RoadmapParams {
   timeframeMonths?: number;
 }
 
+export interface RoadmapMilestone {
+  title: string;
+  description: string;
+  estimatedWeeks: number;
+  /** Skills/technologies/objectives this milestone is about — the AI's
+   *  job stops here. A separate, deterministic catalog-mapping layer
+   *  (lib/careerRoadmapCatalogMatch.ts) attaches a real ReSee course to
+   *  each milestone where one exists; the AI never names a course
+   *  itself, closing the hallucination risk of inventing content that
+   *  doesn't exist on the platform. */
+  suggestedSkills: string[];
+}
+
 export interface RoadmapResult {
-  milestones: { title: string; description: string; estimatedWeeks: number }[];
+  milestones: RoadmapMilestone[];
 }
 
 export function buildRoadmapPrompt(context: UserContext, params: RoadmapParams): PromptResult {
   const timeframe = params.timeframeMonths ?? 6;
 
   const system = `You design a realistic, milestone-based learning roadmap toward a career goal.
+Describe what to learn generically, in terms of skills, technologies, and objectives — never
+reference or invent a specific course, lesson, certification, or platform name, since you have no
+knowledge of what content actually exists on this platform; a separate system attaches real
+course links afterward wherever a match exists.
 Return ONLY valid JSON matching this exact shape, no markdown fences, no extra text:
 {
-  "milestones": [{ "title": string, "description": string, "estimatedWeeks": number }]
+  "milestones": [{
+    "title": string,
+    "description": string,
+    "estimatedWeeks": number,
+    "suggestedSkills": string[] (1-4 concrete skills/technologies this milestone covers)
+  }]
 }
 Milestones should be ordered, concrete, and fit within the given timeframe.`;
 

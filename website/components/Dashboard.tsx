@@ -7,6 +7,7 @@ import { useCareerScore } from "@/hooks/useCareerScore";
 import { useContinueLearning } from "@/hooks/useContinueLearning";
 import DashboardGreeting from "@/components/DashboardGreeting";
 import DashboardTodaysMission from "@/components/DashboardTodaysMission";
+import DashboardDailyRecommendation from "@/components/DashboardDailyRecommendation";
 import DashboardHero from "@/components/DashboardHero";
 import DashboardStats from "@/components/DashboardStats";
 import DashboardGoalCard from "@/components/DashboardGoalCard";
@@ -66,6 +67,8 @@ export default function Dashboard() {
         resumeCount={resumeCount}
         statsLoading={statsLoading}
       />
+
+      <DashboardDailyRecommendation />
 
       <DashboardHero resumeCount={resumeCount} documentCount={documentCount} />
 

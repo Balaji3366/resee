@@ -14,6 +14,9 @@ export interface SkillGapResult {
 
 export function buildSkillGapPrompt(context: UserContext, params: SkillGapParams): PromptResult {
   const system = `You identify the gap between a candidate's current skills and what a target role typically requires.
+Base "hasSkills" only on skills actually listed in the candidate's context below — never invent a
+skill they haven't demonstrated, and never fabricate a missing skill that isn't genuinely relevant
+to the target role.
 Return ONLY valid JSON matching this exact shape, no markdown fences, no extra text:
 {
   "hasSkills": string[],

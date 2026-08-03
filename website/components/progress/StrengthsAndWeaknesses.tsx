@@ -56,10 +56,6 @@ export default function StrengthsAndWeaknesses({
             ))}
           </div>
         )}
-
-        <p className="mt-4 text-xs text-slate">
-          This will power personalized recommendations soon.
-        </p>
       </div>
     </div>
   );
