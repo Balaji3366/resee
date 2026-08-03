@@ -24,7 +24,11 @@ export type AIFeature =
   // original resume_analysis/resume_rewrite pair, all flowing through the
   // same runAIRequest() orchestrator, never a second orchestration path.
   | "resume_bullet_improvement"
-  | "resume_version_comparison";
+  | "resume_version_comparison"
+  // Interview Intelligence (AI Phase 3) — "interview_evaluation" (original
+  // 9) is the automatic, whole-session Post-Session Evaluation; this new
+  // slug is the distinct, opt-in, per-question Deep AI Analysis drill-down.
+  | "interview_deep_analysis";
 
 export type AIRequestStatus = "success" | "error" | "rate_limited" | "cached";
 

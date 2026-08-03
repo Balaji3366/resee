@@ -18,6 +18,7 @@ function formatClock(totalSeconds: number): string {
 export default function InterviewSessionRunner({
   startEndpoint,
   durationMinutes,
+  interviewTitle,
   onSessionEnd,
 }: {
   startEndpoint: string;
@@ -25,6 +26,8 @@ export default function InterviewSessionRunner({
    *  auto-submits at zero — otherwise it's a plain count-up stopwatch
    *  with no time limit (the original v1 behavior). */
   durationMinutes?: number;
+  /** Used only for the AI evaluation's exportable report filename/header. */
+  interviewTitle: string;
   onSessionEnd?: () => void;
 }) {
   const [session, setSession] = useState<InterviewAttemptSession | null>(null);
@@ -164,6 +167,8 @@ export default function InterviewSessionRunner({
   if (result) {
     return (
       <InterviewCompletionScreen
+        attemptId={session.attemptId}
+        interviewTitle={interviewTitle}
         result={result}
         questions={session.questions}
         answers={answers}

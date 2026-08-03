@@ -7,7 +7,11 @@ import InterviewCompletionScreen from "@/components/interviews/InterviewCompleti
 import ConfirmModal from "@/components/ConfirmModal";
 import { useInterviewHistory } from "@/hooks/useInterviewHistory";
 import { useContinueInterviews } from "@/hooks/useContinueInterviews";
-import type { InterviewAttemptResult, InterviewHistoryEntry, InterviewQuestionPublic } from "@/types/interview";
+import type {
+  InterviewAttemptResult,
+  InterviewHistoryEntry,
+  InterviewQuestionPublic,
+} from "@/types/interview";
 
 export default function InterviewHistoryPage() {
   const { data: entries, loading } = useInterviewHistory();
@@ -16,6 +20,8 @@ export default function InterviewHistoryPage() {
   const [localEntries, setLocalEntries] = useState<InterviewHistoryEntry[] | null>(null);
   const [reviewLoading, setReviewLoading] = useState(false);
   const [review, setReview] = useState<{
+    attemptId: string;
+    interviewTitle: string;
     questions: InterviewQuestionPublic[];
     answers: Record<string, string>;
     result: InterviewAttemptResult;
@@ -34,7 +40,12 @@ export default function InterviewHistoryPage() {
 
       if (json.success) {
         const questions: InterviewQuestionPublic[] = json.detail.answers.map(
-          (a: { questionId: string; question: string; questionType: string; sortOrder: number }) => ({
+          (a: {
+            questionId: string;
+            question: string;
+            questionType: string;
+            sortOrder: number;
+          }) => ({
             id: a.questionId,
             question: a.question,
             questionType: a.questionType,
@@ -50,6 +61,8 @@ export default function InterviewHistoryPage() {
         const completedQuestions = Object.values(answers).filter((a) => a.trim().length > 0).length;
 
         setReview({
+          attemptId: entry.id,
+          interviewTitle: entry.title,
           questions,
           answers,
           result: {
@@ -89,11 +102,15 @@ export default function InterviewHistoryPage() {
         <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">
           Interview History
         </h1>
-        <p className="mt-2 text-slate">Review your past interviews and resume any you left incomplete.</p>
+        <p className="mt-2 text-slate">
+          Review your past interviews and resume any you left incomplete.
+        </p>
       </div>
 
       {review ? (
         <InterviewCompletionScreen
+          attemptId={review.attemptId}
+          interviewTitle={review.interviewTitle}
           result={review.result}
           questions={review.questions}
           answers={review.answers}

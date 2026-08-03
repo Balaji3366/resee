@@ -1,5 +1,6 @@
 import { getServerSupabase } from "@/lib/supabaseServer";
 import { creditInterviewEngagement } from "@/lib/interviewEngagement";
+import { generatePostSessionEvaluation } from "@/lib/interviewEvaluation";
 import type { InterviewAttemptResult } from "@/types/interview";
 
 export const dynamic = "force-dynamic";
@@ -62,6 +63,17 @@ export async function POST(
     if (updateError) throw updateError;
 
     await creditInterviewEngagement(user.id, timeTakenSeconds);
+
+    // Automatic Post-Session Evaluation (Decision 5) — best-effort and
+    // never blocking: a failure here (insufficient credits, flag off, a
+    // transient AI error) must never prevent the completion screen from
+    // showing the honest record of what the candidate covered. The user
+    // can retry it manually via .../evaluate if it doesn't appear.
+    try {
+      await generatePostSessionEvaluation(supabase, user.id, attemptId);
+    } catch (evalError) {
+      console.error("Automatic post-session evaluation failed:", evalError);
+    }
 
     const result: InterviewAttemptResult = {
       totalQuestions: attempt.total_questions,

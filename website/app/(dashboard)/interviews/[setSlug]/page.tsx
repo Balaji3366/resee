@@ -71,6 +71,7 @@ export default function InterviewSetPage({ params }: { params: Promise<{ setSlug
       <InterviewSessionRunner
         startEndpoint={`/api/interviews/sets/${setSlug}/attempt/start`}
         durationMinutes={timedMode === "timed" ? set.estimatedMinutes : undefined}
+        interviewTitle={set.title}
         onSessionEnd={refetch}
       />
     </div>
