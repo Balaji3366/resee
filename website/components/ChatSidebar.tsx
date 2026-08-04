@@ -1,10 +1,4 @@
-import {
-  Trash2,
-  Plus,
-  Bot,
-  MessageSquareText,
-  Sparkles,
-} from "lucide-react";
+import { Trash2, Plus, Bot, MessageSquareText, Sparkles } from "lucide-react";
 import { ChatSession } from "@/types/chat";
 
 type Props = {
@@ -32,13 +26,9 @@ export default function ChatSidebar({
           </div>
 
           <div>
-            <h2 className="font-display text-2xl font-black tracking-tight">
-              RESEE
-            </h2>
+            <h2 className="font-display text-2xl font-black tracking-tight">RESEE</h2>
 
-            <p className="text-sm text-white/80">
-              See Your Future
-            </p>
+            <p className="text-sm text-white/80">See Your Future</p>
           </div>
         </div>
 
@@ -54,28 +44,18 @@ export default function ChatSidebar({
       {/* Recent Chats */}
       <div className="flex-1 overflow-y-auto p-5">
         <div className="mb-4 flex items-center gap-2">
-          <MessageSquareText
-            size={18}
-            className="text-amber"
-          />
+          <MessageSquareText size={18} className="text-amber" />
 
-          <h3 className="font-bold text-bone">
-            Recent Conversations
-          </h3>
+          <h3 className="font-bold text-bone">Recent Conversations</h3>
         </div>
 
         {sessions.length === 0 ? (
           <div className="mt-14 text-center">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-panel">
-              <Bot
-                size={28}
-                className="text-amber"
-              />
+              <Bot size={28} className="text-amber" />
             </div>
 
-            <h4 className="mt-5 font-bold text-bone">
-              No conversations yet
-            </h4>
+            <h4 className="mt-5 font-bold text-bone">No conversations yet</h4>
 
             <p className="mt-2 text-sm leading-6 text-slate">
               Start your first conversation with RESEE AI.
@@ -95,25 +75,28 @@ export default function ChatSidebar({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <h4 className="truncate font-semibold text-bone">
-                      {session.title}
-                    </h4>
+                    <div className="flex items-center gap-2">
+                      <h4 className="truncate font-semibold text-bone">{session.title}</h4>
+
+                      {session.mode === "career_coach" && (
+                        <span className="shrink-0 rounded-full bg-amber-dim/10 px-2 py-0.5 text-[10px] font-bold text-amber-dim">
+                          Coach
+                        </span>
+                      )}
+                    </div>
 
                     <p className="mt-1 text-xs text-slate">
-                      {new Date(session.created_at).toLocaleDateString(
-                        "en-GB",
-                        {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        }
-                      )}
+                      {new Date(session.created_at).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </p>
                   </div>
 
                   <Trash2
-                  size={16}
-                  className="shrink-0 cursor-pointer opacity-0 transition-all duration-200 group-hover:opacity-100 text-slate hover:text-red-500"
+                    size={16}
+                    className="shrink-0 cursor-pointer opacity-0 transition-all duration-200 group-hover:opacity-100 text-slate hover:text-red-500"
                   />
                 </div>
               </button>
@@ -130,17 +113,12 @@ export default function ChatSidebar({
           </div>
 
           <div>
-            <h4 className="font-semibold text-bone">
-              RESEE AI
-            </h4>
+            <h4 className="font-semibold text-bone">RESEE AI</h4>
 
-            <p className="text-xs text-slate">
-              See Your Future
-            </p>
+            <p className="text-xs text-slate">See Your Future</p>
           </div>
         </div>
-
-         </div>
+      </div>
     </aside>
   );
 }

@@ -1,16 +1,24 @@
+import type { CSSProperties } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ChatMessage } from "@/types/chat";
-import {
-  User,
-  Bot,
-  Sparkles,
-  FileText,
-  GraduationCap,
-  Briefcase,
-} from "lucide-react";
+import AIErrorState from "@/components/ai/AIErrorState";
+import AIDisclosureBadge from "@/components/ai/AIDisclosureBadge";
+import type { AIError, AIErrorCode } from "@/types/ai";
+import { User, Bot, Sparkles, FileText, GraduationCap, Briefcase } from "lucide-react";
+
+const RETRYABLE_CODES = new Set(["rate_limited", "provider_error"]);
+
+function toAIError(msg: ChatMessage): AIError {
+  const code = (msg.errorCode ?? "unknown") as AIErrorCode;
+  return {
+    code,
+    message: msg.errorMessage ?? "Something went wrong. Please try again.",
+    retryable: RETRYABLE_CODES.has(code),
+  };
+}
 
 type Props = {
   chat: ChatMessage[];
@@ -18,11 +26,7 @@ type Props = {
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
 };
 
-export default function ChatMessages({
-  chat,
-  chatLoading,
-  messagesEndRef,
-}: Props) {
+export default function ChatMessages({ chat, chatLoading, messagesEndRef }: Props) {
   return (
     <div className="flex-1 overflow-y-auto px-6 py-8">
       {chatLoading ? (
@@ -30,9 +34,7 @@ export default function ChatMessages({
           <div className="flex flex-col items-center gap-4">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-amber border-t-transparent" />
 
-            <p className="text-sm text-slate">
-              Loading conversation...
-            </p>
+            <p className="text-sm text-slate">Loading conversation...</p>
           </div>
         </div>
       ) : (
@@ -52,8 +54,8 @@ export default function ChatMessages({
               </p>
 
               <p className="mt-2 max-w-2xl text-center text-slate leading-7">
-                Ask anything about your career, resume, interviews,
-                learning roadmap or professional growth.
+                Ask anything about your career, resume, interviews, learning roadmap or professional
+                growth.
               </p>
 
               <div className="mt-10 flex flex-wrap justify-center gap-3">
@@ -86,19 +88,13 @@ export default function ChatMessages({
 
           {chat.length > 0 &&
             chat.map((msg, index) => (
-                            <div
+              <div
                 key={index}
-                className={`mb-8 flex ${
-                  msg.sender === "You"
-                    ? "justify-end"
-                    : "justify-start"
-                }`}
+                className={`mb-8 flex ${msg.sender === "You" ? "justify-end" : "justify-start"}`}
               >
                 <div
                   className={`flex w-full max-w-[88%] items-end gap-3 ${
-                    msg.sender === "You"
-                      ? "ml-auto flex-row-reverse"
-                      : ""
+                    msg.sender === "You" ? "ml-auto flex-row-reverse" : ""
                   }`}
                 >
                   {/* Avatar */}
@@ -137,7 +133,9 @@ export default function ChatMessages({
                         prose-pre:bg-transparent
                       "
                     >
-                      {msg.sender === "AI" && msg.text === "" ? (
+                      {msg.sender === "AI" && msg.errorCode ? (
+                        <AIErrorState error={toAIError(msg)} />
+                      ) : msg.sender === "AI" && msg.text === "" ? (
                         <div className="flex items-center gap-2 text-slate-500">
                           <div className="h-2 w-2 animate-bounce rounded-full bg-amber-dim" />
                           <div
@@ -149,9 +147,7 @@ export default function ChatMessages({
                             style={{ animationDelay: "0.3s" }}
                           />
 
-                          <span className="ml-2 font-medium">
-                            Thinking...
-                          </span>
+                          <span className="ml-2 font-medium">Thinking...</span>
                         </div>
                       ) : (
                         <>
@@ -169,53 +165,43 @@ export default function ChatMessages({
                             </div>
                           )}
                           {msg.attachmentUrl && (
-                          <a
-                            href={msg.attachmentUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`mb-4 flex items-center justify-between rounded-xl border px-4 py-3 transition hover:shadow ${
-                              msg.sender === "You"
-                                ? "border-white/20 bg-panel/10 text-white"
-                                : "border-amber-dim/20 bg-panel"
-                            }`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <FileText size={20} />
+                            <a
+                              href={msg.attachmentUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`mb-4 flex items-center justify-between rounded-xl border px-4 py-3 transition hover:shadow ${
+                                msg.sender === "You"
+                                  ? "border-white/20 bg-panel/10 text-white"
+                                  : "border-amber-dim/20 bg-panel"
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <FileText size={20} />
 
-                              <div>
-                                <p className="text-sm font-semibold">
-                                  {msg.attachmentName}
-                                </p>
+                                <div>
+                                  <p className="text-sm font-semibold">{msg.attachmentName}</p>
 
-                                <p className="text-xs opacity-70">
-                                  {msg.attachmentSize
-                                    ? `${(msg.attachmentSize / 1024).toFixed(1)} KB`
-                                    : ""}
-                                </p>
+                                  <p className="text-xs opacity-70">
+                                    {msg.attachmentSize
+                                      ? `${(msg.attachmentSize / 1024).toFixed(1)} KB`
+                                      : ""}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
 
-                            <span className="text-xs font-medium">
-                              Open
-                            </span>
-                          </a>
-                        )}
+                              <span className="text-xs font-medium">Open</span>
+                            </a>
+                          )}
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
-                              code({
-                                className,
-                                children,
-                                ...props
-                              }) {
-                                const match = /language-(\w+)/.exec(
-                                  className || ""
-                                );
+                              code({ className, children, ...props }) {
+                                const match = /language-(\w+)/.exec(className || "");
 
                                 if (match) {
                                   return (
                                     <SyntaxHighlighter
-                                      style={oneDark as any}
+                                      style={oneDark as { [key: string]: CSSProperties }}
                                       language={match[1]}
                                       PreTag="div"
                                     >
@@ -237,6 +223,10 @@ export default function ChatMessages({
                           >
                             {msg.text}
                           </ReactMarkdown>
+
+                          {msg.sender === "AI" && msg.text && (
+                            <AIDisclosureBadge className="mt-3" />
+                          )}
                         </>
                       )}
                     </div>
@@ -251,4 +241,3 @@ export default function ChatMessages({
     </div>
   );
 }
-              

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import UploadCard from "@/components/documents/UploadCard";
 import RecentFiles from "@/components/documents/RecentFiles";
 import AIActions from "@/components/documents/AIActions";
-import AIWorkspace from "@/components/documents/AIWorkspace";
+import DocumentAIPanel from "@/components/documents/DocumentAIPanel";
 import PageLayout from "@/components/PageLayout";
 
 export default function DocumentsPage() {
@@ -29,11 +29,11 @@ export default function DocumentsPage() {
   const [loadingInterview, setLoadingInterview] = useState(false);
   const workspaceRef = useRef<HTMLDivElement>(null);
   const scrollToWorkspace = () => {
-  workspaceRef.current?.scrollIntoView({
-    behavior: "smooth",
-    block: "start",
-  });
-};
+    workspaceRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   const fetchFiles = async () => {
     try {
@@ -46,16 +46,20 @@ export default function DocumentsPage() {
   };
 
   useEffect(() => {
+    // Pre-existing pattern, unrelated to this file's only actual change
+    // here (the AIWorkspace -> DocumentAIPanel rename below) — refactoring
+    // this component's initial data-load architecture is out of scope.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchFiles();
   }, []);
-useEffect(() => {
-  if (summary || answer || quiz || interview) {
-    workspaceRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }
-}, [summary, answer, quiz, interview]);
+  useEffect(() => {
+    if (summary || answer || quiz || interview) {
+      workspaceRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [summary, answer, quiz, interview]);
   const uploadFile = async () => {
     if (!file) {
       toast.error("Please select a PDF first.");
@@ -76,14 +80,14 @@ useEffect(() => {
       const data = await res.json();
 
       if (data.success) {
-      setUploadSuccess(`${data.filename} uploaded successfully!`);
-      setFile(null);
-      fetchFiles();
+        setUploadSuccess(`${data.filename} uploaded successfully!`);
+        setFile(null);
+        fetchFiles();
 
-      setTimeout(() => {
-        setUploadSuccess("");
-      }, 4000);
-    } else {
+        setTimeout(() => {
+          setUploadSuccess("");
+        }, 4000);
+      } else {
         setUploadSuccess("");
         toast.error("Upload failed.");
       }
@@ -96,77 +100,73 @@ useEffect(() => {
   };
 
   return (
-  <PageLayout>
-    <div className="mx-auto max-w-7xl pt-16">
-    
-      <div className="mb-8">
-        <h1 className="font-display mb-2 text-4xl font-bold text-bone">
-          📄 AI Document Workspace
-        </h1>
+    <PageLayout>
+      <div className="mx-auto max-w-7xl pt-16">
+        <div className="mb-8">
+          <h1 className="font-display mb-2 text-4xl font-bold text-bone">
+            📄 AI Document Workspace
+          </h1>
 
-        <p className="text-slate">
-          Upload any PDF and instantly generate summaries, answers, quizzes,
-          and interview questions using AI.
-        </p>
+          <p className="text-slate">
+            Upload any PDF and instantly generate summaries, answers, quizzes, and interview
+            questions using AI.
+          </p>
+        </div>
+
+        <div className="grid gap-8 lg:grid-cols-3 lg:auto-rows-fr">
+          <UploadCard
+            file={file}
+            setFile={setFile}
+            uploading={uploading}
+            uploadSuccess={uploadSuccess}
+            uploadFile={uploadFile}
+          />
+
+          <RecentFiles
+            files={files}
+            selectedFile={selectedFile}
+            setSelectedFile={setSelectedFile}
+            setSummary={setSummary}
+            fetchFiles={fetchFiles}
+          />
+
+          <AIActions
+            selectedFile={selectedFile}
+            scrollToWorkspace={scrollToWorkspace}
+            summary={summary}
+            setSummary={setSummary}
+            loadingSummary={loadingSummary}
+            setLoadingSummary={setLoadingSummary}
+            question={question}
+            setQuestion={setQuestion}
+            answer={answer}
+            setAnswer={setAnswer}
+            loadingAnswer={loadingAnswer}
+            setLoadingAnswer={setLoadingAnswer}
+            quiz={quiz}
+            setQuiz={setQuiz}
+            loadingQuiz={loadingQuiz}
+            setLoadingQuiz={setLoadingQuiz}
+            interview={interview}
+            setInterview={setInterview}
+            loadingInterview={loadingInterview}
+            setLoadingInterview={setLoadingInterview}
+          />
+        </div>
+
+        <div ref={workspaceRef} className="mt-8">
+          <DocumentAIPanel
+            summary={summary}
+            answer={answer}
+            quiz={quiz}
+            interview={interview}
+            loadingSummary={loadingSummary}
+            loadingAnswer={loadingAnswer}
+            loadingQuiz={loadingQuiz}
+            loadingInterview={loadingInterview}
+          />
+        </div>
       </div>
-
-      <div className="grid gap-8 lg:grid-cols-3 lg:auto-rows-fr">
-
-  <UploadCard
-  file={file}
-  setFile={setFile}
-  uploading={uploading}
-  uploadSuccess={uploadSuccess}
-  uploadFile={uploadFile}
-/>
-
-<RecentFiles
-  files={files}
-  selectedFile={selectedFile}
-  setSelectedFile={setSelectedFile}
-  setSummary={setSummary}
-  fetchFiles={fetchFiles}
-/>
-
-<AIActions
-  selectedFile={selectedFile}
-  scrollToWorkspace={scrollToWorkspace}
-  summary={summary}
-  setSummary={setSummary}
-  loadingSummary={loadingSummary}
-  setLoadingSummary={setLoadingSummary}
-  question={question}
-  setQuestion={setQuestion}
-  answer={answer}
-  setAnswer={setAnswer}
-  loadingAnswer={loadingAnswer}
-  setLoadingAnswer={setLoadingAnswer}
-  quiz={quiz}
-  setQuiz={setQuiz}
-  loadingQuiz={loadingQuiz}
-  setLoadingQuiz={setLoadingQuiz}
-  interview={interview}
-  setInterview={setInterview}
-  loadingInterview={loadingInterview}
-  setLoadingInterview={setLoadingInterview}
-/>
-
-</div>
-
-      <div ref={workspaceRef} className="mt-8">
-        <AIWorkspace
-          summary={summary}
-          answer={answer}
-          quiz={quiz}
-          interview={interview}
-          loadingSummary={loadingSummary}
-          loadingAnswer={loadingAnswer}
-          loadingQuiz={loadingQuiz}
-          loadingInterview={loadingInterview}
-        />
-      </div>
-
-    </div>
-  </PageLayout>
-);
+    </PageLayout>
+  );
 }

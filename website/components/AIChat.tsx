@@ -7,9 +7,11 @@ import ChatSidebar from "@/components/ChatSidebar";
 import ChatHeader from "@/components/ChatHeader";
 import ChatMessages from "@/components/ChatMessages";
 import ChatInput from "@/components/ChatInput";
+import ChatModeSwitch from "@/components/ChatModeSwitch";
 import { toast } from "sonner";
-import { ChatMessage, ChatSession } from "@/types/chat";
+import { ChatMessage, ChatSession, WorkspaceMode } from "@/types/chat";
 import { uploadAttachment } from "@/lib/uploadAttachment";
+import { useFeatureFlag } from "@/components/providers/FeatureFlagsProvider";
 
 export default function AIChat() {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -18,11 +20,13 @@ export default function AIChat() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [selectedChat, setSelectedChat] =
-    useState<ChatSession | null>(null);
+  const [mode, setMode] = useState<WorkspaceMode>("general");
+  const [selectedChat, setSelectedChat] = useState<ChatSession | null>(null);
 
   const [chatLoading, setChatLoading] = useState(false);
   const [chat, setChat] = useState<ChatMessage[]>([]);
+
+  const careerCoachEnabled = useFeatureFlag("aiCareerCoaching");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -60,41 +64,51 @@ export default function AIChat() {
       const data = await res.json();
 
       setSessionId(session.id);
+      setMode(session.mode ?? "general");
 
       setChat(
-      data.map((msg: any) => ({
-        sender: msg.sender,
-        text: msg.message,
+        data.map(
+          (msg: {
+            sender: "AI" | "You";
+            message: string;
+            attachment_name: string | null;
+            attachment_url: string | null;
+            attachment_type: string | null;
+            attachment_size: number | null;
+          }) => ({
+            sender: msg.sender,
+            text: msg.message,
 
-        attachmentName: msg.attachment_name,
-        attachmentUrl: msg.attachment_url,
-        attachmentType: msg.attachment_type,
-        attachmentSize: msg.attachment_size,
-      }))
-    );
+            attachmentName: msg.attachment_name,
+            attachmentUrl: msg.attachment_url,
+            attachmentType: msg.attachment_type,
+            attachmentSize: msg.attachment_size,
+          })
+        )
+      );
     } catch (err) {
       console.error(err);
     } finally {
       setChatLoading(false);
     }
   }
-    async function sendMessage() {
+  async function sendMessage() {
     if (!message.trim() || loading) return;
 
     const userMessage = message;
     let attachment = null;
 
-      if (selectedFile) {
-        try {
-          attachment = await uploadAttachment(selectedFile);
-          console.log("UPLOAD RESULT", attachment);
-          console.log("Attachment:", attachment);
-        } catch (error) {
-          console.error(error);
-          toast.error("Failed to upload attachment.");
-          return;
-        }
+    if (selectedFile) {
+      try {
+        attachment = await uploadAttachment(selectedFile);
+        console.log("UPLOAD RESULT", attachment);
+        console.log("Attachment:", attachment);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to upload attachment.");
+        return;
       }
+    }
 
     // Latest history (includes current user message)
     const history: ChatMessage[] = [
@@ -110,9 +124,9 @@ export default function AIChat() {
       },
     ];
 
-        setLoading(true);
-      setMessage("");
-      setSelectedFile(null);
+    setLoading(true);
+    setMessage("");
+    setSelectedFile(null);
 
     // Show user message immediately
     console.log("ADDING TO CHAT", {
@@ -122,34 +136,35 @@ export default function AIChat() {
       attachmentSize: attachment?.size,
     });
     setChat((prev) => [
-  ...prev,
-  {
-    sender: "You",
-    text: userMessage,
+      ...prev,
+      {
+        sender: "You",
+        text: userMessage,
 
-    attachmentName: attachment?.name ?? null,
-    attachmentUrl: attachment?.url ?? null,
-    attachmentType: attachment?.type ?? null,
-    attachmentSize: attachment?.size ?? null,
-  },
-  {
-    sender: "AI",
-    text: "",
-  },
-]);
+        attachmentName: attachment?.name ?? null,
+        attachmentUrl: attachment?.url ?? null,
+        attachmentType: attachment?.type ?? null,
+        attachmentSize: attachment?.size ?? null,
+      },
+      {
+        sender: "AI",
+        text: "",
+      },
+    ]);
 
     try {
-      const res = await fetch("/api/chat/stream", {
+      const res = await fetch("/api/workspace/stream", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-        message: userMessage,
-        history,
-        sessionId,
-        attachment,
-      }),
+          message: userMessage,
+          history,
+          sessionId,
+          mode,
+          attachment,
+        }),
       });
 
       if (!res.body) {
@@ -194,6 +209,7 @@ export default function AIChat() {
             case "session":
               if (!sessionId && data.sessionId) {
                 setSessionId(data.sessionId);
+                if (data.mode) setMode(data.mode);
                 loadSessions();
               }
               break;
@@ -202,15 +218,31 @@ export default function AIChat() {
               setChat((prev) => {
                 const updated = [...prev];
 
-                const lastIndex = updated
-                  .map((m) => m.sender)
-                  .lastIndexOf("AI");
+                const lastIndex = updated.map((m) => m.sender).lastIndexOf("AI");
 
                 if (lastIndex !== -1) {
                   updated[lastIndex] = {
                     ...updated[lastIndex],
-                    text:
-                      updated[lastIndex].text + data.text,
+                    text: updated[lastIndex].text + data.text,
+                  };
+                }
+
+                return updated;
+              });
+              break;
+
+            case "error":
+              setChat((prev) => {
+                const updated = [...prev];
+
+                const lastIndex = updated.map((m) => m.sender).lastIndexOf("AI");
+
+                if (lastIndex !== -1) {
+                  updated[lastIndex] = {
+                    ...updated[lastIndex],
+                    text: "",
+                    errorCode: data.code ?? "unknown",
+                    errorMessage: data.message,
                   };
                 }
 
@@ -249,9 +281,7 @@ export default function AIChat() {
         throw new Error("Failed to delete chat");
       }
 
-      setSessions((prev) =>
-        prev.filter((chat) => chat.id !== id)
-      );
+      setSessions((prev) => prev.filter((chat) => chat.id !== id));
 
       toast.success("Conversation deleted");
 
@@ -264,7 +294,7 @@ export default function AIChat() {
       toast.error("Failed to delete chat");
     }
   }
-    return (
+  return (
     <>
       <section className="min-h-screen bg-gradient-to-br from-ink via-white to-panel px-8 py-8">
         <div className="mb-6">
@@ -280,6 +310,7 @@ export default function AIChat() {
             onNewChat={() => {
               setSessionId(null);
               setSelectedChat(null);
+              setMode("general");
 
               setChat([]);
               setMessage("");
@@ -299,21 +330,32 @@ export default function AIChat() {
             <ChatHeader />
 
             {/* Messages */}
-            <ChatMessages
-              chat={chat}
-              chatLoading={chatLoading}
-              messagesEndRef={messagesEndRef}
-            />
+            <ChatMessages chat={chat} chatLoading={chatLoading} messagesEndRef={messagesEndRef} />
+
+            {/* Mode switch + Career Coach credit disclosure — only before a
+                new conversation's first message; mode is fixed once a
+                session exists (docs/architecture/ai-workspace-architecture.md §4.2) */}
+            {!sessionId && chat.length === 0 && (
+              <div className="px-5 pt-4">
+                {careerCoachEnabled && <ChatModeSwitch mode={mode} onChange={setMode} />}
+
+                {mode === "career_coach" && (
+                  <p className="mb-3 text-xs font-medium text-amber-dim">
+                    This conversation uses 1 AI credit (Career Coach mode).
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Input */}
             <ChatInput
-            message={message}
-            loading={loading}
-            selectedFile={selectedFile}
-            setSelectedFile={setSelectedFile}
-            setMessage={setMessage}
-            sendMessage={sendMessage}
-          />
+              message={message}
+              loading={loading}
+              selectedFile={selectedFile}
+              setSelectedFile={setSelectedFile}
+              setMessage={setMessage}
+              sendMessage={sendMessage}
+            />
           </div>
         </div>
       </section>
