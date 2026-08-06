@@ -82,34 +82,19 @@ export default function LoginForm() {
       transition={{ duration: 0.6 }}
       className="w-full max-w-lg rounded-[32px] border border-amber/20 bg-panel p-10 shadow-2xl"
     >
-
       {/* Heading */}
 
       <div className="mb-8 text-center">
+        <h2 className="font-display text-4xl font-extrabold text-bone">Welcome Back</h2>
 
-        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber text-3xl">
-          ✨
-        </div>
-
-        <h2 className="font-display text-4xl font-extrabold text-bone">
-          Welcome Back
-        </h2>
-
-        <p className="mt-3 text-slate">
-          Login to continue your RESEE journey.
-        </p>
-
+        <p className="mt-3 text-slate">Login to continue your RESEE journey.</p>
       </div>
 
       <form onSubmit={handleLogin} noValidate className="space-y-6">
-
         {/* Email */}
 
         <div>
-
-          <label className="mb-2 block font-medium text-bone">
-            Email Address
-          </label>
+          <label className="mb-2 block font-medium text-bone">Email Address</label>
 
           <div
             className={`flex h-14 items-center gap-4 rounded-xl border bg-panel px-4 transition-all duration-200 focus-within:ring-4 ${
@@ -118,7 +103,6 @@ export default function LoginForm() {
                 : "border-bone/15 focus-within:border-amber focus-within:ring-amber/10"
             }`}
           >
-
             <Mail size={20} className="text-amber" />
 
             <input
@@ -131,7 +115,6 @@ export default function LoginForm() {
               }}
               className="w-full bg-transparent text-bone placeholder:text-slate outline-none"
             />
-
           </div>
 
           {errors.email && (
@@ -143,16 +126,12 @@ export default function LoginForm() {
               {errors.email}
             </motion.p>
           )}
-
         </div>
 
         {/* Password */}
 
         <div>
-
-          <label className="mb-2 block font-medium text-bone">
-            Password
-          </label>
+          <label className="mb-2 block font-medium text-bone">Password</label>
 
           <div
             className={`flex h-14 items-center gap-4 rounded-xl border bg-panel px-4 transition-all duration-200 focus-within:ring-4 ${
@@ -161,7 +140,6 @@ export default function LoginForm() {
                 : "border-bone/15 focus-within:border-amber focus-within:ring-amber/10"
             }`}
           >
-
             <Lock size={20} className="text-amber" />
 
             <input
@@ -175,17 +153,13 @@ export default function LoginForm() {
               className="w-full bg-transparent text-bone placeholder:text-slate outline-none"
             />
 
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-            >
+            <button type="button" onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? (
                 <EyeOff size={20} className="text-slate hover:text-amber" />
               ) : (
                 <Eye size={20} className="text-slate hover:text-amber" />
               )}
             </button>
-
           </div>
 
           {errors.password && (
@@ -197,33 +171,24 @@ export default function LoginForm() {
               {errors.password}
             </motion.p>
           )}
-
         </div>
 
         {/* Remember */}
 
         <div className="flex items-center justify-between text-sm">
-
           <label className="flex items-center gap-2 text-slate">
-
             <input
               type="checkbox"
               checked={rememberMe}
               onChange={(e) => setRememberMeChecked(e.target.checked)}
               className="accent-amber"
             />
-
             Remember Me
-
           </label>
 
-          <Link
-            href="/forgot-password"
-            className="font-semibold text-amber hover:text-amber"
-          >
+          <Link href="/forgot-password" className="font-semibold text-amber hover:text-amber">
             Forgot Password?
           </Link>
-
         </div>
 
         {/* Login Button */}
@@ -241,15 +206,11 @@ export default function LoginForm() {
         {/* Divider */}
 
         <div className="flex items-center gap-4">
-
           <div className="h-px flex-1 bg-panel-2" />
 
-          <span className="text-sm text-slate">
-            OR
-          </span>
+          <span className="text-sm text-slate">OR</span>
 
           <div className="h-px flex-1 bg-panel-2" />
-
         </div>
 
         {/* Google */}
@@ -259,20 +220,12 @@ export default function LoginForm() {
         {/* Signup */}
 
         <p className="text-center text-sm text-slate">
-
           Don&apos;t have an account?{" "}
-
-          <Link
-            href="/signup"
-            className="font-bold text-amber hover:text-amber"
-          >
+          <Link href="/signup" className="font-bold text-amber hover:text-amber">
             Create Account
           </Link>
-
         </p>
-
       </form>
-
     </motion.div>
   );
 }

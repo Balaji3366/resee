@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/Tooltip";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { FeatureFlagsProvider } from "@/components/providers/FeatureFlagsProvider";
 import { LoadingProvider } from "@/components/providers/LoadingProvider";
+import ScrollRestorationManager from "@/components/ScrollRestorationManager";
 
 // ReSee v5 "Campus-to-Career" redesign fonts — see
 // Design baseline recreation priority/design_handoff_v5_redesign/README.md
@@ -37,6 +38,8 @@ export default function RootLayout({
       className={`${hankenGrotesk.variable} ${schibstedGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <ScrollRestorationManager />
+
         <AuthProvider>
           <FeatureFlagsProvider>
             <LoadingProvider>

@@ -71,106 +71,97 @@ export default function Navbar() {
           </div>
         </button>
 
-        {/* Center Links */}
+        {/* Navigation — right-aligned: Pricing, then auth actions */}
 
-        <div className="hidden items-center gap-10 lg:flex">
-          <button
-            onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-            className="text-sm font-medium text-slate transition hover:text-bone"
-          >
-            About
-          </button>
-
+        <div className="hidden items-center gap-8 lg:flex">
           <button
             onClick={() => document.getElementById("plans")?.scrollIntoView({ behavior: "smooth" })}
             className="text-sm font-medium text-slate transition hover:text-bone"
           >
             Pricing
           </button>
+
+          {!user ? (
+            <div className="flex items-center gap-6">
+              <button
+                onClick={() => router.push("/login")}
+                className="text-sm font-medium text-slate transition hover:text-bone"
+              >
+                Login
+              </button>
+
+              <button
+                onClick={() => router.push("/signup")}
+                className="rounded-full bg-amber px-6 py-2.5 text-sm font-semibold text-bone shadow-md shadow-amber/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:brightness-110"
+              >
+                Get Started
+              </button>
+            </div>
+          ) : (
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={() => setOpen((prev) => !prev)}
+                className="flex items-center gap-3 rounded-xl border border-amber/30 bg-amber px-4 py-2 transition hover:border-amber"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber font-bold text-bone">
+                  {fullName.charAt(0).toUpperCase()}
+                </div>
+
+                <div className="hidden text-left lg:block">
+                  <p className="text-sm font-bold text-white">{fullName}</p>
+
+                  <p className="text-xs text-slate">Welcome Back</p>
+                </div>
+              </button>
+
+              {open && (
+                <div className="absolute right-0 mt-3 w-60 overflow-hidden rounded-2xl border border-amber/20 bg-panel shadow-2xl">
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      router.push("/dashboard");
+                    }}
+                    className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
+                  >
+                    Dashboard
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      router.push("/resume-history");
+                    }}
+                    className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
+                  >
+                    Resume History
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      router.push("/documents");
+                    }}
+                    className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
+                  >
+                    Documents
+                  </button>
+
+                  <hr />
+
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      setLogoutOpen(true);
+                    }}
+                    className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-
-        {/* Right Side */}
-
-        {!user ? (
-          <div className="hidden items-center gap-4 lg:flex">
-            <button
-              onClick={() => router.push("/login")}
-              className="rounded-xl border border-amber px-5 py-2 font-semibold text-amber transition hover:bg-amber hover:text-bone"
-            >
-              Login
-            </button>
-
-            <button
-              onClick={() => router.push("/signup")}
-              className="rounded-xl bg-amber px-6 py-2 font-semibold text-bone transition hover:brightness-110"
-            >
-              Get Started
-            </button>
-          </div>
-        ) : (
-          <div className="relative" ref={menuRef}>
-            <button
-              onClick={() => setOpen((prev) => !prev)}
-              className="flex items-center gap-3 rounded-xl border border-amber/30 bg-amber px-4 py-2 transition hover:border-amber"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber font-bold text-bone">
-                {fullName.charAt(0).toUpperCase()}
-              </div>
-
-              <div className="hidden text-left lg:block">
-                <p className="text-sm font-bold text-white">{fullName}</p>
-
-                <p className="text-xs text-slate">Welcome Back</p>
-              </div>
-            </button>
-
-            {open && (
-              <div className="absolute right-0 mt-3 w-60 overflow-hidden rounded-2xl border border-amber/20 bg-panel shadow-2xl">
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    router.push("/dashboard");
-                  }}
-                  className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
-                >
-                  Dashboard
-                </button>
-
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    router.push("/resume-history");
-                  }}
-                  className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
-                >
-                  Resume History
-                </button>
-
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    router.push("/documents");
-                  }}
-                  className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
-                >
-                  Documents
-                </button>
-
-                <hr />
-
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    setLogoutOpen(true);
-                  }}
-                  className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        )}
       </div>
       <LogoutModal
         open={logoutOpen}

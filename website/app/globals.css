@@ -138,6 +138,65 @@ body {
 .animate-pulse-soft {
   animation: pulse-soft 2.5s ease-in-out infinite;
 }
+
+/* Final CTA — subtle, slow diagonal gradient drift (Apple/Linear/Vercel/
+   Stripe-style ambient motion). Animates transform only (GPU-composited,
+   no repaint) on an oversized duplicate gradient layer, never the
+   section's own background-position — that would repaint every frame.
+   No animation is applied outside prefers-reduced-motion: no-preference,
+   so reduced-motion users see the exact same static gradient with zero
+   motion, not a toned-down version of it. */
+
+@keyframes cta-gradient-drift {
+  0% {
+    transform: translate(0%, 0%);
+  }
+
+  50% {
+    transform: translate(-3%, -2%);
+  }
+
+  100% {
+    transform: translate(0%, 0%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-cta-drift {
+    animation: cta-gradient-drift 18s ease-in-out infinite;
+    will-change: transform;
+  }
+}
+
+/* Login/signup feature rows — gentle, continuous vertical drift (not
+   hover-triggered). Deliberately no rotation, unlike the existing
+   .animate-float above — a slower, calmer bob fits a premium auth page
+   better than that one's playful tilt. Each card gets a different
+   animation-delay (via inline style) so the three drift out of phase
+   instead of moving in lockstep. Transform-only, so it never fights
+   framer-motion's own transform-driven entrance animation once that
+   settles, and it's cheap to run indefinitely. */
+
+@keyframes card-float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-card-float {
+    animation: card-float 4.5s ease-in-out infinite;
+    will-change: transform;
+  }
+}
 /* ========================= */
 /* Load-in animation (Dashboard v3.dc.html and others) */
 

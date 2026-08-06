@@ -1,35 +1,28 @@
 import Image from "next/image";
 
+/**
+ * Compact, supportive brand mark — previously a stacked, hero-scale
+ * lockup (92px logo + text-5xl wordmark) that visually competed with
+ * the actual headline below it. Same content (logo, name, tagline),
+ * just sized and arranged to sit quietly above the real hero instead
+ * of acting as one itself.
+ */
 export default function LoginLogo() {
   return (
-    <div className="flex flex-col items-start">
-      {/* Logo */}
+    <div className="flex items-center gap-3">
+      <Image
+        src="/images/resee-logo.png"
+        alt="RESEE Logo"
+        width={40}
+        height={40}
+        priority
+        className="rounded-xl"
+      />
 
-      <div className="group">
-        <Image
-          src="/images/resee-logo.png"
-          alt="RESEE Logo"
-          width={92}
-          height={92}
-          priority
-          className="rounded-2xl transition-transform duration-300 group-hover:scale-105"
-        />
-      </div>
+      <div className="flex items-baseline gap-2">
+        <span className="font-display text-xl font-extrabold tracking-tight text-bone">RESEE</span>
 
-      {/* Brand */}
-
-      <div className="mt-5">
-        <h1 className="font-display text-5xl font-black tracking-[-0.03em] text-bone">
-          RESEE
-        </h1>
-
-        <div className="mt-2 flex items-center gap-3">
-          <div className="h-px w-10 bg-amber" />
-
-          <p className="text-base font-medium tracking-wide text-slate">
-            See Your Future
-          </p>
-        </div>
+        <span className="text-xs font-medium tracking-wide text-slate">See Your Future</span>
       </div>
     </div>
   );
