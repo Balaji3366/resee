@@ -9,6 +9,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { History } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 import type { CareerScoreHistoryPoint } from "@/hooks/useCareerScore";
 
 interface CareerScoreTimelineProps {
@@ -22,14 +24,15 @@ function formatDate(value: unknown) {
   });
 }
 
-export default function CareerScoreTimeline({
-  history,
-}: CareerScoreTimelineProps) {
+export default function CareerScoreTimeline({ history }: CareerScoreTimelineProps) {
   if (history.length < 2) {
     return (
-      <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-bone/15 bg-panel-2 text-center text-sm text-slate">
-        Your score history builds up as your activity changes
-      </div>
+      <EmptyState
+        icon={<History size={22} />}
+        title="No score history yet"
+        message="Complete more career activities to start building your history."
+        className="!rounded-2xl !border !border-dashed !border-bone/15 !bg-panel-2 !p-8"
+      />
     );
   }
 

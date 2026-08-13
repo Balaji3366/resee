@@ -78,16 +78,16 @@ export default function DashboardDailyRecommendation() {
   const action = ACTION_LINKS[aiAction ?? ruleBased.suggestedAction];
 
   return (
-    <div className="animate-fade-up mb-7 rounded-3xl border-2 border-bone/10 bg-panel p-6">
+    <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="flex items-center gap-2 font-display text-[17px] font-bold text-bone">
-          <Sparkles size={16} className="text-amber" />
+        <p className="flex items-center gap-2 text-sm font-bold text-bone/50">
+          <Sparkles size={14} className="text-amber" />
           Today&apos;s Nudge
-        </h3>
+        </p>
         {aiMessage && <AIDisclosureBadge />}
       </div>
 
-      <p className="mt-3 text-sm text-bone/80">{message}</p>
+      <p className="mt-2 text-sm text-bone/80">{message}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
         {action && (

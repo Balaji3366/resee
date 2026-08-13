@@ -1,50 +1,74 @@
 "use client";
 
 import CountUp from "react-countup";
+import { FileText, FolderOpen, Mic, Map } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 
 type DashboardStatsProps = {
   resumeCount: number;
   documentCount: number;
 };
 
+/**
+ * Was 4 separate rounded-2xl/border/shadow cards stacked as their own
+ * grid — 4 outer containers for what's fundamentally one "quick glance"
+ * row of numbers. Now one container, four divided cells — same data,
+ * same order, far less "card wall."
+ */
 export default function DashboardStats({ resumeCount, documentCount }: DashboardStatsProps) {
   const stats = [
     {
       title: "Resume Reports",
       value: resumeCount,
-      color: "text-amber",
+      color: "amber" as const,
+      textColor: "text-amber",
+      icon: FileText,
     },
     {
       title: "Documents",
       value: documentCount,
-      color: "text-amber-dim",
+      color: "amber-dim" as const,
+      textColor: "text-amber-dim",
+      icon: FolderOpen,
     },
     {
       title: "Mock Interviews",
       value: 0,
-      color: "text-bone/25",
+      color: "teal" as const,
+      textColor: "text-bone/25",
+      icon: Mic,
     },
     {
       title: "Career Roadmaps",
       value: 0,
-      color: "text-bone/25",
+      color: "bone" as const,
+      textColor: "text-bone/25",
+      icon: Map,
     },
   ];
 
   return (
-    <section className="mt-12">
-      <h2 className="font-display mb-6 text-2xl font-extrabold text-bone">Dashboard Overview</h2>
+    <section className="mt-8">
+      <p className="mb-3 text-xs font-bold uppercase tracking-wider text-bone/40">
+        Dashboard Overview
+      </p>
 
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 divide-x divide-y divide-bone/10 overflow-hidden rounded-2xl border border-bone/10 bg-panel shadow-sm sm:grid-cols-4 sm:divide-y-0">
         {stats.map((item) => (
-          <div key={item.title} className="rounded-[20px] border-2 border-bone bg-panel p-6">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-bone/45">
-              {item.title}
-            </p>
+          <div key={item.title} className="flex items-center gap-3 px-5 py-5">
+            <IconBadge color={item.color} size={36}>
+              <item.icon size={16} />
+            </IconBadge>
 
-            <p className={`font-display mt-3 text-4xl font-extrabold ${item.color}`}>
-              <CountUp end={item.value} duration={1.5} />
-            </p>
+            <div className="min-w-0">
+              <p className="truncate text-[10px] font-bold uppercase tracking-wider text-bone/45">
+                {item.title}
+              </p>
+
+              <p className={`font-display text-2xl font-extrabold ${item.textColor}`}>
+                <CountUp end={item.value} duration={1.2} />
+              </p>
+            </div>
           </div>
         ))}
       </div>

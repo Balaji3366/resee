@@ -25,13 +25,13 @@ export default function CareerScoreGauge({ score, status }: CareerScoreGaugeProp
     <div className="flex flex-col items-center">
       <ProgressRing
         value={hasScore ? score : 0}
-        size={160}
-        strokeWidth={12}
+        size={136}
+        strokeWidth={10}
         color={hasScore ? colors!.stroke : "transparent"}
       >
         <div className="flex flex-col items-center">
           <span
-            className={`font-display text-4xl font-extrabold ${hasScore ? colors!.text : "text-bone/40"}`}
+            className={`font-display text-3xl font-extrabold ${hasScore ? colors!.text : "text-bone/40"}`}
           >
             {hasScore ? score : "—"}
           </span>
@@ -40,11 +40,17 @@ export default function CareerScoreGauge({ score, status }: CareerScoreGaugeProp
         </div>
       </ProgressRing>
 
-      <div className="mt-4 max-w-[220px] text-center text-sm text-bone/60">
-        {status === "baseline" && "(estimated at onboarding)"}
-        {status === "insufficient_data" &&
-          "Not enough data yet — complete onboarding or analyze a resume"}
-      </div>
+      {/* Only mounted when there's actual text — for the common
+          "computed" status this div previously rendered empty but
+          still carried its mt-4, a fixed chunk of dead vertical space
+          in every real (non-baseline, non-insufficient-data) render. */}
+      {(status === "baseline" || status === "insufficient_data") && (
+        <div className="mt-4 max-w-[220px] text-center text-sm text-bone/60">
+          {status === "baseline"
+            ? "(estimated at onboarding)"
+            : "Not enough data yet — complete onboarding or analyze a resume"}
+        </div>
+      )}
     </div>
   );
 }

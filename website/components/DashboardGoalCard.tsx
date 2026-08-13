@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { Target } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 import { GOAL_LABELS, type GoalId } from "@/constants/goals";
 import type { ProfileData } from "@/hooks/useProfile";
 
@@ -16,8 +18,14 @@ export default function DashboardGoalCard({
   loading: boolean;
 }) {
   return (
-    <div className="rounded-[20px] border-2 border-bone bg-panel p-6">
-      <p className="text-sm font-bold text-bone/50">My Goal</p>
+    <div>
+      <div className="flex items-center gap-2.5">
+        <IconBadge color="amber" size={32}>
+          <Target size={15} />
+        </IconBadge>
+
+        <p className="text-sm font-bold text-bone/50">My Goal</p>
+      </div>
 
       {loading ? (
         <div className="mt-2 h-6 w-3/4 animate-pulse rounded bg-panel-2" />

@@ -1,4 +1,5 @@
 import { Award, Lock } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 import type { ProfileData } from "@/hooks/useProfile";
 import type { CareerScoreData } from "@/hooks/useCareerScore";
 
@@ -33,8 +34,14 @@ export default function DashboardAchievements({
   const earnedCount = badges.filter((b) => b.earned).length;
 
   return (
-    <div className="rounded-[20px] border-2 border-bone bg-panel p-6">
-      <p className="text-sm font-bold text-bone/50">Achievements</p>
+    <div>
+      <div className="flex items-center gap-2.5">
+        <IconBadge color="teal" size={32}>
+          <Award size={15} />
+        </IconBadge>
+
+        <p className="text-sm font-bold text-bone/50">Achievements</p>
+      </div>
 
       {loading ? (
         <div className="mt-2 h-6 w-1/2 animate-pulse rounded bg-panel-2" />

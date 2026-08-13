@@ -1,34 +1,74 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, LayoutDashboard, FileText, FolderOpen, Menu } from "lucide-react";
+import { LogOut, Menu, Settings as SettingsIcon, ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useUser } from "@/hooks/useUser";
+import LogoutModal from "@/components/auth/LogoutModal";
+import { toastSuccess, toastError } from "@/lib/toast";
 
+/**
+ * Previously duplicated Dashboard/Resume/Documents as buttons here on
+ * top of the sidebar already having Dashboard and Resume (Documents
+ * wasn't even in the sidebar) — removed; the sidebar is the single nav
+ * source now. What's left is genuinely top-bar-only: mobile menu
+ * trigger, brand, and account controls. The avatar+dropdown here
+ * mirrors the same pattern already used for logged-in users in the
+ * public components/Navbar.tsx, not a new interaction pattern.
+ */
 export default function DashboardNavbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const router = useRouter();
+  const { user } = useUser();
+  const [logoutOpen, setLogoutOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   async function handleLogout() {
-    await supabase.auth.signOut();
-    router.push("/login");
-    router.refresh();
+    try {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error(error);
+        toastError("Couldn't log you out. Please try again.");
+        return;
+      }
+
+      setLogoutOpen(false);
+      toastSuccess("Logged out successfully");
+      router.push("/login");
+      router.refresh();
+    } catch (err) {
+      console.error("Logout failed:", err);
+      toastError("Couldn't log you out. Please try again.");
+    }
   }
 
-  return (
-    <header className="sticky top-0 z-50 mb-7 rounded-full border-2 border-bone bg-ink/90 shadow-lg backdrop-blur-xl">
-      <div className="flex items-center justify-between gap-4 px-6 py-3">
-        {/* Mobile sidebar toggle */}
+  const fullName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Account";
 
+  return (
+    <header className="sticky top-0 z-50 mb-7 rounded-full border border-bone/10 bg-ink/90 shadow-sm backdrop-blur-xl">
+      <div className="flex items-center justify-between gap-4 px-6 py-3">
         {onMenuClick && (
           <button
             onClick={onMenuClick}
-            className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-bone/15 text-bone lg:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-bone/15 text-bone lg:hidden"
             aria-label="Open menu"
           >
             <Menu size={20} />
           </button>
         )}
-
-        {/* Logo */}
 
         <div
           className="flex cursor-pointer items-center gap-3"
@@ -44,44 +84,58 @@ export default function DashboardNavbar({ onMenuClick }: { onMenuClick?: () => v
           </div>
         </div>
 
-        {/* Navigation */}
+        <div className="flex-1" />
 
-        <nav className="hidden items-center gap-2 lg:flex">
+        {/* Account menu */}
+        <div className="relative" ref={menuRef}>
           <button
-            onClick={() => router.push("/dashboard")}
-            className="flex items-center gap-2 rounded-full bg-amber-dim px-5 py-2.5 text-sm font-bold text-ink transition hover:scale-[1.03]"
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="flex items-center gap-2.5 rounded-full border border-bone/15 py-1.5 pl-1.5 pr-3 text-bone transition hover:border-amber/40"
           >
-            <LayoutDashboard size={16} />
-            Dashboard
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber font-bold text-ink">
+              {fullName.charAt(0).toUpperCase()}
+            </span>
+
+            <span className="hidden text-sm font-semibold sm:inline">{fullName}</span>
+
+            <ChevronDown size={16} className="text-slate" />
           </button>
 
-          <button
-            onClick={() => router.push("/resume")}
-            className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-bone transition hover:bg-amber/10"
-          >
-            <FileText size={16} />
-            Resume
-          </button>
+          {menuOpen && (
+            <div className="absolute right-0 mt-3 w-52 overflow-hidden rounded-2xl border border-bone/10 bg-panel shadow-xl">
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  router.push("/settings");
+                }}
+                className="flex w-full items-center gap-2.5 px-5 py-3 text-left text-sm font-semibold text-bone transition hover:bg-bone/5"
+              >
+                <SettingsIcon size={16} />
+                Settings
+              </button>
 
-          <button
-            onClick={() => router.push("/documents")}
-            className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-bone transition hover:bg-amber/10"
-          >
-            <FolderOpen size={16} />
-            Documents
-          </button>
-        </nav>
+              <hr className="border-bone/10" />
 
-        {/* Logout */}
-
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 rounded-full border-2 border-bone px-5 py-2.5 text-sm font-bold text-bone transition hover:bg-bone hover:text-ink"
-        >
-          <LogOut size={16} />
-          <span className="hidden sm:inline">Logout</span>
-        </button>
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  setLogoutOpen(true);
+                }}
+                className="flex w-full items-center gap-2.5 px-5 py-3 text-left text-sm font-semibold text-bone transition hover:bg-bone/5"
+              >
+                <LogOut size={16} />
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
+
+      <LogoutModal
+        open={logoutOpen}
+        onCancel={() => setLogoutOpen(false)}
+        onConfirm={handleLogout}
+      />
     </header>
   );
 }

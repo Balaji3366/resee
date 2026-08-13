@@ -25,7 +25,7 @@ export default function DashboardTodaysMission({
   const loading = profileLoading || careerScoreLoading || statsLoading;
 
   if (loading) {
-    return <div className="mb-7 h-32 animate-pulse rounded-3xl border-2 border-bone/10 bg-panel" />;
+    return <div className="h-24 animate-pulse rounded-2xl bg-panel-2" />;
   }
 
   const items = [
@@ -48,20 +48,18 @@ export default function DashboardTodaysMission({
   ];
 
   const allDone = items.every((item) => item.done);
+  const doneCount = items.filter((item) => item.done).length;
 
   return (
-    <div
-      className="animate-fade-up mb-7 rounded-3xl border-2 border-bone bg-panel p-6"
-      style={{ animationDelay: "0.05s" }}
-    >
+    <div>
       {allDone ? (
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber/10">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber/10">
             <PartyPopper className="text-amber" size={24} />
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-bone">You&apos;re all caught up for today</h3>
+            <h3 className="text-[15px] font-bold text-bone">You&apos;re all caught up for today</h3>
 
             <p className="mt-1 text-sm text-bone/60">
               Nice work — come back tomorrow for your next set of tasks.
@@ -70,7 +68,19 @@ export default function DashboardTodaysMission({
         </div>
       ) : (
         <>
-          <h3 className="font-display text-[17px] font-bold text-bone">Today&apos;s Mission</h3>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-bold text-bone/50">Today&apos;s Mission</p>
+            <p className="text-sm font-bold text-amber-dim">
+              {doneCount}/{items.length} complete
+            </p>
+          </div>
+
+          <div className="mt-2.5 h-1.5 w-full rounded-full bg-panel-2">
+            <div
+              className="h-1.5 rounded-full bg-amber-dim transition-all duration-700"
+              style={{ width: `${(doneCount / items.length) * 100}%` }}
+            />
+          </div>
 
           <div className="mt-4 flex flex-col gap-3">
             {items.map((item) => (

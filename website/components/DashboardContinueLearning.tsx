@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Flame } from "lucide-react";
+import { Flame, BookOpen } from "lucide-react";
+import IconBadge from "@/components/ui/IconBadge";
 import type { ContinueLearningData } from "@/types/learning";
 
 export default function DashboardContinueLearning({
@@ -10,8 +11,14 @@ export default function DashboardContinueLearning({
   loading: boolean;
 }) {
   return (
-    <div className="rounded-[20px] border-2 border-bone bg-panel p-6">
-      <p className="text-sm font-bold text-bone/50">Continue Learning</p>
+    <div>
+      <div className="flex items-center gap-2.5">
+        <IconBadge color="amber-dim" size={32}>
+          <BookOpen size={15} />
+        </IconBadge>
+
+        <p className="text-sm font-bold text-bone/50">Continue Learning</p>
+      </div>
 
       {loading ? (
         <div className="mt-2 h-6 w-3/4 animate-pulse rounded bg-panel-2" />
