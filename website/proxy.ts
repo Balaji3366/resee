@@ -25,6 +25,20 @@ export async function proxy(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      // This is the client that actually rewrites the session cookie on
+      // every protected-route request when Supabase refreshes the access
+      // token — so these flags are what matters most for A-M1. `secure`
+      // in production, `sameSite: "lax"` (OAuth's callback redirect is a
+      // top-level cross-site GET, which "strict" would drop the cookie
+      // on), `path: "/"`. See lib/supabase.ts for why `httpOnly` isn't
+      // set — same constraint applies here, since the browser client's
+      // own JS-driven cookie writes must stay compatible with whatever
+      // this refreshes.
+      cookieOptions: {
+        path: "/",
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      },
       cookies: {
         getAll() {
           return request.cookies.getAll();

@@ -1,11 +1,5 @@
 import { useRef } from "react";
-import {
-  Send,
-  Paperclip,
-  Mic,
-  X,
-  FileText,
-} from "lucide-react";
+import { Send, Paperclip, Mic, X, FileText } from "lucide-react";
 
 type Props = {
   message: string;
@@ -26,9 +20,7 @@ export default function ChatInput({
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (!file) return;
@@ -52,28 +44,18 @@ export default function ChatInput({
 
   return (
     <div className="border-t border-amber/20 bg-panel px-5 pt-4 pb-5">
-
       {/* Selected File Preview */}
       {selectedFile && (
         <div className="mb-3 flex items-center justify-between rounded-2xl border border-amber-dim/20 bg-panel-2 px-4 py-3">
-
           <div className="flex min-w-0 items-center gap-3">
-
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-dim/10">
-              <FileText
-                size={18}
-                className="text-amber-dim"
-              />
+              <FileText size={18} className="text-amber-dim" />
             </div>
 
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-bone">
-                {selectedFile.name}
-              </p>
+              <p className="truncate text-sm font-semibold text-bone">{selectedFile.name}</p>
 
-              <p className="text-xs text-slate">
-                {(selectedFile.size / 1024).toFixed(1)} KB
-              </p>
+              <p className="text-xs text-slate">{(selectedFile.size / 1024).toFixed(1)} KB</p>
             </div>
           </div>
 
@@ -89,7 +71,6 @@ export default function ChatInput({
 
       {/* Input Box */}
       <div className="flex items-center gap-3 rounded-3xl border border-amber/20 bg-ink p-3 shadow-sm transition-all focus-within:border-amber-dim focus-within:shadow-md">
-
         {/* Hidden File Picker */}
         <input
           ref={fileInputRef}
@@ -146,7 +127,7 @@ export default function ChatInput({
         {/* Send */}
         <button
           onClick={sendMessage}
-          disabled={loading}
+          disabled={loading || !message.trim()}
           className="
             flex
             h-12
@@ -188,14 +169,9 @@ export default function ChatInput({
 
       {/* Footer */}
       <div className="mt-2 flex items-center justify-between px-2 text-xs text-slate">
-        <span>
-          AI responses may contain mistakes. Verify important career
-          decisions.
-        </span>
+        <span>AI responses may contain mistakes. Verify important career decisions.</span>
 
-        <span className="font-medium text-amber">
-          Powered by RESEE AI
-        </span>
+        <span className="font-medium text-amber">Powered by RESEE AI</span>
       </div>
     </div>
   );

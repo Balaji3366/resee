@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import AIDisclosureBadge from "@/components/ai/AIDisclosureBadge";
 import { useFeatureFlag } from "@/components/providers/FeatureFlagsProvider";
+import { dedupedFetchJson } from "@/lib/dedupedFetch";
 import type { RuleBasedDailyRecommendation } from "@/lib/dailyRecommendation";
 import type { DailyRecommendationActionType } from "@/lib/ai/prompts/dailyRecommendation";
 
@@ -36,13 +37,15 @@ export default function DashboardDailyRecommendation() {
 
     async function load() {
       try {
-        const res = await fetch("/api/dashboard/daily-recommendation", {
+        const { json } = await dedupedFetchJson<{
+          success: boolean;
+          ruleBased: RuleBasedDailyRecommendation;
+        }>("/api/dashboard/daily-recommendation", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ useAi: false }),
         });
-        const json = await res.json();
-        if (!cancelled && json.success) setRuleBased(json.ruleBased);
+        if (!cancelled && json?.success) setRuleBased(json.ruleBased);
       } finally {
         if (!cancelled) setLoading(false);
       }

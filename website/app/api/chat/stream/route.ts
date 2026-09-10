@@ -4,7 +4,7 @@ import { needsLiveSearch } from "@/lib/utils/classifyQuery";
 import { liveSearch } from "@/lib/search/liveSearch";
 import { checkRateLimit } from "@/lib/ai/rateLimiter";
 import { logAIRequest } from "@/lib/ai/logger";
-import { toRedactedParams } from "@/lib/ai/security";
+import { toRedactedParams, validatePromptInput } from "@/lib/ai/security";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
@@ -31,11 +31,13 @@ function getCurrentDateContext() {
   };
 }
 
-/** Pre-stream failures (auth, ownership, rate limit) still need to reach
- *  the frontend through the same SSE event contract the real stream
- *  uses, since AIChat.tsx starts reading res.body unconditionally rather
- *  than checking res.ok first. */
-function sseErrorStream(message: string): Response {
+/** Pre-stream failures (auth, ownership, rate limit, validation) still
+ *  need to reach the frontend through the same SSE event contract the
+ *  real stream uses, since a client reading res.body unconditionally
+ *  rather than checking res.ok first would otherwise hang. The HTTP
+ *  status is still set correctly (A-M2) — an SSE body and a non-2xx
+ *  status aren't mutually exclusive. */
+function sseErrorStream(message: string, status: number, extraHeaders?: HeadersInit): Response {
   const encoder = new TextEncoder();
 
   const readable = new ReadableStream({
@@ -47,10 +49,12 @@ function sseErrorStream(message: string): Response {
   });
 
   return new Response(readable, {
+    status,
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
       Connection: "keep-alive",
+      ...extraHeaders,
     },
   });
 }
@@ -64,10 +68,42 @@ export async function POST(req: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return sseErrorStream("Unauthorized.");
+      return sseErrorStream("Unauthorized.", 401);
     }
 
-    const { message, history = [], sessionId, attachment } = await req.json();
+    // Parsed and validated BEFORE touching the DB or the provider
+    // (A-M2/A-L1) — same rule as /api/chat/route.ts.
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return sseErrorStream("Invalid JSON body.", 400);
+    }
+
+    if (typeof body !== "object" || body === null) {
+      return sseErrorStream("Invalid request body.", 400);
+    }
+
+    const {
+      message,
+      history = [],
+      sessionId,
+      attachment,
+    } = body as {
+      message?: unknown;
+      history?: { sender: string; text: string }[];
+      sessionId?: string;
+      attachment?: { name: string; type: string; url: string; size?: number } | null;
+    };
+
+    if (typeof message !== "string") {
+      return sseErrorStream("Message is required.", 400);
+    }
+
+    const validation = validatePromptInput(message);
+    if (!validation.valid) {
+      return sseErrorStream(validation.reason!, 400);
+    }
 
     let currentSessionId = sessionId;
 
@@ -81,7 +117,7 @@ export async function POST(req: Request) {
         .maybeSingle();
 
       if (!existing) {
-        return sseErrorStream("Chat session not found.");
+        return sseErrorStream("Chat session not found.", 404);
       }
     }
 
@@ -96,7 +132,13 @@ export async function POST(req: Request) {
         paramsRedacted: toRedactedParams({ sessionId: currentSessionId }),
       });
 
-      return sseErrorStream(`Too many requests. Try again in ${rateLimit.resetInSeconds} seconds.`);
+      return sseErrorStream(
+        `Too many requests. Try again in ${rateLimit.resetInSeconds} seconds.`,
+        429,
+        {
+          "Retry-After": String(rateLimit.resetInSeconds),
+        }
+      );
     }
 
     const current = getCurrentDateContext();

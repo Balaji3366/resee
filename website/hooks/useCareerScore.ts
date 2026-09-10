@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-import type {
-  OverallStatus,
-  SubMetricKey,
-  SubMetric,
-} from "@/lib/careerScore";
+import { dedupedFetchJson } from "@/lib/dedupedFetch";
+import type { OverallStatus, SubMetricKey, SubMetric } from "@/lib/careerScore";
 
 export interface CareerScoreHistoryPoint {
   date: string;
@@ -25,11 +22,17 @@ export function useCareerScore() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/career-score");
-        const json = await res.json();
+        const { ok, json } = await dedupedFetchJson<{
+          success: boolean;
+          message?: string;
+          overall: number | null;
+          overallStatus: OverallStatus;
+          subMetrics: Record<SubMetricKey, SubMetric>;
+          history: CareerScoreHistoryPoint[];
+        }>("/api/career-score");
 
-        if (!res.ok || !json.success) {
-          throw new Error(json.message || "Failed to load career score.");
+        if (!ok || !json?.success) {
+          throw new Error(json?.message || "Failed to load career score.");
         }
 
         setData({
@@ -39,9 +42,7 @@ export function useCareerScore() {
           history: json.history,
         });
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load career score."
-        );
+        setError(err instanceof Error ? err.message : "Failed to load career score.");
       } finally {
         setLoading(false);
       }

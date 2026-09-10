@@ -32,13 +32,33 @@ export const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   {
+    // Hardened beyond @supabase/ssr's defaults (path "/", sameSite "lax",
+    // no explicit secure flag) — see A-M1 in the auth-QA remediation
+    // report for why `secure` is the only flag safely tightenable here.
+    // `httpOnly` is deliberately NOT set: this is the BROWSER client, and
+    // its `setAll` below writes the cookie via `document.cookie` a few
+    // lines down — a cookie written from JavaScript can never be
+    // HttpOnly, no matter what's passed here (that's a browser platform
+    // rule, not a Supabase limitation). LoginForm/SignUpForm/GoogleButton
+    // all call supabase.auth.* directly from client components, so this
+    // client must be able to read/write its own session cookie for
+    // sign-in, sign-out, and token refresh to keep working. `sameSite:
+    // "lax"` (not "strict") is required too — Google OAuth's redirect
+    // back to /auth/callback is a top-level cross-site GET, which a
+    // "strict" cookie would not be sent on.
+    cookieOptions: {
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
     cookies: {
       getAll() {
         if (typeof document === "undefined") return [];
 
-        return Object.entries(parse(document.cookie)).map(
-          ([name, value]) => ({ name, value: value ?? "" })
-        );
+        return Object.entries(parse(document.cookie)).map(([name, value]) => ({
+          name,
+          value: value ?? "",
+        }));
       },
       setAll(cookiesToSet) {
         const remember = shouldRemember();

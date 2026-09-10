@@ -1,5 +1,6 @@
 import { getServerSupabase } from "@/lib/supabaseServer";
 import { computeCareerScore } from "@/lib/careerScore";
+import { checkGeneralRateLimit } from "@/lib/rateLimiting";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,18 @@ export async function GET() {
 
     if (!user) {
       return Response.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+
+    // This route recomputes + can write a career_score_history row on
+    // every call (A-M3) — the existing general-purpose limiter (Postgres-
+    // backed, serverless-safe; see lib/rateLimiting.ts) was written for
+    // exactly this kind of route but wasn't wired into one yet.
+    const rateLimit = await checkGeneralRateLimit(user.id, "career-score");
+    if (!rateLimit.allowed) {
+      return Response.json(
+        { success: false, message: "Too many requests. Please slow down." },
+        { status: 429, headers: { "Retry-After": String(rateLimit.resetInSeconds) } }
+      );
     }
 
     const [profileResult, latestResumeResult, resumeCountResult, historyResult] = await Promise.all(

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { dedupedFetchJson } from "@/lib/dedupedFetch";
 import type { ContinueLearningData } from "@/types/learning";
 
 export function useContinueLearning() {
@@ -9,20 +10,19 @@ export function useContinueLearning() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/learning/continue");
-        const json = await res.json();
+        const { ok, json } = await dedupedFetchJson<{
+          success: boolean;
+          message?: string;
+          data: ContinueLearningData;
+        }>("/api/learning/continue");
 
-        if (!res.ok || !json.success) {
-          throw new Error(json.message || "Failed to load continue-learning data.");
+        if (!ok || !json?.success) {
+          throw new Error(json?.message || "Failed to load continue-learning data.");
         }
 
         setData(json.data);
       } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to load continue-learning data."
-        );
+        setError(err instanceof Error ? err.message : "Failed to load continue-learning data.");
       } finally {
         setLoading(false);
       }

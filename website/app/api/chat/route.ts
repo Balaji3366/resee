@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import { getServerSupabase } from "@/lib/supabaseServer";
 import { checkRateLimit } from "@/lib/ai/rateLimiter";
 import { logAIRequest } from "@/lib/ai/logger";
-import { toRedactedParams } from "@/lib/ai/security";
+import { toRedactedParams, validatePromptInput } from "@/lib/ai/security";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
@@ -20,7 +20,60 @@ export async function POST(req: Request) {
       return Response.json({ reply: "Unauthorized." }, { status: 401 });
     }
 
-    const { message, history = [], sessionId } = await req.json();
+    // Parsed and validated BEFORE any DB write or LLM call (A-M2/A-L1) —
+    // a malformed body, a missing/non-string/empty message must never
+    // reach the session-creation query or the paid provider call below.
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return Response.json({ error: "Invalid JSON body." }, { status: 400 });
+    }
+
+    if (typeof body !== "object" || body === null) {
+      return Response.json({ error: "Invalid request body." }, { status: 400 });
+    }
+
+    const {
+      message,
+      history = [],
+      sessionId,
+    } = body as {
+      message?: unknown;
+      history?: { sender: string; text: string }[];
+      sessionId?: string;
+    };
+
+    if (typeof message !== "string") {
+      return Response.json({ error: "Message is required." }, { status: 400 });
+    }
+
+    // Same length/emptiness gate already used for every other AI feature
+    // (lib/ai/workspaceRequest.ts's checkWorkspaceTurn) — reused rather
+    // than inventing a second, inconsistent limit for this route.
+    const validation = validatePromptInput(message);
+    if (!validation.valid) {
+      return Response.json({ error: validation.reason }, { status: 400 });
+    }
+
+    // Rate limit checked before the session write below — a caller
+    // already over budget shouldn't still cost a DB insert (A-M3).
+    const rateLimit = await checkRateLimit(user.id, "legacy_chat_assistant");
+    if (!rateLimit.allowed) {
+      await logAIRequest({
+        userId: user.id,
+        feature: "legacy_chat_assistant",
+        provider: "gemini",
+        model: "models/gemini-3-flash-preview",
+        status: "rate_limited",
+        paramsRedacted: toRedactedParams({ sessionId }),
+      });
+
+      return Response.json(
+        { reply: `Too many requests. Try again in ${rateLimit.resetInSeconds} seconds.` },
+        { status: 429, headers: { "Retry-After": String(rateLimit.resetInSeconds) } }
+      );
+    }
 
     let currentSessionId = sessionId;
 
@@ -51,23 +104,6 @@ export async function POST(req: Request) {
       }
 
       currentSessionId = data.id;
-    }
-
-    const rateLimit = await checkRateLimit(user.id, "legacy_chat_assistant");
-    if (!rateLimit.allowed) {
-      await logAIRequest({
-        userId: user.id,
-        feature: "legacy_chat_assistant",
-        provider: "gemini",
-        model: "models/gemini-3-flash-preview",
-        status: "rate_limited",
-        paramsRedacted: toRedactedParams({ sessionId: currentSessionId }),
-      });
-
-      return Response.json(
-        { reply: `Too many requests. Try again in ${rateLimit.resetInSeconds} seconds.` },
-        { status: 429 }
-      );
     }
 
     const startedAt = Date.now();
