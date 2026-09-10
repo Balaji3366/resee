@@ -10,28 +10,40 @@ export default function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-6 py-10 md:flex-row md:justify-between">
         <button
           onClick={() => router.push("/")}
-          className="font-display text-xl font-extrabold text-amber"
+          className="focus-ring font-display text-xl font-extrabold text-amber"
         >
           RESEE
         </button>
 
-        <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate">
-          <button onClick={() => router.push("/about")} className="transition hover:text-bone">
+        <nav
+          aria-label="Footer navigation"
+          className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate"
+        >
+          <button
+            onClick={() => router.push("/about")}
+            className="focus-ring transition hover:text-bone"
+          >
             About
           </button>
 
           <button
             onClick={() => document.getElementById("plans")?.scrollIntoView({ behavior: "smooth" })}
-            className="transition hover:text-bone"
+            className="focus-ring transition hover:text-bone"
           >
             Pricing
           </button>
 
-          <button onClick={() => router.push("/privacy")} className="transition hover:text-bone">
+          <button
+            onClick={() => router.push("/privacy")}
+            className="focus-ring transition hover:text-bone"
+          >
             Privacy
           </button>
 
-          <button onClick={() => router.push("/terms")} className="transition hover:text-bone">
+          <button
+            onClick={() => router.push("/terms")}
+            className="focus-ring transition hover:text-bone"
+          >
             Terms
           </button>
         </nav>

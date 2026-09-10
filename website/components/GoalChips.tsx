@@ -23,7 +23,6 @@ export default function GoalChips() {
         transition={{ duration: 0.6 }}
         className="mx-auto max-w-4xl px-6 text-center"
       >
-
         <h2 className="font-display text-4xl font-extrabold text-bone md:text-5xl">
           What do you want to achieve?
         </h2>
@@ -33,7 +32,7 @@ export default function GoalChips() {
             <button
               key={goal.id}
               onClick={() => selectGoal(goal.id)}
-              className={`inline-flex items-center gap-2 rounded-full border px-6 py-3 font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${
+              className={`focus-ring inline-flex items-center gap-2 rounded-full border px-6 py-3 font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${
                 selected === goal.id
                   ? "border-amber bg-amber text-white shadow-lg"
                   : "border-amber/20 bg-ink text-bone hover:border-amber/50"
@@ -44,7 +43,6 @@ export default function GoalChips() {
             </button>
           ))}
         </div>
-
       </motion.div>
     </section>
   );

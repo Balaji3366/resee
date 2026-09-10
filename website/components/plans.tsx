@@ -113,7 +113,7 @@ export default function Plans() {
                   >
                     <div
                       className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold ${
-                        feature.comingSoon ? "bg-panel-2 text-slate" : "bg-teal text-white"
+                        feature.comingSoon ? "bg-panel-2 text-slate" : "bg-teal text-bone"
                       }`}
                     >
                       {feature.comingSoon ? "⏳" : "✓"}
@@ -142,7 +142,7 @@ export default function Plans() {
                     router.push("/signup");
                   }
                 }}
-                className={`mt-10 w-full rounded-2xl py-4 text-base font-semibold transition-all duration-300 ${
+                className={`focus-ring mt-10 w-full rounded-2xl py-4 text-base font-semibold transition-all duration-300 ${
                   plan.popular
                     ? "bg-amber text-bone hover:scale-[1.03] hover:shadow-xl"
                     : "bg-amber text-bone hover:bg-amber-dim hover:scale-[1.02]"
@@ -161,7 +161,7 @@ export default function Plans() {
                     }`}
                   />
 
-                  <span className="text-sm font-semibold text-teal">Always Available</span>
+                  <span className="text-sm font-semibold text-teal-strong">Always Available</span>
                 </div>
               </div>
             </div>

@@ -17,6 +17,18 @@
   --color-teal-dim: #e0a936; /* role: darker tertiary-accent partner (deep gold) */
   --color-bone: #231a14; /* role: primary text/border (ink-black) — this IS the design system's literal "ink" hex */
   --color-slate: #6b6058; /* role: muted/secondary text (warm gray) */
+
+  /*
+   * WCAG AA text-contrast variants of amber/teal/slate — same hue
+   * family, darkened only enough to clear 4.5:1 on white/cream. Used
+   * for the specific public-page text/background pairs called out in
+   * the public-surface accessibility QA pass (see components using
+   * *-strong below) rather than redefining the base tokens everywhere.
+   */
+  --color-amber-strong: #cc4526; /* ~4.7:1 on white/cream — CTA text/bg pairs */
+  --color-teal-strong: #8a5a12; /* ~5.9:1 on white — deep-gold text on light bg */
+  --color-slate-strong: #4a4038; /* ~9.6:1 on cream — darker muted text */
+
   --font-display: var(--font-schibsted-grotesk);
 
   /*
@@ -320,4 +332,20 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, var(--color-amber-dim), var(--color-amber));
+}
+
+/* ========================= */
+/* Keyboard focus visibility — public marketing + auth surface (L2 a11y
+   fix). Scoped to this opt-in `.focus-ring` utility class, applied
+   directly to interactive elements on the landing/login/signup pages,
+   rather than a bare `:focus-visible` rule — the dashboard/admin
+   surfaces already have their own focus treatments and are out of
+   scope for this pass. `:has(:focus-visible)` lets the outline land on
+   a wrapper div (e.g. an input's pill container) when the focusable
+   element is nested inside it instead of being the element itself. */
+
+.focus-ring:focus-visible,
+.focus-ring:has(:focus-visible) {
+  outline: 2px solid var(--color-amber-strong);
+  outline-offset: 2px;
 }

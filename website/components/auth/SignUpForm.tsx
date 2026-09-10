@@ -135,22 +135,15 @@ export default function SignupForm() {
             transition={{ duration: 0.3 }}
             className="text-center"
           >
-
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber/10">
               <MailCheck className="h-8 w-8 text-amber" />
             </div>
 
-            <h2 className="font-display text-3xl font-extrabold text-bone">
-              Check your email
-            </h2>
+            <h2 className="font-display text-3xl font-extrabold text-bone">Check your email</h2>
 
-            <p className="mt-3 text-slate">
-              We sent a verification link to
-            </p>
+            <p className="mt-3 text-slate">We sent a verification link to</p>
 
-            <p className="font-semibold text-bone">
-              {pendingEmail}
-            </p>
+            <p className="font-semibold text-bone">{pendingEmail}</p>
 
             <p className="mt-4 text-sm text-slate">
               Click the link in that email to activate your account.
@@ -161,13 +154,13 @@ export default function SignupForm() {
               whileTap={{ scale: resendCooldown > 0 ? 1 : 0.98 }}
               onClick={handleResend}
               disabled={resendCooldown > 0 || resending}
-              className="mt-8 w-full rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim disabled:opacity-60"
+              className="focus-ring mt-8 w-full rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim disabled:opacity-60"
             >
               {resendCooldown > 0
                 ? `Resend available in ${resendCooldown}s`
                 : resending
-                ? "Sending..."
-                : "Resend Verification Email"}
+                  ? "Sending..."
+                  : "Resend Verification Email"}
             </motion.button>
 
             <button
@@ -175,11 +168,10 @@ export default function SignupForm() {
                 setPendingEmail(null);
                 setResendCooldown(0);
               }}
-              className="mt-4 text-sm font-semibold text-amber hover:text-amber"
+              className="focus-ring mt-4 text-sm font-semibold text-amber hover:text-amber"
             >
               Use a different email
             </button>
-
           </motion.div>
         ) : (
           <motion.div
@@ -189,56 +181,52 @@ export default function SignupForm() {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3 }}
           >
-
             {/* Heading */}
 
             <div className="mb-8 text-center">
-
               <h2 className="font-display text-4xl font-extrabold text-bone">
                 Create your account
               </h2>
 
-              <p className="mt-3 text-slate">
-                Start your AI-powered career journey.
-              </p>
-
+              <p className="mt-3 text-slate">Start your AI-powered career journey.</p>
             </div>
 
             <form onSubmit={handleSignup} noValidate className="space-y-5">
-
               {/* Full Name */}
 
               <div>
-
-                <label className="mb-2 block font-medium text-bone">
+                <label htmlFor="signup-name" className="mb-2 block font-medium text-bone">
                   Full Name
                 </label>
 
                 <div
-                  className={`flex h-14 items-center gap-4 rounded-xl border px-4 transition ${
-                    errors.fullName
-                      ? "border-red-400"
-                      : "border-bone/15 focus-within:border-amber"
+                  className={`focus-ring flex h-14 items-center gap-4 rounded-xl border px-4 transition ${
+                    errors.fullName ? "border-red-400" : "border-bone/15 focus-within:border-amber"
                   }`}
                 >
-
                   <User size={20} className="text-amber" />
 
                   <input
+                    id="signup-name"
+                    name="name"
                     type="text"
+                    autoComplete="name"
                     placeholder="Enter your full name"
                     value={fullName}
+                    aria-invalid={!!errors.fullName}
+                    aria-describedby={errors.fullName ? "signup-name-error" : undefined}
                     onChange={(e) => {
                       setFullName(e.target.value);
                       if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: undefined }));
                     }}
                     className="w-full bg-transparent text-bone placeholder:text-slate outline-none"
                   />
-
                 </div>
 
                 {errors.fullName && (
                   <motion.p
+                    id="signup-name-error"
+                    role="alert"
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="mt-1.5 text-xs font-medium text-red-400"
@@ -246,42 +234,43 @@ export default function SignupForm() {
                     {errors.fullName}
                   </motion.p>
                 )}
-
               </div>
 
               {/* Email */}
 
               <div>
-
-                <label className="mb-2 block font-medium text-bone">
+                <label htmlFor="signup-email" className="mb-2 block font-medium text-bone">
                   Email Address
                 </label>
 
                 <div
-                  className={`flex h-14 items-center gap-4 rounded-xl border px-4 transition ${
-                    errors.email
-                      ? "border-red-400"
-                      : "border-bone/15 focus-within:border-amber"
+                  className={`focus-ring flex h-14 items-center gap-4 rounded-xl border px-4 transition ${
+                    errors.email ? "border-red-400" : "border-bone/15 focus-within:border-amber"
                   }`}
                 >
-
                   <Mail size={20} className="text-amber" />
 
                   <input
+                    id="signup-email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
                     placeholder="Enter your email"
                     value={email}
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? "signup-email-error" : undefined}
                     onChange={(e) => {
                       setEmail(e.target.value);
                       if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
                     }}
                     className="w-full bg-transparent text-bone placeholder:text-slate outline-none"
                   />
-
                 </div>
 
                 {errors.email && (
                   <motion.p
+                    id="signup-email-error"
+                    role="alert"
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="mt-1.5 text-xs font-medium text-red-400"
@@ -289,31 +278,31 @@ export default function SignupForm() {
                     {errors.email}
                   </motion.p>
                 )}
-
               </div>
 
               {/* Password */}
 
               <div>
-
-                <label className="mb-2 block font-medium text-bone">
+                <label htmlFor="signup-password" className="mb-2 block font-medium text-bone">
                   Password
                 </label>
 
                 <div
-                  className={`flex h-14 items-center gap-4 rounded-xl border px-4 transition ${
-                    errors.password
-                      ? "border-red-400"
-                      : "border-bone/15 focus-within:border-amber"
+                  className={`focus-ring flex h-14 items-center gap-4 rounded-xl border px-4 transition ${
+                    errors.password ? "border-red-400" : "border-bone/15 focus-within:border-amber"
                   }`}
                 >
-
                   <Lock size={20} className="text-amber" />
 
                   <input
+                    id="signup-password"
+                    name="new-password"
                     type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
                     placeholder="Create a password"
                     value={password}
+                    aria-invalid={!!errors.password}
+                    aria-describedby={errors.password ? "signup-password-error" : undefined}
                     onChange={(e) => {
                       setPassword(e.target.value);
                       if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
@@ -321,20 +310,26 @@ export default function SignupForm() {
                     className="w-full bg-transparent text-bone placeholder:text-slate outline-none"
                   />
 
-                  <button type="button" onClick={() => setShowPassword(!showPassword)}>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="focus-ring rounded"
+                  >
                     {showPassword ? (
                       <EyeOff size={20} className="text-slate hover:text-amber" />
                     ) : (
                       <Eye size={20} className="text-slate hover:text-amber" />
                     )}
                   </button>
-
                 </div>
 
                 <PasswordStrengthMeter password={password} />
 
                 {errors.password && (
                   <motion.p
+                    id="signup-password-error"
+                    role="alert"
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="mt-1.5 text-xs font-medium text-red-400"
@@ -342,34 +337,42 @@ export default function SignupForm() {
                     {errors.password}
                   </motion.p>
                 )}
-
               </div>
 
               {/* Confirm Password */}
 
               <div>
-
-                <label className="mb-2 block font-medium text-bone">
+                <label
+                  htmlFor="signup-confirm-password"
+                  className="mb-2 block font-medium text-bone"
+                >
                   Confirm Password
                 </label>
 
                 <div
-                  className={`flex h-14 items-center gap-4 rounded-xl border px-4 transition ${
+                  className={`focus-ring flex h-14 items-center gap-4 rounded-xl border px-4 transition ${
                     errors.confirmPassword
                       ? "border-red-400"
                       : "border-bone/15 focus-within:border-amber"
                   }`}
                 >
-
                   <Lock size={20} className="text-amber" />
 
                   <input
+                    id="signup-confirm-password"
+                    name="confirm-password"
                     type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
                     placeholder="Confirm your password"
                     value={confirmPassword}
+                    aria-invalid={!!errors.confirmPassword}
+                    aria-describedby={
+                      errors.confirmPassword ? "signup-confirm-password-error" : undefined
+                    }
                     onChange={(e) => {
                       setConfirmPassword(e.target.value);
-                      if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
+                      if (errors.confirmPassword)
+                        setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
                     }}
                     className="w-full bg-transparent text-bone placeholder:text-slate outline-none"
                   />
@@ -377,6 +380,8 @@ export default function SignupForm() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    className="focus-ring rounded"
                   >
                     {showConfirmPassword ? (
                       <EyeOff size={20} className="text-slate hover:text-amber" />
@@ -384,11 +389,12 @@ export default function SignupForm() {
                       <Eye size={20} className="text-slate hover:text-amber" />
                     )}
                   </button>
-
                 </div>
 
                 {errors.confirmPassword && (
                   <motion.p
+                    id="signup-confirm-password-error"
+                    role="alert"
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="mt-1.5 text-xs font-medium text-red-400"
@@ -396,7 +402,6 @@ export default function SignupForm() {
                     {errors.confirmPassword}
                   </motion.p>
                 )}
-
               </div>
 
               {/* Signup Button */}
@@ -406,7 +411,7 @@ export default function SignupForm() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim disabled:opacity-60"
+                className="focus-ring w-full rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim disabled:opacity-60"
               >
                 {loading ? "Creating Account..." : "Create Account"}
               </motion.button>
@@ -414,34 +419,22 @@ export default function SignupForm() {
               {/* Divider */}
 
               <div className="flex items-center gap-4">
-
                 <div className="h-px flex-1 bg-panel-2" />
 
-                <span className="text-sm text-slate">
-                  OR
-                </span>
+                <span className="text-sm text-slate">OR</span>
 
                 <div className="h-px flex-1 bg-panel-2" />
-
               </div>
 
               <GoogleButton />
 
               <p className="text-center text-sm text-slate">
-
                 Already a RESEE member?{" "}
-
-                <Link
-                  href="/login"
-                  className="font-bold text-amber hover:text-amber"
-                >
+                <Link href="/login" className="focus-ring font-bold text-amber hover:text-amber">
                   Sign In
                 </Link>
-
               </p>
-
             </form>
-
           </motion.div>
         )}
       </AnimatePresence>

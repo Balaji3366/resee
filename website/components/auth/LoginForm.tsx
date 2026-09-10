@@ -94,10 +94,12 @@ export default function LoginForm() {
         {/* Email */}
 
         <div>
-          <label className="mb-2 block font-medium text-bone">Email Address</label>
+          <label htmlFor="login-email" className="mb-2 block font-medium text-bone">
+            Email Address
+          </label>
 
           <div
-            className={`flex h-14 items-center gap-4 rounded-xl border bg-panel px-4 transition-all duration-200 focus-within:ring-4 ${
+            className={`focus-ring flex h-14 items-center gap-4 rounded-xl border bg-panel px-4 transition-all duration-200 focus-within:ring-4 ${
               errors.email
                 ? "border-red-400 focus-within:ring-red-100"
                 : "border-bone/15 focus-within:border-amber focus-within:ring-amber/10"
@@ -106,9 +108,14 @@ export default function LoginForm() {
             <Mail size={20} className="text-amber" />
 
             <input
+              id="login-email"
+              name="email"
               type="email"
+              autoComplete="email"
               placeholder="Enter your email"
               value={email}
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "login-email-error" : undefined}
               onChange={(e) => {
                 setEmail(e.target.value);
                 if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
@@ -119,6 +126,8 @@ export default function LoginForm() {
 
           {errors.email && (
             <motion.p
+              id="login-email-error"
+              role="alert"
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-1.5 text-xs font-medium text-red-400"
@@ -131,10 +140,12 @@ export default function LoginForm() {
         {/* Password */}
 
         <div>
-          <label className="mb-2 block font-medium text-bone">Password</label>
+          <label htmlFor="login-password" className="mb-2 block font-medium text-bone">
+            Password
+          </label>
 
           <div
-            className={`flex h-14 items-center gap-4 rounded-xl border bg-panel px-4 transition-all duration-200 focus-within:ring-4 ${
+            className={`focus-ring flex h-14 items-center gap-4 rounded-xl border bg-panel px-4 transition-all duration-200 focus-within:ring-4 ${
               errors.password
                 ? "border-red-400 focus-within:ring-red-100"
                 : "border-bone/15 focus-within:border-amber focus-within:ring-amber/10"
@@ -143,9 +154,14 @@ export default function LoginForm() {
             <Lock size={20} className="text-amber" />
 
             <input
+              id="login-password"
+              name="password"
               type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
               placeholder="Enter your password"
               value={password}
+              aria-invalid={!!errors.password}
+              aria-describedby={errors.password ? "login-password-error" : undefined}
               onChange={(e) => {
                 setPassword(e.target.value);
                 if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
@@ -153,7 +169,12 @@ export default function LoginForm() {
               className="w-full bg-transparent text-bone placeholder:text-slate outline-none"
             />
 
-            <button type="button" onClick={() => setShowPassword(!showPassword)}>
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="focus-ring rounded"
+            >
               {showPassword ? (
                 <EyeOff size={20} className="text-slate hover:text-amber" />
               ) : (
@@ -164,6 +185,8 @@ export default function LoginForm() {
 
           {errors.password && (
             <motion.p
+              id="login-password-error"
+              role="alert"
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-1.5 text-xs font-medium text-red-400"
@@ -186,7 +209,10 @@ export default function LoginForm() {
             Remember Me
           </label>
 
-          <Link href="/forgot-password" className="font-semibold text-amber hover:text-amber">
+          <Link
+            href="/forgot-password"
+            className="focus-ring font-semibold text-amber hover:text-amber"
+          >
             Forgot Password?
           </Link>
         </div>
@@ -198,7 +224,7 @@ export default function LoginForm() {
           whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim disabled:opacity-60"
+          className="focus-ring w-full rounded-xl bg-amber py-4 text-lg font-bold text-white transition hover:bg-amber-dim disabled:opacity-60"
         >
           {loading ? "Signing In..." : "Login"}
         </motion.button>
@@ -221,7 +247,7 @@ export default function LoginForm() {
 
         <p className="text-center text-sm text-slate">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="font-bold text-amber hover:text-amber">
+          <Link href="/signup" className="focus-ring font-bold text-amber hover:text-amber">
             Create Account
           </Link>
         </p>

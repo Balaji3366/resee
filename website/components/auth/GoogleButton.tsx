@@ -21,7 +21,7 @@ export default function GoogleButton() {
     <button
       type="button"
       onClick={handleGoogleLogin}
-      className="group flex w-full items-center justify-center gap-3 rounded-2xl border border-bone/15 bg-panel px-5 py-3.5 font-medium text-bone shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-teal hover:shadow-lg"
+      className="focus-ring group flex w-full items-center justify-center gap-3 rounded-2xl border border-bone/15 bg-panel px-5 py-3.5 font-medium text-bone shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-teal hover:shadow-lg"
     >
       <img
         src="/icons/google.png"

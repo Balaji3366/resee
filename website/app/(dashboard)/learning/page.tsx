@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 import { useLearningCatalog } from "@/hooks/useLearningCatalog";
 import { useContinueLearning } from "@/hooks/useContinueLearning";
 import { useDebounce } from "@/hooks/useDebounce";
+import { getCategoryIcon, getCourseIcon } from "@/lib/learningIcons";
 import LearningRecommendationCard from "@/components/learning/ai/LearningRecommendationCard";
 
 export default function LearningDashboardPage() {
@@ -103,19 +104,24 @@ export default function LearningDashboardPage() {
             All
           </button>
 
-          {catalog.categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.slug)}
-              className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                selectedCategory === cat.slug
-                  ? "border-amber bg-amber text-white"
-                  : "border-bone/15 text-slate hover:border-amber/50"
-              }`}
-            >
-              {cat.icon} {cat.name}
-            </button>
-          ))}
+          {catalog.categories.map((cat) => {
+            const Icon = getCategoryIcon(cat.slug);
+
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.slug)}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                  selectedCategory === cat.slug
+                    ? "border-amber bg-amber text-white"
+                    : "border-bone/15 text-slate hover:border-amber/50"
+                }`}
+              >
+                <Icon size={14} />
+                {cat.name}
+              </button>
+            );
+          })}
         </div>
       )}
 
@@ -135,6 +141,8 @@ export default function LearningDashboardPage() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {filteredCourses.map((course) => {
+            const Icon = getCourseIcon(course.slug);
+
             const card = (
               <motion.div
                 whileHover={course.isAvailable ? { y: -4 } : {}}
@@ -145,7 +153,13 @@ export default function LearningDashboardPage() {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-3xl">{course.icon}</span>
+                  <div
+                    className={`flex h-14 w-14 items-center justify-center rounded-2xl ${
+                      course.isAvailable ? "bg-amber/10" : "bg-panel-2"
+                    }`}
+                  >
+                    <Icon size={22} className={course.isAvailable ? "text-amber" : "text-slate"} />
+                  </div>
 
                   {!course.isAvailable && (
                     <span className="rounded-full bg-panel-2 px-3 py-1 text-xs font-bold text-slate">
