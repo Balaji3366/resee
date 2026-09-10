@@ -54,7 +54,7 @@ export default function Navbar() {
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
         {/* Logo */}
 
-        <button onClick={() => router.push("/")} className="flex items-center gap-3">
+        <button onClick={() => router.push("/")} className="focus-ring flex items-center gap-3">
           <Image
             src="/images/resee-logo.png"
             alt="RESEE Logo"
@@ -65,18 +65,23 @@ export default function Navbar() {
           />
 
           <div className="flex flex-col items-start">
-            <h1 className="font-display text-3xl font-extrabold text-amber">RESEE</h1>
+            {/* Not an <h1> — the page's one true heading is Hero's "Stop
+                Searching..." h1; the brand mark is a link label, not a
+                document heading (L3 a11y fix). */}
+            <p className="font-display text-3xl font-extrabold text-amber">RESEE</p>
 
-            <span className="text-xs uppercase tracking-[0.25em] text-slate">See Your Future</span>
+            <span className="text-xs uppercase tracking-[0.25em] text-slate-strong">
+              See Your Future
+            </span>
           </div>
         </button>
 
         {/* Navigation — right-aligned: Pricing, then auth actions */}
 
-        <div className="hidden items-center gap-8 lg:flex">
+        <nav aria-label="Primary navigation" className="hidden items-center gap-8 lg:flex">
           <button
             onClick={() => document.getElementById("plans")?.scrollIntoView({ behavior: "smooth" })}
-            className="text-sm font-medium text-slate transition hover:text-bone"
+            className="focus-ring text-sm font-medium text-slate transition hover:text-bone"
           >
             Pricing
           </button>
@@ -85,14 +90,14 @@ export default function Navbar() {
             <div className="flex items-center gap-6">
               <button
                 onClick={() => router.push("/login")}
-                className="text-sm font-medium text-slate transition hover:text-bone"
+                className="focus-ring text-sm font-medium text-slate transition hover:text-bone"
               >
                 Login
               </button>
 
               <button
                 onClick={() => router.push("/signup")}
-                className="rounded-full bg-amber px-6 py-2.5 text-sm font-semibold text-bone shadow-md shadow-amber/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:brightness-110"
+                className="focus-ring rounded-full bg-amber px-6 py-2.5 text-sm font-semibold text-bone shadow-md shadow-amber/25 transition hover:-translate-y-0.5 hover:shadow-lg hover:brightness-110"
               >
                 Get Started
               </button>
@@ -101,7 +106,7 @@ export default function Navbar() {
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setOpen((prev) => !prev)}
-                className="flex items-center gap-3 rounded-xl border border-amber/30 bg-amber px-4 py-2 transition hover:border-amber"
+                className="focus-ring flex items-center gap-3 rounded-xl border border-amber/30 bg-amber px-4 py-2 transition hover:border-amber"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber font-bold text-bone">
                   {fullName.charAt(0).toUpperCase()}
@@ -121,7 +126,7 @@ export default function Navbar() {
                       setOpen(false);
                       router.push("/dashboard");
                     }}
-                    className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
+                    className="focus-ring block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
                   >
                     Dashboard
                   </button>
@@ -131,7 +136,7 @@ export default function Navbar() {
                       setOpen(false);
                       router.push("/resume-history");
                     }}
-                    className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
+                    className="focus-ring block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
                   >
                     Resume History
                   </button>
@@ -141,7 +146,7 @@ export default function Navbar() {
                       setOpen(false);
                       router.push("/documents");
                     }}
-                    className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
+                    className="focus-ring block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
                   >
                     Documents
                   </button>
@@ -153,7 +158,7 @@ export default function Navbar() {
                       setOpen(false);
                       setLogoutOpen(true);
                     }}
-                    className="block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
+                    className="focus-ring block w-full px-5 py-3 text-left text-bone transition hover:bg-ink"
                   >
                     Logout
                   </button>
@@ -161,7 +166,7 @@ export default function Navbar() {
               )}
             </div>
           )}
-        </div>
+        </nav>
       </div>
       <LogoutModal
         open={logoutOpen}
