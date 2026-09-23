@@ -1,8 +1,8 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, Download } from "lucide-react";
+import { Download } from "lucide-react";
+import BackNavigation from "@/components/BackNavigation";
 import { useAuthContext } from "@/components/providers/AuthProvider";
 import { downloadCertificatePdf } from "@/lib/certificate-pdf";
 
@@ -49,13 +49,7 @@ export default function CourseCertificatePage({
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Link
-        href={`/learning/${courseSlug}`}
-        className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-amber hover:underline"
-      >
-        <ArrowLeft size={16} />
-        Back to course
-      </Link>
+      <BackNavigation href={`/learning/${courseSlug}`} label="Back to course" />
 
       {loading && (
         <div className="h-80 animate-pulse rounded-3xl border border-amber/20 bg-panel" />

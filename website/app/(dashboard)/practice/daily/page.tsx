@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, CalendarClock } from "lucide-react";
+import { CalendarClock } from "lucide-react";
+import BackNavigation from "@/components/BackNavigation";
 import PracticeQuestionRunner from "@/components/practice/PracticeQuestionRunner";
 import type { DailyChallengeSummary } from "@/types/practice";
 
@@ -38,13 +38,7 @@ export default function DailyChallengePage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Link
-        href="/practice"
-        className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-amber hover:underline"
-      >
-        <ArrowLeft size={16} />
-        Back to Practice
-      </Link>
+      <BackNavigation href="/practice" label="Back to Practice" />
 
       {loading && (
         <div className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel" />

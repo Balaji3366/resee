@@ -1,14 +1,18 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
+
 export default function PracticeCategoryCard({
   name,
-  icon,
+  icon: Icon,
+  accent,
   availableCount,
   active,
   onClick,
 }: {
   name: string;
-  icon: string;
+  icon: LucideIcon;
+  accent: { bg: string; text: string };
   availableCount: number;
   active: boolean;
   onClick: () => void;
@@ -21,14 +25,16 @@ export default function PracticeCategoryCard({
         active ? "border-amber bg-panel-2/40" : "border-amber/20 bg-panel"
       }`}
     >
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-panel-2 text-2xl">
-        {icon}
+      <div className={`flex h-14 w-14 items-center justify-center rounded-full ${accent.bg}`}>
+        <Icon size={20} strokeWidth={2} className={accent.text} aria-hidden="true" />
       </div>
 
       <h3 className="mt-4 font-semibold text-bone">{name}</h3>
 
       <p className="mt-1 text-xs font-semibold text-slate">
-        {availableCount > 0 ? `${availableCount} topic${availableCount === 1 ? "" : "s"}` : "Coming Soon"}
+        {availableCount > 0
+          ? `${availableCount} topic${availableCount === 1 ? "" : "s"}`
+          : "Coming Soon"}
       </p>
     </button>
   );

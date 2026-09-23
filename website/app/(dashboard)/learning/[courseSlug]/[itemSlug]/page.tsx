@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowLeft, CheckCircle2, Lock } from "lucide-react";
+import BackNavigation from "@/components/BackNavigation";
 import QuizRunner from "@/components/learning/QuizRunner";
 import LessonVideoPlayer from "@/components/learning/LessonVideoPlayer";
 import { useCourse } from "@/hooks/useCourse";
@@ -82,13 +83,7 @@ export default function LessonOrQuizPage({
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Link
-        href={`/learning/${courseSlug}`}
-        className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-amber hover:underline"
-      >
-        <ArrowLeft size={16} />
-        Back to course
-      </Link>
+      <BackNavigation href={`/learning/${courseSlug}`} label="Back to course" />
 
       {!current ? (
         <>

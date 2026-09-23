@@ -1,8 +1,8 @@
 "use client";
 
 import { use, useMemo, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, MapPin, Briefcase, ExternalLink } from "lucide-react";
+import { MapPin, Briefcase, ExternalLink } from "lucide-react";
+import BackNavigation from "@/components/BackNavigation";
 import BookmarkButton from "@/components/practice/BookmarkButton";
 import { useJob } from "@/hooks/useJob";
 import { useSavedJobs } from "@/hooks/useSavedJobs";
@@ -64,14 +64,9 @@ export default function JobDetailsPage({ params }: { params: Promise<{ jobSlug: 
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Link
-        href="/jobs/search"
-        className="flex items-center gap-1.5 text-sm font-semibold text-slate hover:text-bone"
-      >
-        <ArrowLeft size={16} /> Back to Search
-      </Link>
+      <BackNavigation href="/jobs/search" label="Back to Search" />
 
-      <div className="mt-4 rounded-3xl border border-amber/20 bg-panel p-8 shadow-md">
+      <div className="rounded-3xl border border-amber/20 bg-panel p-8 shadow-md">
         <h1 className="font-display text-3xl font-extrabold text-bone">{job.title}</h1>
         <p className="mt-1 text-lg text-slate">{job.company}</p>
 

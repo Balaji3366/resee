@@ -9,6 +9,12 @@ import PracticeCategoryCard from "@/components/practice/PracticeCategoryCard";
 import PracticeTypeCard from "@/components/practice/PracticeTypeCard";
 import { usePracticeCatalog } from "@/hooks/usePracticeCatalog";
 import { useContinuePractice } from "@/hooks/useContinuePractice";
+import {
+  getPracticeCategoryAccent,
+  getPracticeCategoryIcon,
+  getPracticeTopicAccent,
+  getPracticeTopicIcon,
+} from "@/lib/practiceCategoryIcons";
 
 export default function PracticeDashboardPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -92,7 +98,8 @@ export default function PracticeDashboardPage() {
           <PracticeCategoryCard
             key={category.id}
             name={category.name}
-            icon={category.icon}
+            icon={getPracticeCategoryIcon(category.slug)}
+            accent={getPracticeCategoryAccent(category.slug)}
             availableCount={availableCountByCategory.get(category.slug) ?? 0}
             active={selectedCategory === category.slug}
             onClick={() =>
@@ -120,6 +127,8 @@ export default function PracticeDashboardPage() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {filteredTopics.map((topic) => {
+            const TopicIcon = getPracticeTopicIcon(topic.slug, topic.category?.slug);
+            const topicAccent = getPracticeTopicAccent(topic.slug, topic.category?.slug);
             const card = (
               <motion.div
                 whileHover={topic.isAvailable ? { y: -4 } : {}}
@@ -130,7 +139,16 @@ export default function PracticeDashboardPage() {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-3xl">{topic.icon}</span>
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-full ${topicAccent.bg}`}
+                  >
+                    <TopicIcon
+                      size={20}
+                      strokeWidth={2}
+                      className={topicAccent.text}
+                      aria-hidden="true"
+                    />
+                  </div>
 
                   {!topic.isAvailable && (
                     <span className="rounded-full bg-panel-2 px-3 py-1 text-xs font-bold text-slate">

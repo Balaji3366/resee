@@ -1,8 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import BackNavigation from "@/components/BackNavigation";
 import JobCard from "@/components/jobs/JobCard";
 import JobEmptyState from "@/components/jobs/JobEmptyState";
 import { useSavedJobs } from "@/hooks/useSavedJobs";
@@ -32,11 +31,9 @@ export default function SavedJobsPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <Link href="/jobs" className="flex items-center gap-1.5 text-sm font-semibold text-slate hover:text-bone">
-        <ArrowLeft size={16} /> Back to Jobs
-      </Link>
+      <BackNavigation href="/jobs" label="Back to Jobs" />
 
-      <div className="mt-4 mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">Saved Jobs</h1>
           <p className="mt-2 text-slate">Jobs you&apos;ve bookmarked for later.</p>
@@ -60,7 +57,10 @@ export default function SavedJobsPage() {
       {loading ? (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
+            <div
+              key={i}
+              className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel"
+            />
           ))}
         </div>
       ) : sorted.length === 0 ? (

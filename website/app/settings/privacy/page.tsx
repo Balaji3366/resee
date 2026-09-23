@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import BackNavigation from "@/components/BackNavigation";
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import Button from "@/components/ui/Button";
@@ -35,13 +34,7 @@ export default function PrivacySettingsPage() {
   return (
     <>
       <OnboardingLayout>
-        <Link
-          href="/settings"
-          className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-amber hover:underline"
-        >
-          <ArrowLeft size={16} />
-          Back to Settings
-        </Link>
+        <BackNavigation href="/settings" label="Back to Settings" />
 
         <h2 className="font-display text-3xl font-extrabold text-bone">Privacy</h2>
 

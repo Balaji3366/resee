@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, LayoutGrid, List } from "lucide-react";
+import { LayoutGrid, List } from "lucide-react";
+import BackNavigation from "@/components/BackNavigation";
 import ApplicationTrackerBoard from "@/components/jobs/ApplicationTrackerBoard";
 import ApplicationHistoryList from "@/components/jobs/ApplicationHistoryList";
 import { useJobApplications } from "@/hooks/useJobApplications";
@@ -22,11 +22,9 @@ export default function ApplicationsPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <Link href="/jobs" className="flex items-center gap-1.5 text-sm font-semibold text-slate hover:text-bone">
-        <ArrowLeft size={16} /> Back to Jobs
-      </Link>
+      <BackNavigation href="/jobs" label="Back to Jobs" />
 
-      <div className="mt-4 mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">
             Application Tracker
@@ -71,10 +69,7 @@ export default function ApplicationsPage() {
           <p className="text-slate">You haven&apos;t applied to any jobs yet.</p>
         </div>
       ) : view === "board" ? (
-        <ApplicationTrackerBoard
-          applications={applications ?? []}
-          onStatusChange={updateStatus}
-        />
+        <ApplicationTrackerBoard applications={applications ?? []} onStatusChange={updateStatus} />
       ) : (
         <ApplicationHistoryList applications={filtered} />
       )}

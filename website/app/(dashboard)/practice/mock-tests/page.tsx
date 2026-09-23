@@ -1,5 +1,6 @@
 "use client";
 
+import BackNavigation from "@/components/BackNavigation";
 import MockTestCard from "@/components/practice/MockTestCard";
 import { useMockTests } from "@/hooks/useMockTests";
 
@@ -8,10 +9,10 @@ export default function MockTestsPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
+      <BackNavigation href="/practice" label="Back to Practice" />
+
       <div className="mb-8">
-        <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">
-          Mock Tests
-        </h1>
+        <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">Mock Tests</h1>
 
         <p className="mt-2 text-slate">
           Timed, full-length tests that simulate real exam conditions.

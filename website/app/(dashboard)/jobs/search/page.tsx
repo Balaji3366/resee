@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import BackNavigation from "@/components/BackNavigation";
 import JobCard from "@/components/jobs/JobCard";
 import MultiSelectChips from "@/components/jobs/MultiSelectChips";
 import JobEmptyState from "@/components/jobs/JobEmptyState";
@@ -87,6 +88,8 @@ export default function JobSearchPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
+      <BackNavigation href="/jobs" label="Back to Jobs" />
+
       <div className="mb-8">
         <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">Search Jobs</h1>
         <p className="mt-2 text-slate">Search by title, company, location, or skill.</p>

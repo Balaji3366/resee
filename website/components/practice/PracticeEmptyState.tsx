@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { PracticeCategory } from "@/types/practice";
+import { getPracticeCategoryIcon } from "@/lib/practiceCategoryIcons";
 
 export default function PracticeEmptyState({
   categories,
@@ -15,15 +16,19 @@ export default function PracticeEmptyState({
 
       {categories.length > 0 && (
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              href="/practice"
-              className="rounded-full bg-panel-2 px-4 py-2 text-sm font-semibold text-bone transition hover:bg-panel-2/70"
-            >
-              {category.icon} {category.name}
-            </Link>
-          ))}
+          {categories.map((category) => {
+            const CategoryIcon = getPracticeCategoryIcon(category.slug);
+            return (
+              <Link
+                key={category.id}
+                href="/practice"
+                className="flex items-center gap-2 rounded-full bg-panel-2 px-4 py-2 text-sm font-semibold text-bone transition hover:bg-panel-2/70"
+              >
+                <CategoryIcon size={18} strokeWidth={2} className="shrink-0" aria-hidden="true" />
+                {category.name}
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

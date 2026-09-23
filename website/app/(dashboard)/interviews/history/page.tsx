@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import BackNavigation from "@/components/BackNavigation";
 import InterviewHistoryList from "@/components/interviews/InterviewHistoryList";
 import InterviewCompletionScreen from "@/components/interviews/InterviewCompletionScreen";
 import ConfirmModal from "@/components/ConfirmModal";
@@ -98,6 +99,8 @@ export default function InterviewHistoryPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
+      <BackNavigation href="/interviews" label="Back to Interviews" />
+
       <div className="mb-8">
         <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">
           Interview History

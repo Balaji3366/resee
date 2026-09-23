@@ -2,6 +2,7 @@
 
 import { use, useState } from "react";
 import { Clock, Infinity as InfinityIcon } from "lucide-react";
+import BackNavigation from "@/components/BackNavigation";
 import InterviewSessionRunner from "@/components/interviews/InterviewSessionRunner";
 import { useInterviewSet } from "@/hooks/useInterviewSet";
 
@@ -14,6 +15,7 @@ export default function InterviewSetPage({ params }: { params: Promise<{ setSlug
   if (loading) {
     return (
       <div className="mx-auto max-w-3xl">
+        <BackNavigation href="/interviews" label="Back to Interviews" />
         <div className="h-96 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
       </div>
     );
@@ -22,6 +24,7 @@ export default function InterviewSetPage({ params }: { params: Promise<{ setSlug
   if (error || !set || !set.isAvailable) {
     return (
       <div className="mx-auto max-w-3xl">
+        <BackNavigation href="/interviews" label="Back to Interviews" />
         <div className="rounded-3xl border border-amber/20 bg-panel p-8 text-center text-slate shadow-md">
           {!set ? "Couldn't find this interview." : "This interview isn't available yet."}
         </div>
@@ -32,6 +35,7 @@ export default function InterviewSetPage({ params }: { params: Promise<{ setSlug
   if (!timedMode) {
     return (
       <div className="mx-auto max-w-3xl">
+        <BackNavigation href="/interviews" label="Back to Interviews" />
         <div className="rounded-3xl border border-amber/20 bg-panel p-8 shadow-md">
           <h2 className="font-display text-2xl font-bold text-bone">{set.title}</h2>
           <p className="mt-2 text-slate">

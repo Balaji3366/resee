@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import BackNavigation from "@/components/BackNavigation";
 import { useInterviewBookmarks } from "@/hooks/useInterviewBookmarks";
 
 export default function InterviewBookmarksPage() {
@@ -13,6 +14,8 @@ export default function InterviewBookmarksPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
+      <BackNavigation href="/interviews" label="Back to Interviews" />
+
       <div className="mb-8">
         <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">
           Bookmarked Questions

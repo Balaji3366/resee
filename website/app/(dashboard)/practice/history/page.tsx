@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BackNavigation from "@/components/BackNavigation";
 import PracticeHistoryList from "@/components/practice/PracticeHistoryList";
 import PracticeCompletionScreen from "@/components/practice/PracticeCompletionScreen";
 import PracticeEmptyState from "@/components/practice/PracticeEmptyState";
@@ -40,42 +41,44 @@ export default function PracticeHistoryPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-              <div className="mb-8">
-                <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">
-                  Previous Attempts
-                </h1>
+      <BackNavigation href="/practice" label="Back to Practice" />
 
-                <p className="mt-2 text-slate">
-                  Review your past sessions and see how you&apos;ve improved.
-                </p>
-              </div>
+      <div className="mb-8">
+        <h1 className="font-display text-3xl font-extrabold text-bone md:text-4xl">
+          Previous Attempts
+        </h1>
 
-              {review ? (
-                <PracticeCompletionScreen
-                  result={review.result}
-                  questions={review.questions}
-                  answers={review.answers}
-                  onRestart={() => setReview(null)}
-                  restartLabel="Back to History"
-                />
-              ) : (
-                <>
-                  {(loading || reviewLoading) && (
-                    <div className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
-                  )}
+        <p className="mt-2 text-slate">
+          Review your past sessions and see how you&apos;ve improved.
+        </p>
+      </div>
 
-                  {!loading && !reviewLoading && entries && entries.length === 0 && (
-                    <PracticeEmptyState
-                      categories={catalog?.categories ?? []}
-                      message="You haven't completed any practice sessions yet."
-                    />
-                  )}
+      {review ? (
+        <PracticeCompletionScreen
+          result={review.result}
+          questions={review.questions}
+          answers={review.answers}
+          onRestart={() => setReview(null)}
+          restartLabel="Back to History"
+        />
+      ) : (
+        <>
+          {(loading || reviewLoading) && (
+            <div className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
+          )}
 
-                  {!loading && !reviewLoading && entries && entries.length > 0 && (
-                    <PracticeHistoryList entries={entries} onReview={handleReview} />
-                  )}
-                </>
-              )}
+          {!loading && !reviewLoading && entries && entries.length === 0 && (
+            <PracticeEmptyState
+              categories={catalog?.categories ?? []}
+              message="You haven't completed any practice sessions yet."
+            />
+          )}
+
+          {!loading && !reviewLoading && entries && entries.length > 0 && (
+            <PracticeHistoryList entries={entries} onReview={handleReview} />
+          )}
+        </>
+      )}
     </div>
   );
 }

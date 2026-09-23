@@ -2,6 +2,7 @@
 
 import { use, useState } from "react";
 import Link from "next/link";
+import BackNavigation from "@/components/BackNavigation";
 import ModuleLessonTree from "@/components/learning/ModuleLessonTree";
 import { useCourse } from "@/hooks/useCourse";
 
@@ -51,6 +52,8 @@ export default function CoursePage({ params }: { params: Promise<{ courseSlug: s
 
   return (
     <div className="mx-auto max-w-4xl">
+      <BackNavigation href="/learning" label="Back to Learning" />
+
       {loading && (
         <div className="h-64 animate-pulse rounded-3xl border border-amber/20 bg-panel" />
       )}
